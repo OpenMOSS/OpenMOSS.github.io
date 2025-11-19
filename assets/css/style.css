@@ -663,7 +663,7 @@ html[lang="en"] #resources .resource-card h3 {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1.3fr 0.4fr 1.3fr;
   gap: 24px;
   width: 100%;
 }
