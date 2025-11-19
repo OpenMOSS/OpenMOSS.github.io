@@ -1,4 +1,5 @@
-(function () {
+// 初始化函数
+function initApp() {
   // 导航栏切换
   const navToggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('#primary-navigation');
@@ -23,12 +24,14 @@
       'nav.research': '研究方向',
       'nav.highlights': '最新亮点',
       'nav.people': '团队成员',
-      'nav.resources': '开放资源',
+      'nav.projects': '开源项目',
+      'nav.resources': '公益资源',
+      'nav.alumni': '校友网络',
       'nav.join': '加入我们',
 
-      'hero.subtitle': 'OpenMOSS Lab',
+      'hero.subtitle': 'OpenMOSS Team',
       'hero.title': '构建值得信赖的开放基础模型，服务社会',
-      'hero.description.p1': 'OpenMOSS（模思）团队专注于开放、可验证与负责任人工智能研究。我们关注大规模智能系统的发展规律，致力于构建从基础理论、训练方法到系统实现的全链条研究体系。重点研究领域包括预训练模型、推理与对齐、多模态理解、具身智能与智能体协同等方向。',
+      'hero.description.p1': 'OpenMOSS 团队专注于开放、可验证与负责任人工智能研究。我们关注大规模智能系统的发展规律，致力于构建从基础理论、训练方法到系统实现的全链条研究体系。重点研究领域包括预训练模型、推理与对齐、多模态理解、具身智能与智能体协同等方向。',
       'hero.description.p2': '我们的核心目标是推动人工智能的可信演化与广泛落地，使前沿研究成果真正转化为提升生产力、促进社会发展与拓展人类能力的技术基础。我们秉持开放合作与长期主义，与国际一流高校及行业龙头企业开展深度科研合作。',
       'hero.description.p3': '团队成员在人工智能领域具有坚实积累，培养的毕业生任职或深造于 MIT、UC Berkeley、CMU 等世界顶尖高校，或加入 ByteDance、Alibaba、AWS、Optiver 等领先企业，或投身创新创业，或步入学术教职岗位，形成了充满活力的学术与创新生态。',
       'hero.cta1': '加入我们',
@@ -42,7 +45,7 @@
       'hero.stat2': '开源项目，包括 MOSS、FastNLP、CoLLiE 等',
 
       'about.title': '关于实验室',
-      'about.p1': 'OpenMOSS Lab 源于复旦大学 FudanNLP 团队，致力于开放和负责任的 AI 研究。我们的使命是推进大规模 AI 系统的理论、方法和应用——从预训练和推理到多模态和具身智能——同时确保切实的社会影响。',
+      'about.p1': 'OpenMOSS Team 源于复旦大学 FudanNLP 团队，致力于开放和负责任的 AI 研究。我们的使命是推进大规模 AI 系统的理论、方法和应用——从预训练和推理到多模态和具身智能——同时确保切实的社会影响。',
       'about.p2': '我们与全球研究合作伙伴和行业领导者合作，将基础研究转化为可部署的系统。校友遍布顶尖大学（MIT、UC Berkeley、CMU）和公司（ByteDance、Alibaba、AWS、Optiver），许多人创办了初创公司或担任教职。',
 
       'pillars.title': '研究方向',
@@ -80,7 +83,7 @@
       'highlights.talent.desc': '校友在顶尖大学担任教职，并以创始人、CEO 和 CTO 的身份加入知名 AI 初创公司。',
 
       'people.title': '团队成员',
-      'people.core': '教职成员',
+      'people.core': '导师团队',
       'people.member1.name': '邱锡鹏',
       'people.member1.title': '教授，实验室主任',
       'people.member2.name': '陈新驰',
@@ -104,7 +107,7 @@
       'people.alumni.desc': '我们的校友遍布学术界和工业界—MIT、UC Berkeley、CMU、ByteDance、Alibaba、AWS、Optiver 等知名机构。',
       'people.alumni.link': '了解更多',
 
-      'resources.title': '开放资源',
+      'resources.title': '公益资源',
       'resources.tools.title': '开源工具',
       'resources.tools.desc': 'FastNLP、CoLLiE、SpeechGPT、UnifiedToolHub 等开源项目为全球 AI 生态系统提供支持。',
       'resources.tools.link': '访问 GitHub',
@@ -117,23 +120,24 @@
       'projectsPage.title': '开源项目',
       'projectsPage.projects.title': '开源项目',
 
-      'join.title': '加入 OpenMOSS Lab',
+      'join.title': '加入 OpenMOSS Team',
       'join.desc': '我们正在招募对开放系统和负责任 AI 充满热情的研究生、博士后、访问学者和合作者。',
       'join.positions': '开放职位',
 
-      'footer.address1': '徐汇区华发路699弄3号',
-      'footer.address2': '杨浦区淞沪路2005号',
+      'footer.location': '通信地址',
+      'footer.address1': '徐汇区华发路699弄3号 上海创智学院',
+      'footer.address2': '杨浦区淞沪路2005号 复旦大学 二号交叉学科楼',
       'footer.address3': '中国 上海',
       'footer.affiliations': '合作单位',
       'footer.fudan': '复旦大学计算与智能创新学院',
       'footer.fudannlp': '复旦大学可信具身智能研究院',
       'footer.sii': '上海创智学院',
-      'footer.connect': '联系我们',
+      'footer.connect': '联系方式',
       'footer.links': '快速链接',
       'footer.software': '软件',
       'footer.career': '职业发展',
       'footer.archive': '档案',
-      'footer.copyright': '&copy; <span id="year"></span> OpenMOSS Lab.',
+      'footer.copyright': '&copy; <span id="year"></span> OpenMOSS Team.',
 
       // People Page
       'peoplePage.title': '团队成员',
@@ -145,13 +149,14 @@
       'peoplePage.students': '学生与访问学者',
       'peoplePage.studentsDesc': '研究生、博士生、访问学者和行业研究员共同推动大规模 AI 系统和社会应用的边界。我们的团队包括来自世界各地的优秀研究人员，他们在自然语言处理、计算机视觉、机器学习等领域进行前沿研究。',
       'peoplePage.contactInfo': '如需了解更多团队信息或加入我们，请联系：<a href="mailto:llm@fudan.edu.cn">llm@fudan.edu.cn</a>',
+      'peoplePage.viewAlumni': '查看校友网络',
       'peoplePage.backHome': '返回首页',
 
       // Alumni Page
       'alumniPage.title': '校友网络',
       'alumniPage.breadcrumb.home': '首页',
       'alumniPage.breadcrumb.people': '团队成员',
-      'alumniPage.breadcrumb.alumni': '往届成员',
+      'alumniPage.breadcrumb.alumni': '校友网络',
       'alumniPage.backToTop': '回到顶部',
       'alumniPage.toc': '目录',
       'alumniPage.postdocs': '博士后',
@@ -159,7 +164,7 @@
       'alumniPage.masters': '硕士生',
       'alumniPage.undergrad': '本科生',
       'alumniPage.visiting': '访问学生',
-      'alumniPage.intro': 'OpenMOSS Lab 为培养了众多优秀的研究人员和工程师而自豪。我们的校友遍布学术界和工业界，在世界各地的顶尖机构和公司中发挥着重要作用。',
+      'alumniPage.intro': 'OpenMOSS Team 为培养了众多优秀的研究人员和工程师而自豪。我们的校友遍布学术界和工业界，在世界各地的顶尖机构和公司中发挥着重要作用。',
       'alumniPage.academia.title': '学术界',
       'alumniPage.academia.desc': '我们的校友在 MIT、Stanford、UC Berkeley、CMU、清华大学、北京大学等世界顶尖大学担任教职或继续深造。',
       'alumniPage.industry.title': '产业界',
@@ -169,7 +174,7 @@
       'alumniPage.research.title': '研究机构',
       'alumniPage.research.desc': '校友在各类研究机构和实验室担任重要职位，继续在 NLP、CV、ML 等领域进行突破性研究。',
       'alumniPage.network.title': '保持联系',
-      'alumniPage.network.desc': '我们重视与校友的持续联系和合作。如果您是 OpenMOSS Lab 的校友，欢迎通过以下方式与我们保持联系：',
+      'alumniPage.network.desc': '我们重视与校友的持续联系和合作。如果您是 OpenMOSS Team 的校友，欢迎通过以下方式与我们保持联系：',
       'alumniPage.network.item1': '加入我们的校友微信群和 Slack 频道',
       'alumniPage.network.item2': '参加年度校友聚会和学术研讨会',
       'alumniPage.network.item3': '与在读学生分享经验和职业建议',
@@ -189,7 +194,7 @@
       'webmasterPage.backHome': '返回首页',
 
       // Positions Page
-      'positionsPage.title': '加入 OpenMOSS Lab',
+      'positionsPage.title': '加入 OpenMOSS Team',
       'positionsPage.intro': '我们正在招募对开放系统和负责任 AI 充满热情的研究人员和工程师。如果您希望在大规模 AI 系统、多模态学习、具身智能等前沿领域进行研究，欢迎加入我们！',
       'positionsPage.open.title': '开放职位',
       'positionsPage.moreDetails': '查看详情',
@@ -239,6 +244,7 @@
       'positionsPage.apply.title': '如何申请',
       'positionsPage.apply.desc': '如果您对以上职位感兴趣，请填写<a href="https://fudannlp.feishu.cn/share/base/form/shrcn29UYq1MCpTH0GBZh3AWPPg" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">报名问卷</a>',
       'positionsPage.applyBtn': '填写申请问卷',
+      'positionsPage.summerSchool': '加入暑期学校 →',
       'positionsPage.backHome': '返回首页',
 
       // Positions Detail Page
@@ -313,8 +319,8 @@
       'positionsDetailPage.backPositions': '返回职位列表',
 
       // Resources Page
-      'resourcesPage.title': '开放课程',
-      'resourcesPage.intro': 'OpenMOSS Lab 提供丰富的开放课程，帮助研究者和开发者探索大语言模型、多模态学习和具身智能等前沿领域。',
+      'resourcesPage.title': '公益资源',
+      'resourcesPage.intro': 'OpenMOSS Team 提供丰富的公益资源，帮助研究者和开发者探索大语言模型、多模态学习和具身智能等前沿领域。',
       'resourcesPage.projects.title': '开源项目',
       'resourcesPage.moss.desc': '开源的工具增强对话语言模型，支持插件系统和多种工具调用能力。',
       'resourcesPage.anygpt.desc': '统一的多模态大语言模型，支持离散序列建模，实现真正的多模态理解与生成。',
@@ -327,9 +333,9 @@
       'resourcesPage.prml.title': '模式识别与机器学习',
       'resourcesPage.prml.desc': '复旦大学《模式识别与机器学习》课程资源，涵盖机器学习基础理论与实践。',
       'resourcesPage.viewCourse': '查看课程 →',
-      'resourcesPage.papers.title': '论文阅读列表',
-      'resourcesPage.papers.desc': '深度学习预备课程',
-      'resourcesPage.viewPapers': '查看课程 →',
+      'resourcesPage.exercises.title': 'OpenMOSS 科研练习',
+      'resourcesPage.exercises.desc': '团队推荐的科研练习，包含理论学习和动手实践的部分。',
+      'resourcesPage.viewExercises': '查看练习 →',
       'resourcesPage.tools.title': '开发工具',
       'resourcesPage.tools.desc': 'FastNLP、CoLLiE 等实用工具，帮助研究者快速构建和训练模型。',
       'resourcesPage.viewTools': '浏览工具 →',
@@ -352,10 +358,12 @@
       'nav.research': 'Research',
       'nav.highlights': 'Highlights',
       'nav.people': 'People',
-      'nav.resources': 'Resources',
+      'nav.projects': 'Projects',
+      'nav.resources': 'Open Resources',
+      'nav.alumni': 'Alumni',
       'nav.join': 'Join Us',
 
-      'hero.subtitle': 'OpenMOSS Lab',
+      'hero.subtitle': 'OpenMOSS Team',
       'hero.title': 'Building trustworthy, open foundation models that serve society',
       'hero.description.p1': 'The OpenMOSS team focuses on open, verifiable, and responsible artificial intelligence research. We study the development patterns of large-scale intelligent systems and are committed to building a complete research framework from fundamental theory, training methods to system implementation. Our key research areas include pre-training models, reasoning and alignment, multimodal understanding, embodied intelligence, and agent collaboration.',
       'hero.description.p2': 'Our core objective is to advance the trustworthy evolution and widespread deployment of AI, transforming cutting-edge research into technological foundations that enhance productivity, promote social development, and expand human capabilities. We adhere to open collaboration and long-termism, conducting deep research partnerships with world-class universities and leading enterprises.',
@@ -371,7 +379,7 @@
       'hero.stat2': 'Open-source releases including MOSS, FastNLP, CoLLiE',
 
       'about.title': 'About The Lab',
-      'about.p1': 'OpenMOSS Lab, originally part of the FudanNLP group at Fudan University, pioneers open and responsible AI research. Our mission is to advance the theory, methods, and applications of large-scale AI systems—from pretraining and reasoning to multimodal and embodied intelligence—while ensuring tangible societal impact.',
+      'about.p1': 'OpenMOSS Team, originally part of the FudanNLP group at Fudan University, pioneers open and responsible AI research. Our mission is to advance the theory, methods, and applications of large-scale AI systems—from pretraining and reasoning to multimodal and embodied intelligence—while ensuring tangible societal impact.',
       'about.p2': 'We collaborate with global research partners and industry leaders to translate foundational advances into deployable systems. Alumni continue at top-tier universities (MIT, UC Berkeley, CMU) and companies (ByteDance, Alibaba, AWS, Optiver), and many have launched startups or taken faculty roles.',
 
       'pillars.title': 'Research Pillars',
@@ -434,11 +442,11 @@
       'people.alumni.link': 'Learn More',
 
       'resources.title': 'Open Resources',
-      'resources.tools.title': 'Products',
+      'resources.tools.title': 'Open Source Tools',
       'resources.tools.desc': 'FastNLP, CoLLiE, SpeechGPT, UnifiedToolHub, and more open releases power the global AI ecosystem.',
       'resources.tools.link': 'Visit GitHub',
       'resources.tools.details': 'More details',
-      'resources.learning.title': 'Sources',
+      'resources.learning.title': 'Open Courses',
       'resources.learning.desc': 'Curated reading lists, tutorials, and benchmarks for students and practitioners building with open models.',
       'resources.learning.link': 'Browse resources',
 
@@ -446,23 +454,24 @@
       'projectsPage.title': 'Open Source Projects',
       'projectsPage.projects.title': 'Open Source Projects',
 
-      'join.title': 'Join OpenMOSS Lab',
+      'join.title': 'Join OpenMOSS Team',
       'join.desc': 'We are recruiting graduate students, postdocs, visiting researchers, and collaborators who are passionate about open systems and responsible AI.',
       'join.positions': 'Open positions',
 
+      'footer.location': 'Address',
       'footer.address1': '3 Lane 699, Huafa Road, Xuhui District',
-      'footer.address2': 'Building 2X, No. 2005 Songhu Road, Yangpu District',
+      'footer.address2': 'Building X2, No. 2005 Songhu Road, Yangpu District',
       'footer.address3': 'Shanghai, China',
       'footer.affiliations': 'Affiliations',
       'footer.fudan': 'School of Computer Science and Innovation, Fudan University',
       'footer.fudannlp': 'Institute of Trustworthy Embodied Intelligence, Fudan University',
       'footer.sii': 'Shanghai Innovation Institute',
-      'footer.connect': 'Connect',
+      'footer.connect': 'Contact',
       'footer.links': 'Quick Links',
       'footer.software': 'Software',
       'footer.career': 'Career',
       'footer.archive': 'Archive',
-      'footer.copyright': '&copy; <span id="year"></span> OpenMOSS Lab.',
+      'footer.copyright': '&copy; <span id="year"></span> OpenMOSS Team.',
 
       // People Page
       'peoplePage.title': 'People',
@@ -474,13 +483,14 @@
       'peoplePage.students': 'Students & Fellows',
       'peoplePage.studentsDesc': 'Graduate researchers, doctoral students, visiting scholars, and industry fellows push the boundaries of large-scale AI systems and societal deployment. Our team includes outstanding researchers from around the world conducting cutting-edge research in natural language processing, computer vision, machine learning, and more.',
       'peoplePage.contactInfo': 'For more information about our team or to join us, please contact: <a href="mailto:llm@fudan.edu.cn">llm@fudan.edu.cn</a>',
+      'peoplePage.viewAlumni': 'View Alumni Network',
       'peoplePage.backHome': 'Back to Home',
 
       // Alumni Page
       'alumniPage.title': 'Alumni Network',
       'alumniPage.breadcrumb.home': 'Home',
       'alumniPage.breadcrumb.people': 'People',
-      'alumniPage.breadcrumb.alumni': 'Former Members',
+      'alumniPage.breadcrumb.alumni': 'Alumni',
       'alumniPage.backToTop': 'Back to Top',
       'alumniPage.toc': 'Table of Contents',
       'alumniPage.postdocs': 'Postdoctoral Researchers',
@@ -488,7 +498,7 @@
       'alumniPage.masters': 'Master Students',
       'alumniPage.undergrad': 'Undergraduates',
       'alumniPage.visiting': 'Visiting Students',
-      'alumniPage.intro': 'OpenMOSS Lab takes pride in having trained many excellent researchers and engineers. Our alumni span academia and industry, playing important roles in top institutions and companies worldwide.',
+      'alumniPage.intro': 'OpenMOSS Team takes pride in having trained many excellent researchers and engineers. Our alumni span academia and industry, playing important roles in top institutions and companies worldwide.',
       'alumniPage.academia.title': 'Academia',
       'alumniPage.academia.desc': 'Our alumni hold faculty positions or pursue further studies at world-class universities including MIT, Stanford, UC Berkeley, CMU, Tsinghua University, and Peking University.',
       'alumniPage.industry.title': 'Industry',
@@ -498,7 +508,7 @@
       'alumniPage.research.title': 'Research Institutions',
       'alumniPage.research.desc': 'Alumni hold important positions at various research institutions and labs, continuing groundbreaking research in NLP, CV, ML, and other fields.',
       'alumniPage.network.title': 'Stay Connected',
-      'alumniPage.network.desc': 'We value ongoing connections and collaborations with our alumni. If you are an OpenMOSS Lab alumnus, we welcome you to stay in touch through:',
+      'alumniPage.network.desc': 'We value ongoing connections and collaborations with our alumni. If you are an OpenMOSS Team alumnus, we welcome you to stay in touch through:',
       'alumniPage.network.item1': 'Join our alumni WeChat groups and Slack channels',
       'alumniPage.network.item2': 'Attend annual alumni gatherings and academic workshops',
       'alumniPage.network.item3': 'Share experiences and career advice with current students',
@@ -518,7 +528,7 @@
       'webmasterPage.backHome': 'Back to Home',
 
       // Positions Page
-      'positionsPage.title': 'Join OpenMOSS Lab',
+      'positionsPage.title': 'Join OpenMOSS Team',
       'positionsPage.intro': 'We are recruiting researchers and engineers passionate about open systems and responsible AI. If you want to conduct research in cutting-edge areas such as large-scale AI systems, multimodal learning, and embodied intelligence, we welcome you to join us!',
       'positionsPage.open.title': 'Open Positions',
       'positionsPage.moreDetails': 'More details',
@@ -568,6 +578,7 @@
       'positionsPage.apply.title': 'How to Apply',
       'positionsPage.apply.desc': 'If you are interested in any of the above positions, please fill out the <a href="https://fudan-nlp.feishu.cn/share/base/form/shrcnnTt5A5tygeK6mMj0gyZKJd" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">application form</a>',
       'positionsPage.applyBtn': 'Fill Application Form',
+      'positionsPage.summerSchool': 'Join Summer School →',
       'positionsPage.backHome': 'Back to Home',
 
       // Positions Detail Page
@@ -642,8 +653,8 @@
       'positionsDetailPage.backPositions': 'Back to Positions',
 
       // Resources Page
-      'resourcesPage.title': 'Sources',
-      'resourcesPage.intro': 'OpenMOSS Lab provides rich resources to help researchers and developers explore cutting-edge areas such as large language models, multimodal learning, and embodied intelligence.',
+      'resourcesPage.title': 'Open Resources',
+      'resourcesPage.intro': 'OpenMOSS Team provides rich open resources to help researchers and developers explore cutting-edge areas such as large language models, multimodal learning, and embodied intelligence.',
       'resourcesPage.projects.title': 'Open Source Projects',
       'resourcesPage.moss.desc': 'An open-source tool-augmented conversational language model supporting plugin systems and various tool-calling capabilities.',
       'resourcesPage.anygpt.desc': 'Unified multimodal LLM with discrete sequence modeling for true multimodal understanding and generation.',
@@ -656,9 +667,9 @@
       'resourcesPage.prml.title': 'Pattern Recognition & Machine Learning',
       'resourcesPage.prml.desc': 'Course resources for Fudan University\'s Pattern Recognition and Machine Learning, covering fundamental ML theory and practice.',
       'resourcesPage.viewCourse': 'View Course →',
-      'resourcesPage.papers.title': 'Reading List',
-      'resourcesPage.papers.desc': 'Deep Learning Preparatory Course',
-      'resourcesPage.viewPapers': 'View Course →',
+      'resourcesPage.exercises.title': 'OpenMOSS Research Exercises',
+      'resourcesPage.exercises.desc': 'Recommended research exercises, including theoretical learning and hands-on practice.',
+      'resourcesPage.viewExercises': 'View Exercises →',
       'resourcesPage.tools.title': 'Development Tools',
       'resourcesPage.tools.desc': 'Practical tools like FastNLP and CoLLiE to help researchers quickly build and train models.',
       'resourcesPage.viewTools': 'Browse Tools →',
@@ -697,7 +708,7 @@
     // 更新按钮文本
     const langBtn = document.querySelector('.lang-text');
     if (langBtn) {
-      langBtn.textContent = lang === 'zh-CN' ? '英文' : 'Chinese';
+      langBtn.textContent = '中 | EN';
     }
 
     // 动态更新申请表单链接（根据语言切换）
@@ -790,7 +801,7 @@
 
   // 渲染所有团队成员（用于people.html）
   function renderAllTeamMembers(lang) {
-    // 渲染核心成员
+    // 渲染导师团队
     if (teamData.coreMembers && teamData.coreMembers.length > 0) {
       renderMembers('#core-members-container', teamData.coreMembers, lang, false);
     }
@@ -829,7 +840,7 @@
       return;
     }
 
-    // 首页：只显示核心成员
+    // 首页：只显示导师团队
     const indexCoreContainer = document.querySelector('#core-members-home');
     if (indexCoreContainer) {
       renderMembers('#core-members-home', teamData.coreMembers, currentLang);
@@ -864,4 +875,15 @@
       initTeamMembers(); // 重新渲染成员
     });
   }
-})();
+}
+
+// 等待组件加载完成后初始化
+if (typeof window !== 'undefined') {
+  window.addEventListener('componentsLoaded', initApp);
+  // 如果没有使用组件系统（兼容旧页面），直接初始化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(initApp, 100);
+    });
+  }
+}

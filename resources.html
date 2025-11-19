@@ -11,60 +11,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-gO9FwZP1781OeR3SiPtK0aGpG99nmHn7+O+kO5RAwOB1p5MNDoAuCEi0aKBslZx2drXr/7L0KleKX2ND/qY1KQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="assets/css/style.css?v=20251102g">
+  <script src="assets/js/components.js"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a class="brand" href="index.html">
-        <img class="brand-logo" src="assets/img/openmoss-logo.png" alt="OpenMOSSLab logo">
-        <span class="brand-name">OpenMOSSLab</span>
-      </a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-navigation">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <ul class="nav-links" id="primary-navigation">
-        <li><a href="index.html#pillars" data-i18n="nav.research">研究方向</a></li>
-        <li><a href="index.html#people" data-i18n="nav.people">团队成员</a></li>
-        <li><a href="index.html#resources" data-i18n="nav.resources">开放资源</a></li>
-        <li><a href="https://www.open-moss.com/en/" data-i18n="nav.highlights">最新亮点</a></li>
-        <li><a href="positions.html" data-i18n="nav.join">加入我们</a></li>
-        <li>
-          <button id="lang-toggle" class="lang-btn" aria-label="切换语言">
-            <i class="fa-solid fa-language"></i>
-            <span class="lang-text">EN</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <div id="header-placeholder"></div>
 
   <main>
     <section class="container sec" style="padding-top: 60px;">
       <h1 data-i18n="resourcesPage.title" style="font-size: 34px; font-weight: 500;">开放课程</h1>
       
-      <p class="lead" data-i18n="resourcesPage.intro">OpenMOSS Lab 提供丰富的开放课程，帮助研究者和开发者探索大语言模型、多模态学习和具身智能等前沿领域。</p>
+      <p class="lead" data-i18n="resourcesPage.intro">OpenMOSS 团队提供丰富的开放课程，帮助研究者和开发者探索大语言模型、多模态学习和具身智能等前沿领域。</p>
 
       <div style="margin-top: 60px;">
         <div class="highlight-grid highlight-grid-3" style="margin-top: 30px;">
           <article class="highlight-card">
             <h3 data-i18n="resourcesPage.prml.title">模式识别与机器学习</h3>
             <p data-i18n="resourcesPage.prml.desc">复旦大学《模式识别与机器学习》课程资源，涵盖机器学习基础理论与实践。</p>
-            <a href="https://github.com/OpenMOSS/FDU-PRML-2025Fall" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.viewCourse">查看课程 →</a>
+            <a href="https://mooc1.chaoxing.com/course/224348208.html" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.viewCourse">查看课程 →</a>
           </article>
           
           <article class="highlight-card">
-            <h3 data-i18n="resourcesPage.papers.title">论文阅读列表</h3>
-            <p data-i18n="resourcesPage.papers.desc">精选大语言模型、多模态学习、具身智能等领域的重要论文。</p>
-            <a href="https://fudan-nlp.feishu.cn/docx/ReTwdtU8PoeNlFxNiBbcIOm6ngf" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.viewPapers">查看论文 →</a>
+            <h3 data-i18n="resourcesPage.exercises.title">OpenMOSS 科研练习</h3>
+            <p data-i18n="resourcesPage.exercises.desc">团队推荐的科研练习，包含理论学习和动手实践的部分。</p>
+            <a href="https://fudan-nlp.feishu.cn/wiki/WFifwXxfQiI3PKkn9FEcy0wKnjh" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.viewExercises">查看练习 →</a>
           </article>
           
           <article class="highlight-card">
             <h3 data-i18n="resourcesPage.community.title">社区与交流</h3>
-            <p data-i18n="resourcesPage.community.desc">加入我们的开源社区，与全球研究者交流学习，共同推进 AI 技术发展。</p>
-            <a href="https://github.com/OpenMOSS" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.joinCommunity">加入社区 →</a>
+            <p data-i18n="resourcesPage.community.desc">加入暑期学校，与全球研究者交流学习，共同推进 AI 技术发展。</p>
+            <a href="https://github.com/WillQvQ/SummerQuest-2025" target="_blank" style="display: inline-block; color: var(--fudan-blue);" data-i18n="resourcesPage.joinCommunity">加入暑期学校 →</a>
           </article>
         </div>
       </div>
@@ -76,41 +51,7 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h4 data-i18n="footer.affiliations">合作单位</h4>
-          <ul>
-            <li><a href="https://ai.fudan.edu.cn/" data-i18n="footer.fudan">复旦大学计算与智能创新学院</a></li>
-            <li><a href="https://teai.fudan.edu.cn/" data-i18n="footer.fudannlp">复旦大学可信具身智能研究院</a></li>
-            <li><a href="https://www.sii.edu.cn/" data-i18n="footer.sii">上海创智学院</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer.connect">联系我们</h4>
-          <ul>
-            <li><a href="https://github.com/OpenMOSS"><i class="fa-brands fa-github"></i> GitHub</a></li>
-            <li><a href="https://twitter.com/openmosslab"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
-            <li><a href="mailto:llm@fudan.edu.cn"><i class="fa-solid fa-envelope"></i> Email</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>OpenMOSS Lab</h4>
-          <ul>
-            <li data-i18n="footer.address1">徐汇区华发路699弄3号</li>
-            <li data-i18n="footer.address2">杨浦区淞沪路2005号</li>
-            <li data-i18n="footer.address3">中国 上海</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="footer-note">
-        <p><a href="webmaster.html" style="color: inherit; text-decoration: none;">&copy; <span id="year"></span> OpenMOSS Lab.</a></p>
-      </div>
-    </div>
-  </footer>
+  <div id="footer-placeholder"></div>
 
   <script src="assets/js/main.js"></script>
 </body>

@@ -1,9 +1,9 @@
-// OpenMOSS Lab 团队成员数据
+// OpenMOSS Team 团队成员数据
 // 所有成员信息集中管理，方便维护和更新
 
 
 const teamData = {
-    // 核心成员（教师）
+    // 导师团队（教师）
     coreMembers: [
         {
             id: 'xipeng-qiu',
@@ -12,8 +12,8 @@ const teamData = {
                 en: 'Xipeng Qiu'
             },
             title: {
-                zh: '教授，实验室主任',
-                en: 'Professor, Lab Director'
+                zh: '教授',
+                en: 'Professor'
             },
             photo: 'assets/img/Xipeng Qiu.jpg',
             email: 'xpqiu@fudan.edu.cn',
@@ -57,7 +57,7 @@ const teamData = {
                 zh: '助理教授',
                 en: 'Assistant Professor'
             },
-            photo: 'assets/img/纪焘.jpg',
+            photo: 'assets/img/Tao Ji.jpeg',
             homepage: 'https://taoji.eth.link/'
         },
         {
@@ -109,7 +109,7 @@ const teamData = {
                 zh: '专任副研究员',
                 en: 'Associate Research Fellow'
             },
-            photo: 'assets/img/郑逸宁.jpg',
+            photo: 'assets/img/Yining Zheng.jpeg',
             homepage: 'https://github.com/WillQvQ'
         }
     ],

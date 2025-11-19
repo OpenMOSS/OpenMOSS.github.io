@@ -30,6 +30,7 @@ body {
   line-height: 1.7;
   color: var(--text);
   margin: 0;
+  padding-top: 56px;
   background-color: var(--sand-light);
   min-height: 100%;
   display: flex;
@@ -59,7 +60,7 @@ h1 {
 
 h2 {
   font-size: 28px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--fudan-blue-90);
 }
 
@@ -101,8 +102,10 @@ li {
 }
 
 nav.navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 999;
   background-color: var(--fudan-blue);
   border-bottom: 1px solid var(--fudan-blue-dark);
@@ -172,10 +175,9 @@ nav.navbar {
   align-items: center;
   gap: 0px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: none;
   color: var(--white);
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 6px 0px;
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -183,8 +185,7 @@ nav.navbar {
 }
 
 .lang-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.7);
+  opacity: 0.8;
 }
 
 .lang-btn i {
@@ -192,7 +193,8 @@ nav.navbar {
 }
 
 .lang-text {
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--mist);
 }
 
 .nav-toggle {
@@ -663,7 +665,7 @@ html[lang="en"] #resources .resource-card h3 {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.3fr 0.4fr 1.3fr;
+  grid-template-columns: 0.4fr 1.3fr 1.3fr;
   gap: 24px;
   width: 100%;
 }
@@ -757,7 +759,7 @@ html[lang="en"] #resources .resource-card h3 {
   }
 
   nav.navbar {
-    position: sticky;
+    position: fixed;
   }
 
   .lang-btn {

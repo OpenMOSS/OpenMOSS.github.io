@@ -10,48 +10,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OpenMOSSLab</title>
   <link rel="icon" type="image/png" href="assets/img/openmoss-logo.png">
-  <meta name="description" content="OpenMOSS Lab - 邱锡鹏教授领导的人工智能研究实验室">
+  <meta name="description" content="OpenMOSS Team - 邱锡鹏教授领导的人工智能研究实验室">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-gO9FwZP1781OeR3SiPtK0aGpG99nmHn7+O+kO5RAwOB1p5MNDoAuCEi0aKBslZx2drXr/7L0KleKX2ND/qY1KQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="assets/css/style.css?v=20251103a">
+  <script src="assets/js/components.js"></script>
 </head>
 <body id="top">
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a class="brand" href="#top">
-        <img class="brand-logo" src="assets/img/openmoss-logo.png" alt="OpenMOSS Lab logo">
-        <span class="brand-name">OpenMOSS Lab</span>
-      </a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-navigation">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <ul class="nav-links" id="primary-navigation">
-        <li><a href="#pillars" data-i18n="nav.research">研究方向</a></li>
-        <li><a href="#people" data-i18n="nav.people">团队成员</a></li>
-        <li><a href="#resources" data-i18n="nav.resources">开放资源</a></li>
-        <li><a href="https://www.open-moss.com/en/" data-i18n="nav.highlights">最新亮点</a></li>
-        <li><a href="positions.html" data-i18n="nav.join">加入我们</a></li>
-        <li>
-          <button id="lang-toggle" class="lang-btn" aria-label="切换语言">
-            <i class="fa-solid fa-language"></i>
-            <span class="lang-text">EN</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <div id="header-placeholder"></div>
 
   <header id="hero">
     <div class="container">
       <div class="hero-full">
         <h1 data-i18n="hero.title" style="font-size: 34px; white-space: nowrap; font-weight: 500;">构建值得信赖的开放基础模型，服务社会</h1>
         <div class="hero-description">
-          <p class="lead" data-i18n="hero.description.p1">OpenMOSS（模思）团队专注于开放、可验证与负责任人工智能研究。我们关注大规模智能系统的发展规律，致力于构建从基础理论、训练方法到系统实现的全链条研究体系。重点研究领域包括预训练模型、推理与对齐、多模态理解、具身智能与智能体协同等方向。</p>
+          <p class="lead" data-i18n="hero.description.p1">OpenMOSS 团队专注于开放、可验证与负责任人工智能研究。我们关注大规模智能系统的发展规律，致力于构建从基础理论、训练方法到系统实现的全链条研究体系。重点研究领域包括预训练模型、推理与对齐、多模态理解、具身智能与智能体协同等方向。</p>
           <p class="lead" data-i18n="hero.description.p2">我们的核心目标是推动人工智能的可信演化与广泛落地，使前沿研究成果真正转化为提升生产力、促进社会发展与拓展人类能力的技术基础。我们秉持开放合作与长期主义，与国际一流高校及行业龙头企业开展深度科研合作。</p>
           <p class="lead" data-i18n="hero.description.p3">团队成员在人工智能领域具有坚实积累，培养的毕业生任职或深造于 MIT、UC Berkeley、CMU 等世界顶尖高校，或加入 ByteDance、Alibaba、AWS、Optiver 等领先企业，或投身创新创业，或步入学术教职岗位，形成了充满活力的学术与创新生态。</p>
         </div>
@@ -101,12 +76,12 @@
       <section class="container sec">
         <h2 data-i18n="people.title">团队成员</h2>
         
-        <h3 class="section-subtitle" data-i18n="people.core">核心成员</h3>
+        <h3 class="section-subtitle" data-i18n="people.core">导师团队</h3>
         <div class="team-members">
           <div class="member-card">
             <img src="assets/img/Xipeng Qiu.jpg" alt="Xipeng Qiu" class="member-photo">
             <h4 class="member-name" data-i18n="people.member1.name">邱锡鹏</h4>
-            <p class="member-title" data-i18n="people.member1.title">教授，实验室主任</p>
+            <p class="member-title" data-i18n="people.member1.title">教授</p>
           </div>
           
           <div class="member-card">
@@ -167,59 +142,27 @@
       </section>
     </div>
 
-    <section id="resources" class="container sec">
-      <h2 data-i18n="resources.title">开放资源</h2>
-      <div class="people-sections">
-        <article class="people-card">
-          <h3 data-i18n="resources.tools.title">开源工具</h3>
-          <p data-i18n="resources.tools.desc">FastNLP、CoLLiE、SpeechGPT、UnifiedToolHub 等开源项目为全球 AI 生态系统提供支持。</p>
-          <a class="btn btn-inline" href="https://github.com/OpenMOSS" target="_blank" data-i18n="resources.tools.link">访问 GitHub</a>
-          <a class="btn btn-inline" href="projects.html" data-i18n="resources.tools.details" style="margin-left: 12px;">详情</a>
-        </article>
-        <article class="people-card">
-          <h3 data-i18n="resources.learning.title">开放课程</h3>
-          <p data-i18n="resources.learning.desc">为使用开放模型构建应用的学生和从业者精心策划的阅读清单、教程和基准。</p>
-          <a class="btn btn-inline" href="resources.html" data-i18n="resources.learning.link">浏览资源</a>
-        </article>
-      </div>
-    </section>
+    <div id="resources" class="sechighlight">
+      <section class="container sec">
+        <h2 data-i18n="resources.title">开放资源</h2>
+        <div class="people-sections">
+          <article class="people-card">
+            <h3 data-i18n="resources.tools.title">开源工具</h3>
+            <p data-i18n="resources.tools.desc">FastNLP、CoLLiE、SpeechGPT、UnifiedToolHub 等开源项目为全球 AI 生态系统提供支持。</p>
+            <a class="btn btn-inline" href="https://github.com/OpenMOSS" target="_blank" data-i18n="resources.tools.link">访问 GitHub</a>
+            <a class="btn btn-inline" href="projects.html" data-i18n="resources.tools.details" style="margin-left: 12px;">详情</a>
+          </article>
+          <article class="people-card">
+            <h3 data-i18n="resources.learning.title">开放课程</h3>
+            <p data-i18n="resources.learning.desc">为使用开放模型构建应用的学生和从业者精心策划的阅读清单、教程和基准。</p>
+            <a class="btn btn-inline" href="resources.html" data-i18n="resources.learning.link">浏览资源</a>
+          </article>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h4 data-i18n="footer.affiliations">合作单位</h4>
-          <ul>
-            <li><a href="https://ai.fudan.edu.cn/" data-i18n="footer.fudan">复旦大学计算与智能创新学院</a></li>
-            <li><a href="https://teai.fudan.edu.cn/" data-i18n="footer.fudannlp">复旦大学可信具身智能研究院</a></li>
-            <li><a href="https://www.sii.edu.cn/" data-i18n="footer.sii">上海创智学院</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 data-i18n="footer.connect">联系我们</h4>
-          <ul>
-            <li><a href="https://github.com/OpenMOSS"><i class="fa-brands fa-github"></i> GitHub</a></li>
-            <li><a href="https://twitter.com/openmosslab"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
-            <li><a href="mailto:llm@fudan.edu.cn"><i class="fa-solid fa-envelope"></i> Email</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>OpenMOSS Lab</h4>
-          <ul>
-            <li data-i18n="footer.address1">徐汇区华发路699弄3号</li>
-            <li data-i18n="footer.address2">杨浦区淞沪路2005号</li>
-            <li data-i18n="footer.address3">中国 上海</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="footer-note">
-        <p><a href="webmaster.html" style="color: inherit; text-decoration: none;">&copy; <span id="year"></span> OpenMOSS Lab.</a></p>
-      </div>
-    </div>
-  </footer>
+  <div id="footer-placeholder"></div>
 
   <script src="assets/js/main.js?v=20251102b"></script>
 </body>

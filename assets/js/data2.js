@@ -1,4 +1,4 @@
-// OpenMOSS Lab 校友数据
+// OpenMOSS Team 校友数据
 // 所有校友信息集中管理，方便维护和更新
 
 const alumniData = {

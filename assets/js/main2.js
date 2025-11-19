@@ -1,4 +1,4 @@
-// OpenMOSS Lab 校友页面主要逻辑
+// OpenMOSS Team 校友页面主要逻辑
 // 负责渲染校友数据和处理交互
 
 (function () {
@@ -89,7 +89,7 @@
 
   // 监听语言切换（通过轮询检测）
   let lastLang = getCurrentLang();
-  setInterval(function() {
+  setInterval(function () {
     const currentLang = getCurrentLang();
     if (currentLang !== lastLang) {
       lastLang = currentLang;
