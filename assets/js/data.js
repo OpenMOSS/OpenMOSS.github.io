@@ -35,6 +35,19 @@ const teamData = {
             homepage: 'https://ichn.xyz'
         },
         {
+            id: 'jinlan-fu',
+            name: {
+                zh: '傅金兰',
+                en: 'Jinlan Fu'
+            },
+            title: {
+                zh: '助理教授A',
+                en: 'Assistant Professor A'
+            },
+            photo: 'assets/img/Jinlan Fu.jpg',
+            homepage: 'https://jinlanfu.github.io'
+        },
+        {
             id: 'tao-ji',
             name: {
                 zh: '纪焘',
