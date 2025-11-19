@@ -225,6 +225,11 @@ nav.navbar {
   letter-spacing: 0.02em;
 }
 
+.nav-links a.active {
+  color: var(--white);
+  font-weight: 600;
+}
+
 .nav-links a:hover,
 .nav-links a:focus {
   color: var(--white);
