@@ -255,7 +255,8 @@ const teamData = {
         { id: 'shudong-yang', name: { zh: '杨枢栋', en: 'Shudong Yang' }, photo: 'assets/img/杨枢栋.jpg', homepage: 'https://github.com/luppppy' },
         { id: 'huazheng-zeng', name: { zh: '曾华正', en: 'Huazheng Zeng' }, photo: 'assets/img/曾华正.jpg', homepage: 'https://huazzeng.github.io/' },
         { id: 'junpeng-zhang', name: { zh: '张俊鹏', en: 'Junpeng Zhang' }, photo: 'assets/img/张俊鹏.jpg', homepage: 'https://github.com/JunpengZZhang' },
-        { id: 'chengyang-zhu', name: { zh: '朱程炀', en: 'Chengyang Zhu' }, photo: 'assets/img/朱程炀.png', homepage: 'https://github.com/Zecyel' }
+        { id: 'chengyang-zhu', name: { zh: '朱程炀', en: 'Chengyang Zhu' }, photo: 'assets/img/朱程炀.png', homepage: 'https://github.com/Zecyel' },
+        { id: 'bowen-chen', name: { zh: '陈博闻', en: 'Bowen Chen' }, photo: 'assets/img/陈博闻.jpg', homepage: 'https://stivine.github.io/' }
     ],
 
     // 访问学生
