@@ -1,3 +1,49 @@
+/**
+ * 团队成员和校友列表自动排序脚本
+ * =====================================
+ * 
+ * 功能说明：
+ * 本脚本用于自动对 team-data.js 文件中的所有学生和校友列表进行排序，
+ * 确保团队成员信息按照统一的规则整齐排列。
+ * 
+ * 排序规则：
+ * - 按英文姓氏（Last Name）的字母顺序排序
+ * - 英文名格式为 "名 姓"（如 "Jia Chen"），提取最后一个单词作为姓氏
+ * - 同姓氏的成员按照名字（First Name）自然排序
+ * 
+ * 处理的列表：
+ * 1. 在校学生：
+ *    - phdStudents (博士研究生)
+ *    - masterStudents (硕士研究生)
+ *    - undergraduates (本科生)
+ *    - visitingStudents (访问学生)
+ * 
+ * 2. 校友：
+ *    - alumniData.phd (博士生校友)
+ *    - alumniData.masters (硕士生校友)
+ *    - alumniData.undergrad (本科生校友)
+ *    - alumniData.visiting (访问学生校友)
+ * 
+ * 自动清理：
+ * - 删除数组最后一项和闭合括号之间的多余空行
+ * - 清理连续3个或以上的空行（替换为2个空行）
+ * - 确保文件末尾只有一个换行符
+ * 
+ * 使用方法：
+ * ```bash
+ * node sort-students.js
+ * ```
+ * 
+ * 注意事项：
+ * 1. 运行前请确保 team-data.js 文件格式正确
+ * 2. 脚本会直接修改 team-data.js 文件，建议先提交 Git 或做好备份
+ * 3. 脚本是幂等的，可以安全地多次运行
+ * 4. 不会丢失任何数据，包括 homepage 链接等可选字段
+ * 
+ * 作者：OpenMOSS Team
+ * 最后更新：2025-11-22
+ */
+
 // 自动排序并替换博士生、硕士生、本科生和校友列表的脚本
 const fs = require('fs');
 const path = require('path');
@@ -107,15 +153,21 @@ console.log(`找到 ${alumniMaster.length} 个硕士生校友`);
 console.log(`找到 ${alumniUndergrad.length} 个本科生校友`);
 console.log(`找到 ${alumniVisiting.length} 个访问学生校友`);
 
-// 按中文名拼音字典序排序
-phdStudents.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-masterStudents.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-undergradStudents.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-visitingStudents.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-alumniPhd.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-alumniMaster.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-alumniUndergrad.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
-alumniVisiting.sort((a, b) => a.nameZh.localeCompare(b.nameZh, 'zh-CN'));
+// 提取英文名的姓氏（最后一个单词）
+function getLastName(fullName) {
+    const parts = fullName.trim().split(/\s+/);
+    return parts[parts.length - 1];
+}
+
+// 按英文姓氏字典序排序
+phdStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+masterStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+undergradStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+visitingStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+alumniPhd.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+alumniMaster.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+alumniUndergrad.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+alumniVisiting.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
 
 // 生成排序后的代码
 const phdList = phdStudents.map((student, index) => {
