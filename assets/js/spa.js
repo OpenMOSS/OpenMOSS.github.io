@@ -158,10 +158,33 @@
     if (route === 'positions' && params.section) {
       setTimeout(() => {
         const target = document.getElementById(params.section);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (target) {
+          const offset = 120; // 导航栏高度 + 额外间距
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = target.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
       }, 50);
     }
   }
+
+  // 滚动到指定区域的函数（用于按钮点击）
+  function scrollToSection(sectionId) {
+    const target = document.getElementById(sectionId);
+    if (target) {
+      const offset = 120; // 导航栏高度 + 额外间距
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = target.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+  }
+
+  // 将滚动函数暴露到全局作用域
+  window.scrollToSection = scrollToSection;
 
   function parseHash() {
     const raw = window.location.hash.replace('#', '');
@@ -322,17 +345,25 @@
     if (!list.length) return `<p>${t('people.updating')}</p>`;
     return list.map(member => {
       const name = member.name?.[currentLang] || member.name?.zh || member.name;
-      const nameHtml = member.homepage
-        ? `<a href="${member.homepage}" target="_blank" class="member-name-link">${name}</a>`
-        : name;
 
-      return `
-        <div class="member-card">
-          ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
-          <h4 class="member-name">${nameHtml}</h4>
-          ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
-        </div>
-      `;
+      // 如果有主页链接，整个卡片都可点击
+      if (member.homepage) {
+        return `
+          <a href="${member.homepage}" target="_blank" class="member-card member-card-link">
+            ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
+            <h4 class="member-name">${name}</h4>
+            ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
+          </a>
+        `;
+      } else {
+        return `
+          <div class="member-card">
+            ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
+            <h4 class="member-name">${name}</h4>
+            ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
+          </div>
+        `;
+      }
     }).join('');
   }
 
@@ -562,7 +593,7 @@
             <article class="resource-card">
               <h3>${card.title}</h3>
               <p>${card.desc}</p>
-              <a class="btn btn-inline" href="#positions?section=${card.id}">${t('positions.detail.link')}</a>
+              <a class="btn btn-inline" href="javascript:void(0)" onclick="scrollToSection('${card.id}')">${t('positions.detail.link')}</a>
             </article>
           `).join('')}
         </div>

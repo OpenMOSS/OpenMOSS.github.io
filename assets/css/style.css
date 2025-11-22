@@ -780,6 +780,38 @@ html[lang="zh-CN"] .highlight-card h3 {
   padding-bottom: 8px;
 }
 
+/* 有链接的成员卡片样式（整个卡片可点击） */
+a.member-card-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: auto;
+  padding-bottom: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+a.member-card-link:hover {
+  transform: translateY(-4px);
+}
+
+a.member-card-link .member-photo {
+  cursor: pointer;
+}
+
+a.member-card-link .member-name {
+  color: var(--fudan-blue);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+a.member-card-link:hover .member-name {
+  color: var(--text-soft);
+  text-decoration: underline;
+}
+
 .member-photo {
   width: 140px;
   height: 140px;
@@ -1153,7 +1185,7 @@ html[lang="en"] #resources .resource-card h3 {
 
 /* Alumni main container alignment */
 #alumni-main.container, #people-main.container, #resources-main.container, #research-main.container, #highlights-main.container {
-  padding-top: 40px !important;
+  /* padding-top: 40px !important; */
 }
 
 /* Alumni list layout */
