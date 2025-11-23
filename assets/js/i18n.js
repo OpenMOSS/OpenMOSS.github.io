@@ -34,7 +34,7 @@
             'pillar.safety.title': '模型可解释性',
             'pillar.safety.desc': '通过稀疏自编码器、电路发现和注意力分解等方法，探索大语言模型内部的工作机制与特征演化',
             'pillar.arch.title': '新架构模型',
-            'pillar.arch.desc': '基于扩散的大语言模型、长上下文建模和内存高效的架构，用于下一代模型系统',
+            'pillar.arch.desc': '基于扩散模型、长上下文建模和高效大模型，构建下一代系统新架构',
 
             // 团队成员
             'people.title': '团队成员',
@@ -180,7 +180,7 @@
             'pillar.safety.title': 'Aiology',
             'pillar.safety.desc': 'Exploring the internal mechanisms and feature evolution of large language models through sparse autoencoders, circuit discovery, and attention decomposition.',
             'pillar.arch.title': 'New Architectures',
-            'pillar.arch.desc': 'Diffusion-based language models, long-context modeling, and memory-efficient architectures for next-generation model systems.',
+            'pillar.arch.desc': 'Diffusion models, long-context modeling, and efficient large models for building next-generation system architectures.',
 
             // People
             'people.title': 'People',
