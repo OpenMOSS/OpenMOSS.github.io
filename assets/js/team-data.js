@@ -284,6 +284,7 @@ const teamData = {
         { id: 'qiqi-wang', name: { zh: '王琪琦', en: 'Qiqi Wang' }, photo: 'assets/img/王琪琦.JPEG' },
         { id: 'ruiming-wang', name: { zh: '王瑞明', en: 'Ruiming Wang' }, photo: 'assets/img/王瑞明.png' },
         { id: 'wenxuan-wang', name: { zh: '王文煊', en: 'Wenxuan Wang' }, photo: 'assets/img/王文煊.JPG' },
+        { id: 'weiyi-wang', name: {zh: '王惟易', en: 'Weiyi Wang'}, photo: 'assets/img/王惟易.png', homepage: 'https://github.com/Mtrya' },
         { id: 'yang-wang-1', name: { zh: '王扬', en: 'Yang Wang' }, photo: 'assets/img/王扬.png' },
         { id: 'yang-wang-2', name: { zh: '王洋', en: 'Yang Wang' }, photo: 'assets/img/王洋.jpg' },
         { id: 'yubang-wang', name: { zh: '王昱邦', en: 'Yubang Wang' }, photo: 'assets/img/王昱邦.jpg' },
