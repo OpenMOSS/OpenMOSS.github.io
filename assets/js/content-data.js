@@ -229,8 +229,8 @@
             {
               subtitle: { zh: '说明', en: 'Note' },
               paragraphs: {
-                zh: ['请邮件 xpqiu@fudan.edu.cn 咨询。'],
-                en: ['Please contact xpqiu@fudan.edu.cn for inquiries.']
+                zh: ['请邮件 llm@fudan.edu.cn 咨询。'],
+                en: ['Please contact llm@fudan.edu.cn for inquiries.']
               }
             }
           ]
