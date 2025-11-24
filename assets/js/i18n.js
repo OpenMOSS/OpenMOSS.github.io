@@ -20,11 +20,11 @@
 
             // 研究方向
             'research.title': '研究方向',
-            'research.intro': '我们的研究聚焦于大语言模型的核心技术突破与创新应用，涵盖人工智能基建、多模态理解与生成、智能体系统、具身智能、模型可解释性和新架构探索等前沿方向',
+            'research.intro': '我们的研究聚焦于大语言模型的核心技术突破与创新应用，涵盖AI 系统与基础设施、多模态理解与生成、智能体系统、具身智能、模型可解释性和新架构探索等前沿方向',
             'research.highlights.title': '最新亮点',
             'research.publications.title': '代表工作',
-            'pillar.infra.title': '人工智能基建',
-            'pillar.infra.desc': '探索各类大语言模型的推理与训练加速方法，支持企业级人工智能基建',
+            'pillar.infra.title': 'AI 系统与基础设施',
+            'pillar.infra.desc': '探索各类大语言模型的推理与训练加速方法，支持企业级 AI 系统与基础设施',
             'pillar.multimodal.title': '多模态基础模型',
             'pillar.multimodal.desc': '统一理解与生成文本、图像、视频和音频，实现跨模态语义对齐与协同推理',
             'pillar.reasoning.title': '智能体与强化学习',
@@ -143,7 +143,7 @@
 
             // 网页设计
             'webmaster.title': '开发团队',
-            'webmaster.intro': '了解维护 OpenMOSS 官网体验的设计与前端志愿者，保持界面一致性与可访问性。',
+            'webmaster.intro': '了解维护 OpenMOSS 官网体验的网页设计与开发志愿者。',
             'webmaster.contribute.title': '如何贡献',
             'webmaster.contribute.text': '欢迎通过提交 Pull Request 的方式参与网站开发和改进！仓库地址：'
         },
@@ -166,11 +166,11 @@
 
             // Research
             'research.title': 'Research',
-            'research.intro': 'Our research focuses on core technological breakthroughs and innovative applications of large language models, covering frontier areas including AI infrastructure, multimodal understanding and generation, agent systems, embodied intelligence, model interpretability, and novel architectures.',
+            'research.intro': 'Our research focuses on core technological breakthroughs and innovative applications of large language models, covering frontier areas including AI systems and infrastructure, multimodal understanding and generation, agent systems, embodied intelligence, model interpretability, and novel architectures.',
             'research.highlights.title': 'Highlights',
             'research.publications.title': 'Publications',
-            'pillar.infra.title': 'AI Infra',
-            'pillar.infra.desc': 'Exploring inference and training acceleration for various large language models, supporting enterprise-grade AI infrastructure.',
+            'pillar.infra.title': 'AI Systems & Infrastructure',
+            'pillar.infra.desc': 'Exploring inference and training acceleration for various large language models, supporting enterprise-grade AI systems and infrastructure.',
             'pillar.multimodal.title': 'Multimodal Foundation Models',
             'pillar.multimodal.desc': 'Unified understanding and generation of text, images, videos, and audio, with cross-modal semantic alignment and collaborative reasoning.',
             'pillar.reasoning.title': 'Agents & Reinforcement Learning',

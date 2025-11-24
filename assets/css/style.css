@@ -175,7 +175,6 @@ li {
 
 /* People content area - extend to the right to fit one more column */
 #people-main .people-content {
-  margin-right: 0;
   max-width: calc(100% + 160px);
 }
 
@@ -686,7 +685,7 @@ html[lang="zh-CN"] .highlight-card h3 {
 }
 
 .pub-support {
-  font-style: italic;
+  font-style: normal;
   color: var(--text-light);
   font-weight: 400;
 }
@@ -1349,9 +1348,22 @@ h3.year-badge {
   }
 }
 
-@media (min-width: 1280px) {
+/* 中等大屏到超大屏：margin-right 线性变化 (1280px→110px, 1920px→-20px) */
+@media (min-width: 1280px) and (max-width: 1920px) {
   .people-content, .alumni-content, .resources-content {
-    margin-right: 240px;
+    margin-right: calc(110px - (100vw - 1280px) * 130 / 640);
+    /* 计算公式: 110px - (当前宽度 - 1280px) * (110px - -20px) / (1920px - 1280px) */
+  }
+  
+  .team-members {
+    gap: 20px 12px; /* 保持最小列间距 12px */
+  }
+}
+
+/* 超大屏：固定 -20px 右边距 */
+@media (min-width: 1921px) {
+  .people-content, .alumni-content, .resources-content {
+    margin-right: -20px;
   }
 }
 

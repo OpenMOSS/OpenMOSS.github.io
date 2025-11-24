@@ -509,7 +509,7 @@
         return `
                 <li class="publication-item">
                   <div class="pub-main-line">
-                    ${pub.support ? '<span class="pub-support">Support</span> ' : ''}<span class="pub-title">${pub.title}</span>${pub.venue ? `, <em>${pub.venue}</em>` : ''}, ${pub.year}.
+                    ${pub.support ? '<span class="pub-support">[SUPPORT]</span> ' : ''}<span class="pub-title">${pub.title}</span>${pub.venue ? `, <em>${pub.venue}</em>` : ''}, ${pub.year}.
                     ${processedLinks}
                   </div>
                   <div class="pub-authors">${pub.alphabetical ? '<span class="pub-alphabetical">*</span> ' : ''}${pub.authors}</div>
@@ -520,7 +520,7 @@
           </div>
         `;
     }).join('')}
-        <p class="pub-note">* Authors of Support projects are listed in alphabetical order.</p>
+        <p class="pub-note">* Authors of projects are listed in alphabetical order.</p>
       </section>
     `;
   }
