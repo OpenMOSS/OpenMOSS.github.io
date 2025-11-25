@@ -179,6 +179,21 @@
         }
       }, 50);
     }
+
+    // 处理研究方向页面的滚动到最新亮点
+    if (route === 'research' && params.scroll === 'highlights') {
+      setTimeout(() => {
+        const target = document.getElementById('research-highlights');
+        if (target) {
+          const offset = 100; // 导航栏高度 + 额外间距
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = target.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 50);
+    }
   }
 
   // 滚动到指定区域的函数（用于按钮点击）
@@ -228,7 +243,7 @@
               <h1>${t('hero.title')}</h1>
               ${paragraphs.map(p => `<p class="lead">${p}</p>`).join('')}
               <div class="page-hero-actions">
-                <a class="btn btn-primary" href="https://openmoss.sii.edu.cn/en/" target="_blank" rel="noopener">${t('hero.btn.highlights')}</a>
+                <a class="btn btn-primary" href="#research?scroll=highlights">${t('hero.btn.highlights')}</a>
                 <a class="btn btn-outline" href="#positions">${t('hero.btn.join')}</a>
               </div>
             </div>
@@ -470,7 +485,7 @@
         </div>
       </section>
       
-      <section class="container sec">
+      <section class="container sec" id="research-highlights">
         <h2>${t('research.highlights.title')}</h2>
         <div class="highlights-list">
           ${highlights.map(h => `
