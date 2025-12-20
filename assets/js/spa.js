@@ -17,6 +17,13 @@
   }
 
   function init() {
+    // 处理真实路径 /en/* 和 /cn/* 的重定向
+    const pathname = window.location.pathname;
+    if (pathname.startsWith('/en') || pathname.startsWith('/cn')) {
+      window.location.href = 'https://openmoss.ai' + pathname + window.location.search + window.location.hash;
+      return;
+    }
+
     if (!window.SPA_DATA) {
       console.error('SPA_DATA 未加载');
       return;
@@ -383,12 +390,12 @@
         `;
       } else {
         return `
-          <div class="member-card">
-            ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
+        <div class="member-card">
+          ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
             <h4 class="member-name">${name}</h4>
-            ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
-          </div>
-        `;
+          ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
+        </div>
+      `;
       }
     }).join('');
   }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>重定向中...</title>
+  <script>
+    (function() {
+      const pathname = window.location.pathname;
+      
+      // 如果路径以 /en 或 /cn 开头，重定向到 openmoss.ai
+      if (pathname.startsWith('/en') || pathname.startsWith('/cn')) {
+        window.location.href = 'https://openmoss.ai' + pathname + window.location.search + window.location.hash;
+        return;
+      }
+      
+      // 其他路径重定向到主页，保留 hash 部分
+      // 这样可以支持 SPA 的 hash 路由
+      const redirect = window.location.origin + '/#' + pathname + window.location.search + window.location.hash;
+      window.location.replace(redirect);
+    })();
+  </script>
+</head>
+<body>
+  <p>正在重定向...</p>
+</body>
+</html>
+
