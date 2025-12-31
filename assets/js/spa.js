@@ -262,12 +262,12 @@
 
   function renderHome() {
     const pillars = [
-      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
-      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
       { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
+      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
       { key: 'embodied', titleKey: 'pillar.embodied.title', descKey: 'pillar.embodied.desc' },
-      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' },
-      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' }
+      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
+      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' },
+      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' }
     ];
 
     return `
@@ -460,12 +460,12 @@
 
   function renderResearch() {
     const pillars = [
-      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
-      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
       { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
+      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
       { key: 'embodied', titleKey: 'pillar.embodied.title', descKey: 'pillar.embodied.desc' },
-      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' },
-      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' }
+      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
+      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' },
+      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' }
     ];
 
     // 从 SPA_DATA 获取最新亮点内容，并处理多语言
