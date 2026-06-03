@@ -643,14 +643,6 @@
           `).join('')}
         </div>
       </section>
-      <section class="container sec">
-        <h2>${t('positions.apply.title')}</h2>
-        <div style="background-color:var(--white);padding:32px;border-radius:12px;border:1px solid var(--border);">
-          <p style="margin:0;font-weight:600;color:var(--text);">${t('positions.apply.desc')}
-            <a href="${SPA_DATA.positions.applyUrl}" target="_blank" style="color:var(--fudan-blue);text-decoration:underline;">${t('positions.apply.link')}</a>
-          </p>
-        </div>
-      </section>
       <section class="container sec" id="positions-detail">
         <h2>${t('positions.detail.title')}</h2>
         ${SPA_DATA.positions.details.map(detail => `
@@ -664,9 +656,6 @@
             </div>
           </article>
         `).join('')}
-        <div style="margin-top:40px;text-align:center;">
-          <a class="btn btn-primary" href="${SPA_DATA.positions.applyUrl}" target="_blank">${t('positions.apply.btn')}</a>
-        </div>
       </section>
     `;
   }

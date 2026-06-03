@@ -54,26 +54,12 @@
       { icon: '📈', titleKey: 'positions.why.career', descKey: 'positions.why.career.desc' }
     ],
     positions: {
-      applyUrl: 'https://fudannlp.feishu.cn/share/base/form/shrcn29UYq1MCpTH0GBZh3AWPPg',
       // 职位详情（双语支持）
       details: [
         {
           id: 'graduate',
           title: { zh: '博士/硕士研究生', en: 'PhD/Master\'s Students' },
           blocks: [
-            {
-              subtitle: { zh: '招收对象', en: 'Target Candidates' },
-              paragraphs: {
-                zh: [
-                  '我们主要招收有志于从事大模型领域科学研究和落地应用的学生，并希望有如下特点：思维活跃、积极主动、热爱研究或开发、刻苦勤奋、不怕失败。如果只是为了混学位或好找工作，请勿联系！',
-                  '2025年，本组主要招生方向为大模型预训练、AI Infra、新架构、多模态融合、智能体、具身智能，有兴趣学生欢迎联系。'
-                ],
-                en: [
-                  'We primarily recruit students committed to research and applications in large language models, with the following qualities: active thinking, proactive attitude, passion for research or development, diligence, and resilience. If you are only seeking a degree or job prospects, please do not apply.',
-                  'In 2025, our main research areas include LLM pre-training, AI Infrastructure, novel architectures, multimodal fusion, agents, and embodied intelligence. Interested students are welcome to contact us.'
-                ]
-              }
-            },
             {
               subtitle: { zh: '重要事项', en: 'Important Notes' },
               paragraphs: {
@@ -117,8 +103,8 @@
             {
               subtitle: { zh: '职位介绍', en: 'Position Description' },
               paragraphs: {
-                zh: ['请通过邮件（llm@fudan.edu.cn）或 <a href="https://fudannlp.feishu.cn/share/base/form/shrcn29UYq1MCpTH0GBZh3AWPPg" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">问卷</a> 进行投递，对于非本地学生有 2000/月的住房补贴。'],
-                en: ['Please apply via email (llm@fudan.edu.cn) or <a href="https://fudannlp.feishu.cn/share/base/form/shrcn29UYq1MCpTH0GBZh3AWPPg" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">application form</a>. Non-local students receive a housing allowance of 2000 CNY/month.']
+                zh: ['请通过邮件（llm@fudan.edu.cn）进行投递，对于非本地学生有 2000/月的住房补贴。'],
+                en: ['Please apply via email (llm@fudan.edu.cn). Non-local students receive a housing allowance of 2000 CNY/month.']
               }
             }
           ]

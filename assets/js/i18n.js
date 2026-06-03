@@ -97,12 +97,8 @@
 
             // 加入我们
             'positions.title': '加入我们',
-            'positions.intro': '我们正在招募对开放系统和负责任 AI 充满热情的研究人员和工程师。如果您希望在大规模 AI 系统、多模态学习、具身智能等前沿领域进行研究，欢迎加入我们！',
+            'positions.intro': '我们正在招募对开放系统和负责任 AI 充满热情的研究生、研究人员和工程师。<br><br>我们致力于做长周期、高影响力的研究工作，且不鼓励以发论文为目的的研究。如果你立志在大规模 AI 系统、智能体、多模态学习、科学智能、具身智能等前沿领域做出高质量高影响力工作，欢迎加入我们！<br>我们期待你思维活跃、积极主动、热爱研究或开发、刻苦勤奋、不怕失败，并真正有志于在大模型领域从事科学研究与落地应用。<br><br><span style="color:#d32f2f;font-weight:600;">警示：只是为了混学位、好找工作或追求论文数量的同学不要选择我们！</span>',
             'positions.why.title': '为什么选择我们',
-            'positions.apply.title': '如何申请',
-            'positions.apply.desc': '如果您对以上机会感兴趣，请填写',
-            'positions.apply.link': '报名问卷',
-            'positions.apply.btn': '填写申请问卷',
             'positions.detail.title': '详情',
             'positions.card.phd': '博士研究生',
             'positions.card.phd.desc': '常年招收对大语言模型、多模态学习、具身智能感兴趣的博士研究生。提供充足的研究资源和国际合作机会。',
@@ -243,12 +239,8 @@
 
             // Positions
             'positions.title': 'Join Us',
-            'positions.intro': 'We are recruiting researchers and engineers passionate about open systems and responsible AI. If you want to conduct research in cutting-edge areas such as large-scale AI systems, multimodal learning, and embodied intelligence, we welcome you to join us!',
+            'positions.intro': 'We are recruiting graduate students, researchers, and engineers passionate about open systems and responsible AI.<br><br>We are committed to long-term, high-impact research and do not encourage research driven merely by paper publication. If you aspire to do high-quality, high-impact work in cutting-edge fields such as large-scale AI systems, agents, multimodal learning, AI for Science, and embodied intelligence, we welcome you to join us!<br>We expect you to be intellectually active, proactive, passionate about research or development, diligent, and resilient in the face of failure, with a genuine aspiration to pursue scientific research and real-world applications of large models.<br><br><span style="color:#d32f2f;font-weight:600;">Important: If you are only after a degree, better job prospects, or a high publication count, please do not choose us!</span>',
             'positions.why.title': 'Why Choose Us',
-            'positions.apply.title': 'How to Apply',
-            'positions.apply.desc': 'If you are interested in any of the above opportunities, please fill out the',
-            'positions.apply.link': 'application form',
-            'positions.apply.btn': 'Fill Application Form',
             'positions.detail.title': 'Details',
             'positions.card.phd': 'PhD Students',
             'positions.card.phd.desc': 'We recruit PhD students interested in large language models, multimodal learning, and embodied intelligence year-round. We provide ample research resources and international collaboration opportunities.',
