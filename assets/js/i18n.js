@@ -14,7 +14,7 @@
             // 首页 Hero
             'hero.title': 'OpenMOSS 团队',
             'hero.p1': 'OpenMOSS 团队由上海创智学院与复旦大学自然语言处理实验室、模思智能联合共建，探索以"产学研深度融合"为核心的创新发展模式。团队围绕大语言模型与智能体开展前沿研究，重点布局模型架构、评测体系与应用场景等方向，致力于打造开放协作、面向现实需求、具有持续影响力的AI创新成果。',
-            'hero.p2': '团队在人工智能领域长期积累深厚，培养的学生先后赴 MIT、Harvard University、UW、UC Berkeley、CMU等世界顶尖高校深造，或加入SII、FDU、SJTU等高校任职，或加入 ByteDance、Alibaba、Tencent、AWS、Google、Microsoft、Optiver 等企业任职，亦有成员投身创新创业，累计孵化公司总估值已超过 50 亿元，形成了兼具学术活力与产业动能的创新生态。',
+            'hero.p2': '团队在人工智能领域长期积累深厚，培养的学生先后赴 MIT、Harvard University、UW、UC Berkeley、CMU等世界顶尖高校深造，或加入SII、FDU、SJTU等高校任职，或加入 ByteDance、Alibaba、Tencent、AWS、Google、Microsoft、Optiver 等企业任职，亦有成员投身创新创业，累计孵化公司总估值已超过 100 亿元，形成了兼具学术活力与产业动能的创新生态。',
             'hero.btn.highlights': '最新亮点',
             'hero.btn.join': '加入我们',
 
@@ -156,7 +156,7 @@
             // Hero
             'hero.title': 'OpenMOSS Team',
             'hero.p1': 'OpenMOSS Team is jointly established by Shanghai Innovation Institution (SII), Fudan University NLP Lab, and MOSI Intelligence, exploring an innovative development model centered on deep integration of industry, academia, and research. The team conducts cutting-edge research on large language models and AI agents, focusing on model architecture, evaluation systems, and application scenarios, committed to creating open, collaborative, and impactful AI innovations that address real-world needs.',
-            'hero.p2': 'The team has accumulated extensive expertise in artificial intelligence. Our students have pursued advanced studies at world-renowned institutions such as MIT, Harvard University, UW, UC Berkeley, and CMU, joined universities including SII, FDU, and SJTU as faculty members, or work at leading companies like ByteDance, Alibaba, Tencent, AWS, Google, Microsoft, and Optiver. Some members have also embarked on entrepreneurial ventures, with incubated companies reaching a cumulative valuation of over 5 billion RMB, forming an innovative ecosystem that combines academic vitality with industrial momentum.',
+            'hero.p2': 'The team has accumulated extensive expertise in artificial intelligence. Our students have pursued advanced studies at world-renowned institutions such as MIT, Harvard University, UW, UC Berkeley, and CMU, joined universities including SII, FDU, and SJTU as faculty members, or work at leading companies like ByteDance, Alibaba, Tencent, AWS, Google, Microsoft, and Optiver. Some members have also embarked on entrepreneurial ventures, with incubated companies reaching a cumulative valuation of over 10 billion RMB, forming an innovative ecosystem that combines academic vitality with industrial momentum.',
             'hero.btn.highlights': 'Highlights',
             'hero.btn.join': 'Join Us',
 

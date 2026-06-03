@@ -11,6 +11,16 @@
 
   let currentLang = 'zh';
 
+  // 研究方向支柱（首页与研究页共用）
+  const PILLARS = [
+    { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
+    { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
+    { key: 'embodied', titleKey: 'pillar.embodied.title', descKey: 'pillar.embodied.desc' },
+    { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
+    { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' },
+    { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' }
+  ];
+
   // 翻译辅助函数
   function t(key) {
     return window.t ? window.t(key, currentLang) : key;
@@ -174,49 +184,37 @@
 
     // 处理特定页面的锚点跳转
     if (route === 'positions' && params.section) {
-      setTimeout(() => {
-        const target = document.getElementById(params.section);
-        if (target) {
-          const offset = 120; // 导航栏高度 + 额外间距
-          const bodyRect = document.body.getBoundingClientRect().top;
-          const elementRect = target.getBoundingClientRect().top;
-          const elementPosition = elementRect - bodyRect;
-          const offsetPosition = elementPosition - offset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      }, 50);
+      setTimeout(() => scrollToId(params.section, 120), 50);
     }
 
     // 处理研究方向页面的滚动到最新亮点
     if (route === 'research' && params.scroll === 'highlights') {
-      setTimeout(() => {
-        const target = document.getElementById('research-highlights');
-        if (target) {
-          const offset = 100; // 导航栏高度 + 额外间距
-          const bodyRect = document.body.getBoundingClientRect().top;
-          const elementRect = target.getBoundingClientRect().top;
-          const elementPosition = elementRect - bodyRect;
-          const offsetPosition = elementPosition - offset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      }, 50);
+      setTimeout(() => scrollToId('research-highlights', 100), 50);
     }
   }
 
-  // 滚动到指定区域的函数（用于按钮点击）
-  function scrollToSection(sectionId) {
-    const target = document.getElementById(sectionId);
-    if (target) {
-      const offset = 120; // 导航栏高度 + 额外间距
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = target.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
+  // 平滑滚动到指定元素（统一处理导航栏偏移，默认 100）
+  function scrollToId(id, offset = 100) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top - document.body.getBoundingClientRect().top - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
   }
 
-  // 将滚动函数暴露到全局作用域
+  // 先切换路由，再滚动到目标元素（用于跨页跳转）
+  function navigateAndScroll(route, id, offset = 100, delay = 100) {
+    window.location.hash = route;
+    setTimeout(() => scrollToId(id, offset), delay);
+  }
+
+  // 兼容按钮点击的滚动（导航栏偏移 120）
+  function scrollToSection(id) {
+    scrollToId(id, 120);
+  }
+
+  // 将滚动函数暴露到全局作用域（供内联 onclick 调用）
+  window.scrollToId = scrollToId;
+  window.navigateAndScroll = navigateAndScroll;
   window.scrollToSection = scrollToSection;
 
   function parseHash() {
@@ -260,28 +258,29 @@
     `;
   }
 
-  function renderHome() {
-    const pillars = [
-      { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
-      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
-      { key: 'embodied', titleKey: 'pillar.embodied.title', descKey: 'pillar.embodied.desc' },
-      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
-      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' },
-      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' }
-    ];
+  // 渲染研究方向卡片网格；navigate=true 时先跳转到研究页再滚动到对应论文区块
+  function renderPillarsGrid(navigate) {
+    return `
+        <div class="pillars-grid">
+          ${PILLARS.map(p => {
+      const onclick = navigate
+        ? `navigateAndScroll('research', 'pub-${p.key}')`
+        : `scrollToId('pub-${p.key}')`;
+      return `
+            <article class="pillar-card pillar-card-clickable" onclick="${onclick}">
+              <h3>${t(p.titleKey)}</h3>
+              <p>${t(p.descKey)}</p>
+            </article>`;
+    }).join('')}
+        </div>`;
+  }
 
+  function renderHome() {
     return `
       ${renderHero()}
       <section class="container sec">
         <h2>${t('research.title')}</h2>
-        <div class="pillars-grid">
-          ${pillars.map(p => `
-            <article class="pillar-card pillar-card-clickable" onclick="window.location.hash = 'research'; setTimeout(() => { const el = document.getElementById('pub-${p.key}'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } }, 100);">
-              <h3>${t(p.titleKey)}</h3>
-              <p>${t(p.descKey)}</p>
-            </article>
-          `).join('')}
-        </div>
+        ${renderPillarsGrid(true)}
       </section>
       <section class="container sec">
         <h2>${t('people.title')}</h2>
@@ -312,14 +311,14 @@
             <p>${t('resources.highlight.tools.desc')}</p>
             <div class="hero-actions" style="margin-top: auto; width: 100%;">
               <a class="btn btn-outline" href="https://github.com/OpenMOSS" target="_blank">${t('resources.highlight.tools.btn1')}</a>
-              <a class="btn btn-outline" href="javascript:void(0)" onclick="window.location.hash='resources'; setTimeout(() => { const el = document.getElementById('projects'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } }, 200);">${t('resources.highlight.tools.btn2')}</a>
+              <a class="btn btn-outline" href="javascript:void(0)" onclick="navigateAndScroll('resources', 'projects', 100, 200)">${t('resources.highlight.tools.btn2')}</a>
             </div>
           </article>
           <article class="people-card">
             <h3>${t('resources.highlight.courses.title')}</h3>
             <p>${t('resources.highlight.courses.desc')}</p>
             <div class="hero-actions" style="margin-top: auto; width: 100%;">
-              <a class="btn btn-outline" href="javascript:void(0)" onclick="window.location.hash='resources'; setTimeout(() => { const el = document.getElementById('courses'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } }, 200);">${t('resources.highlight.courses.btn')}</a>
+              <a class="btn btn-outline" href="javascript:void(0)" onclick="navigateAndScroll('resources', 'courses', 100, 200)">${t('resources.highlight.courses.btn')}</a>
             </div>
           </article>
         </div>
@@ -338,7 +337,7 @@
     ];
 
     const tocLinks = sections.map(sec =>
-      `<a href="javascript:void(0)" onclick="const el = document.getElementById('${sec.id}'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } return false;">${t(sec.titleKey)}</a>`
+      `<a href="javascript:void(0)" onclick="scrollToId('${sec.id}'); return false;">${t(sec.titleKey)}</a>`
     ).join('');
 
     return `
@@ -410,7 +409,7 @@
     ];
 
     const tocLinks = categories.map(cat =>
-      `<a href="javascript:void(0)" onclick="const el = document.getElementById('${cat.id}'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } return false;">${t(cat.titleKey)}</a>`
+      `<a href="javascript:void(0)" onclick="scrollToId('${cat.id}'); return false;">${t(cat.titleKey)}</a>`
     ).join('');
 
     return `
@@ -459,15 +458,6 @@
   }
 
   function renderResearch() {
-    const pillars = [
-      { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
-      { key: 'multimodal', titleKey: 'pillar.multimodal.title', descKey: 'pillar.multimodal.desc' },
-      { key: 'embodied', titleKey: 'pillar.embodied.title', descKey: 'pillar.embodied.desc' },
-      { key: 'infra', titleKey: 'pillar.infra.title', descKey: 'pillar.infra.desc' },
-      { key: 'arch', titleKey: 'pillar.arch.title', descKey: 'pillar.arch.desc' },
-      { key: 'safety', titleKey: 'pillar.safety.title', descKey: 'pillar.safety.desc' }
-    ];
-
     // 从 SPA_DATA 获取最新亮点内容，并处理多语言
     const highlights = (SPA_DATA.highlights || []).map(h => ({
       title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
@@ -482,14 +472,7 @@
           <h1>${t('research.title')}</h1>
           <p>${t('research.intro')}</p>
         </div>
-        <div class="pillars-grid">
-          ${pillars.map(p => `
-            <article class="pillar-card pillar-card-clickable" onclick="const el = document.getElementById('pub-${p.key}'); if(el) { const offset = 100; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; const elementPosition = elementRect - bodyRect; const offsetPosition = elementPosition - offset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); }">
-              <h3>${t(p.titleKey)}</h3>
-              <p>${t(p.descKey)}</p>
-            </article>
-          `).join('')}
-        </div>
+        ${renderPillarsGrid(false)}
       </section>
       
       <section class="container sec" id="research-highlights">
@@ -509,7 +492,7 @@
       
       <section class="container sec">
         <h2>${t('research.publications.title')}</h2>
-        ${pillars.map(p => {
+        ${PILLARS.map(p => {
       const pubs = SPA_DATA.publications[p.key] || [];
       return `
           <div id="pub-${p.key}" class="publication-section">
