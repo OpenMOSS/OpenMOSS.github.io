@@ -64,11 +64,11 @@
               subtitle: { zh: '重要事项', en: 'Important Notes' },
               paragraphs: {
                 zh: [
-                  '除项目合作推荐实习外，本组不允许学生在研三、博五之前进行任何形式的实习。',
-                  '本组研究生都会根据需要安排一定的工程任务。如果不愿意参与工程项目的，也不要选择本组。'
+                  '除项目合作推荐实习外，本组不允许学生在研三、博五之前进行任何形式的实习。有实习情结的同学请不要选择本组。',
+                  '本组研究生都会根据需要安排一定的工程任务。如果不愿意参与工程项目的同学，也请不要选择本组。'
                 ],
                 en: [
-                  'Except for project-related internships, students are not allowed to take any internships before their third year of master\'s or fifth year of PhD studies.',
+                  'Except for project-related internships, students are not allowed to take any internships before their third year of master\'s or fifth year of PhD studies. If you are set on doing internships, please do not choose our group.',
                   'All graduate students will be assigned engineering tasks as needed. If you are unwilling to participate in engineering projects, please do not choose our group.'
                 ]
               }
@@ -77,20 +77,20 @@
               subtitle: { zh: '招生说明', en: 'Admission Information' },
               paragraphs: {
                 zh: [
-                  '（1）硕士名额：视研究经费而定，近三年内每年学硕1名、保研专硕1-2名、考研专硕约10名。日常科研中我们不区分学硕和专硕，并且都有资格转博。',
-                  '（2）博士名额：视研究经费而定，近三年内每年博士名额2-3名。本人在上海创智学院招直博生，和复旦联培，名额不限。建议先拿到上海创智学院 offer 再报名复旦夏令营。',
-                  '（3）招生途径：夏令营、秋季保研、考研面试均需通过学院初审后联系，我们会安排组内面试。',
-                  '（4）本组面试：重视科研潜质、工程能力和团队协作。高质量完成 nlp-beginner 的学生优先。',
-                  '（5）提前进组：希望确定来本组的同学提前进组学习，表现优秀可推荐字节、华为等合作单位实习。',
-                  '（6）研究生待遇：在学校补贴基础上提供有竞争力的补助，并对专硕给予一定住房补贴。'
+                  '（1）硕士名额：视研究经费而定，近三年内每年学硕 2 名、保研专硕 2-3 名、考研专硕约 10 名。日常科研中我们不区分学硕和专硕，并且都有资格转博。',
+                  '（2）博士名额：视研究经费而定，近三年内每年博士名额 2-3 名。本人在上海创智学院招直博生，和复旦联培，名额不限；除通过复旦面试外，还需通过上海创智学院的招生考试。建议先拿到上海创智学院 offer 再报名复旦夏令营。',
+                  '（3）招生途径：夏令营、秋季保研、考研均需先通过学院初审；收到入营 / 面试 / 复试通知后联系我，我们会安排一次组内面试。以往夏令营学硕优秀率约 10%，本组学硕 + 专硕名额 2-3 名；通常夏令营招满后，秋季保研不再招生。',
+                  '（4）本组面试：通常在学院面试前安排一次组内面试，主要看重科研潜质、工程能力、个性以及团队协作等多重因素。高质量完成 <a href="https://github.com/nndl/llm-beginner" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">llm-beginner</a> 的学生优先。我们非常欢迎对 AI 算法落地、系统实现感兴趣并有专研精神的同学。',
+                  '（5）提前进组：研一课程较多、研二结束后即去实习，剩余时间较短，因此希望确定来本组的同学提前进组学习；外校保研最好来复旦大学做毕业设计。根据表现，本组会择优推荐研二或研三学生到字节、华为、上海人工智能实验室、美团等合作单位实习。',
+                  '（6）研究生待遇：参考同水平科研单位平均水平，在学校补贴之外提供较有竞争力的研究生补助；对专硕有一定的租房补贴，参与企业合作项目的学生还有额外科研补助。'
                 ],
                 en: [
-                  '(1) Master\'s positions: Subject to research funding, approximately 1 academic master, 1-2 professional masters (recommendation), and ~10 professional masters (entrance exam) per year. We do not distinguish between academic and professional masters in research, and all are eligible for PhD conversion.',
-                  '(2) PhD positions: Subject to research funding, 2-3 positions per year. Direct PhD positions are available at Shanghai Innovation Institute in collaboration with Fudan, with no limit on positions. We recommend securing an offer from Shanghai Innovation Institute before applying to Fudan\'s summer camp.',
-                  '(3) Admission channels: Summer camp, autumn recommendation, and entrance exam interviews all require passing the school\'s preliminary review before contacting us. We will arrange group interviews.',
-                  '(4) Group interview: We value research potential, engineering capabilities, and teamwork. Students who complete nlp-beginner with high quality are prioritized.',
-                  '(5) Early joining: Students who are certain about joining our group are encouraged to join early. Outstanding performers can be recommended for internships at partner companies like ByteDance and Huawei.',
-                  '(6) Graduate benefits: Competitive stipends are provided in addition to university subsidies, with housing allowances for professional masters.'
+                  '(1) Master\'s positions: Subject to research funding, in recent years approximately 2 academic masters, 2-3 professional masters (by recommendation), and ~10 professional masters (by entrance exam) per year. In research we do not distinguish between academic and professional masters, and all are eligible for PhD conversion.',
+                  '(2) PhD positions: Subject to research funding, 2-3 positions per year in recent years. The advisor admits direct-PhD students at Shanghai Innovation Institute (SII), jointly trained with Fudan, with no limit on positions; besides passing the Fudan interview, applicants must also pass SII\'s admission exam. We recommend securing an SII offer before applying to Fudan\'s summer camp.',
+                  '(3) Admission channels: The summer camp, autumn recommendation, and entrance-exam tracks all require passing the school\'s preliminary review first; contact me after receiving the camp / interview / re-exam notification, and we will arrange a group interview. The summer-camp distinction rate for academic masters has been around 10%, with 2-3 academic + professional master slots in our group; we usually do not recruit in the autumn round once the summer camp is full.',
+                  '(4) Group interview: We usually hold a group interview before the school interview, focusing on research potential, engineering ability, personality, and teamwork. Students who complete <a href="https://github.com/nndl/llm-beginner" target="_blank" style="color: var(--fudan-blue); text-decoration: underline;">llm-beginner</a> with high quality are prioritized. We warmly welcome students with a dedicated, deep-diving spirit who are interested in deploying AI algorithms and building systems.',
+                  '(5) Early joining: The first master\'s year is course-heavy and students leave for internships after the second year, so the remaining time is short; we therefore encourage students set on joining to start early, and students recommended from other schools are best to do their thesis project at Fudan. Based on performance, we selectively recommend second- or third-year students for internships at partner organizations such as ByteDance, Huawei, Shanghai AI Lab, and Meituan.',
+                  '(6) Graduate benefits: Benchmarked against peer research institutions, we provide competitive graduate stipends on top of university subsidies; professional masters receive a housing allowance, and students on industry-collaboration projects receive additional research stipends.'
                 ]
               }
             }
