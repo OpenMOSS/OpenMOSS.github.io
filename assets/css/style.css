@@ -1200,8 +1200,8 @@ html[lang="zh-CN"] .footer-grid {
 
 .alumni-row {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 24px;
+  grid-template-columns: 56px 56px 1fr;
+  gap: 14px;
   padding: 10px 8px;
   margin-bottom: 6px;
   border-radius: 8px;
@@ -1216,6 +1216,18 @@ html[lang="zh-CN"] .footer-grid {
 .alumni-row .name {
   font-weight: 500;
   color: var(--text);
+}
+
+.alumni-row .year {
+  color: var(--text-soft);
+  font-weight: 300;
+}
+
+/* 英文名较长，桌面端加宽姓名列（移动端仍按下方 768px 规则堆叠） */
+@media (min-width: 769px) {
+  html[lang="en"] .alumni-row {
+    grid-template-columns: 140px 56px 1fr;
+  }
 }
 
 .alumni-row .destination {

@@ -87,7 +87,7 @@ const alumniVisitingArrayStr = alumniVisitingMatch ? alumniVisitingMatch[2] : ''
 // 解析学生对象的函数
 function parseStudents(arrayStr) {
     const students = [];
-    const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\},\s*photo:\s*'([^']+)'(?:,\s*homepage:\s*'([^']+)')?\s*\}/g;
+    const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\},\s*photo:\s*'([^']+)'(?:,\s*homepage:\s*'([^']+)')?(?:,\s*year:\s*'([^']+)')?\s*\}/g;
 
     let match;
     while ((match = regex.exec(arrayStr)) !== null) {
@@ -96,7 +96,8 @@ function parseStudents(arrayStr) {
             nameZh: match[2],
             nameEn: match[3],
             photo: match[4],
-            homepage: match[5] || null
+            homepage: match[5] || null,
+            year: match[6] || null
         });
     }
     return students;
@@ -105,7 +106,7 @@ function parseStudents(arrayStr) {
 // 解析校友对象的函数
 function parseAlumni(arrayStr) {
     const alumni = [];
-    const regex = /\{\s*name:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\},\s*destination:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\}(?:,\s*homepage:\s*(?:'([^']+)'|null))?\s*\}/g;
+    const regex = /\{\s*name:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\},\s*destination:\s*\{\s*zh:\s*'([^']+)',\s*en:\s*'([^']+)'\s*\}(?:,\s*homepage:\s*(?:'([^']+)'|null))?(?:,\s*year:\s*'([^']+)')?\s*\}/g;
 
     let match;
     while ((match = regex.exec(arrayStr)) !== null) {
@@ -114,7 +115,8 @@ function parseAlumni(arrayStr) {
             nameEn: match[2],
             destZh: match[3],
             destEn: match[4],
-            homepage: match[5] || null
+            homepage: match[5] || null,
+            year: match[6] || null
         });
     }
     return alumni;
@@ -123,13 +125,15 @@ function parseAlumni(arrayStr) {
 // 格式化学生对象为代码字符串
 function formatStudent(student, indent = '        ') {
     const homepageStr = student.homepage ? `, homepage: '${student.homepage}'` : '';
-    return `${indent}{ id: '${student.id}', name: { zh: '${student.nameZh}', en: '${student.nameEn}' }, photo: '${student.photo}'${homepageStr} }`;
+    const yearStr = student.year ? `, year: '${student.year}'` : '';
+    return `${indent}{ id: '${student.id}', name: { zh: '${student.nameZh}', en: '${student.nameEn}' }, photo: '${student.photo}'${homepageStr}${yearStr} }`;
 }
 
 // 格式化校友对象为代码字符串
 function formatAlumni(alumni, indent = '        ') {
     const homepageStr = alumni.homepage ? `, homepage: '${alumni.homepage}'` : ', homepage: null';
-    return `${indent}{ name: { zh: '${alumni.nameZh}', en: '${alumni.nameEn}' }, destination: { zh: '${alumni.destZh}', en: '${alumni.destEn}' }${homepageStr} }`;
+    const yearStr = alumni.year ? `, year: '${alumni.year}'` : '';
+    return `${indent}{ name: { zh: '${alumni.nameZh}', en: '${alumni.nameEn}' }, destination: { zh: '${alumni.destZh}', en: '${alumni.destEn}' }${homepageStr}${yearStr} }`;
 }
 
 // 解析学生列表
@@ -159,15 +163,23 @@ function getLastName(fullName) {
     return parts[parts.length - 1];
 }
 
-// 按英文姓氏字典序排序
-phdStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-masterStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-undergradStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-visitingStudents.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-alumniPhd.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-alumniMaster.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-alumniUndergrad.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
-alumniVisiting.sort((a, b) => getLastName(a.nameEn).localeCompare(getLastName(b.nameEn)));
+// 在校学生：先按入学年级（旧→新，无年级的排最后），同年级再按英文姓氏
+function byYearThenLastName(a, b) {
+    const ya = a.year ? parseInt(a.year, 10) : Infinity;
+    const yb = b.year ? parseInt(b.year, 10) : Infinity;
+    if (ya !== yb) return ya - yb;
+    return getLastName(a.nameEn).localeCompare(getLastName(b.nameEn));
+}
+
+// 在校学生与校友都按 年级（增序）+姓氏 排序
+phdStudents.sort(byYearThenLastName);
+masterStudents.sort(byYearThenLastName);
+undergradStudents.sort(byYearThenLastName);
+visitingStudents.sort(byYearThenLastName);
+alumniPhd.sort(byYearThenLastName);
+alumniMaster.sort(byYearThenLastName);
+alumniUndergrad.sort(byYearThenLastName);
+alumniVisiting.sort(byYearThenLastName);
 
 // 生成排序后的代码
 const phdList = phdStudents.map((student, index) => {

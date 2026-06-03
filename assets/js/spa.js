@@ -385,6 +385,7 @@
             ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
             <h4 class="member-name">${name}</h4>
             ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
+            ${member.year ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>` : ''}
           </a>
         `;
       } else {
@@ -393,6 +394,7 @@
           ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
             <h4 class="member-name">${name}</h4>
           ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
+          ${member.year ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>` : ''}
         </div>
       `;
       }
@@ -452,6 +454,7 @@
         <span class="name">
           ${item.homepage ? `<a class="alumni-name-link" href="${item.homepage}" target="_blank">${item.name[currentLang] || item.name.zh || item.name}</a>` : (item.name[currentLang] || item.name.zh || item.name)}
         </span>
+        <span class="year">${item.year ? (currentLang === 'en' ? item.year : item.year + '级') : ''}</span>
         <span class="destination">${item.destination?.[currentLang] || item.destination?.zh || item.destination || ''}</span>
       </div>
     `).join('');
