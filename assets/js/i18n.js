@@ -97,7 +97,7 @@
 
             // 加入我们
             'positions.title': '加入我们',
-            'positions.intro': '我们正在招募对开放系统和负责任 AI 充满热情的研究生、研究人员和工程师。我们期待你思维活跃、积极主动、热爱研究或开发、刻苦勤奋、不怕失败，并真正有志于在大模型领域从事科学研究与落地应用。<br><br>如果你立志在大规模 AI 系统、智能体、多模态、科学智能、具身智能等前沿领域做出高质量高影响力工作，欢迎加入我们！',
+            'positions.intro': '我们致力于做长周期、高影响力的研究，招募对 AGI 充满热情的研究人员、工程师与研究生。我们期待你思维活跃、积极主动、热爱研究或开发、刻苦勤奋、不怕失败，并真正有志于在大模型领域从事科学研究与落地应用。<br><br><strong>重要事项</strong><br>1. 我们不鼓励以发论文为目的的研究。只是为了混学位、好找工作或追求论文数量的同学不要选择我们！<br>2. 除项目合作推荐实习外，我们不允许学生在研三、博五之前进行实习。有实习情结的同学请不要选择我们。<br>3. 本组研究生都会根据需要安排一定的工程任务。如果不愿意参与工程项目的同学，也请不要选择我们。<br><br>如果你立志在大模型、AI 系统、智能体、多模态、科学智能、具身智能等前沿领域做出高质量高影响力工作，欢迎加入我们！',
             'positions.why.title': '为什么选择我们',
             'positions.detail.title': '详情',
             'positions.card.phd': '博士研究生',
@@ -239,7 +239,7 @@
 
             // Positions
             'positions.title': 'Join Us',
-            'positions.intro': 'We are recruiting graduate students, researchers, and engineers passionate about open systems and responsible AI. We expect you to be intellectually active, proactive, passionate about research or development, diligent, and resilient in the face of failure, with a genuine aspiration to pursue scientific research and real-world applications of large models.<br><br>If you aspire to do high-quality, high-impact work in cutting-edge fields such as large-scale AI systems, agents, multimodality, AI for Science, and embodied intelligence, we welcome you to join us!',
+            'positions.intro': 'We are committed to long-term, high-impact research, and recruit researchers, engineers, and graduate students passionate about AGI. We expect you to be intellectually active, proactive, passionate about research or development, diligent, and resilient in the face of failure, with a genuine aspiration to pursue scientific research and real-world applications of large models.<br><br><strong>Important Notes</strong><br>1. We do not encourage research driven merely by paper publication. If you are only after a degree, better job prospects, or a high publication count, please do not choose us!<br>2. Except for project-related internships, we do not allow students to take internships before their third year of master\'s or fifth year of PhD studies. If you have an internship fixation, please do not choose us.<br>3. All graduate students are assigned engineering tasks as needed. If you are unwilling to participate in engineering projects, please do not choose us.<br><br>If you aspire to do high-quality, high-impact work in cutting-edge fields such as large models, AI systems, agents, multimodality, AI for Science, and embodied intelligence, we welcome you to join us!',
             'positions.why.title': 'Why Choose Us',
             'positions.detail.title': 'Details',
             'positions.card.phd': 'PhD Students',
