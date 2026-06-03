@@ -64,12 +64,14 @@
               subtitle: { zh: '重要事项', en: 'Important Notes' },
               paragraphs: {
                 zh: [
-                  '除项目合作推荐实习外，本组不允许学生在研三、博五之前进行任何形式的实习。有实习情结的同学请不要选择本组。',
-                  '本组研究生都会根据需要安排一定的工程任务。如果不愿意参与工程项目的同学，也请不要选择本组。'
+                  '我们致力于做长周期、高影响力的研究工作，且不鼓励以发论文为目的的研究。只是为了混学位、好找工作或追求论文数量的同学不要选择我们！',
+                  '除项目合作推荐实习外，我们不允许学生在研三、博五之前进行实习。有实习情结的同学请不要选择我们。',
+                  '本组研究生都会根据需要安排一定的工程任务。如果不愿意参与工程项目的同学，也请不要选择我们。'
                 ],
                 en: [
-                  'Except for project-related internships, students are not allowed to take any internships before their third year of master\'s or fifth year of PhD studies. If you are set on doing internships, please do not choose our group.',
-                  'All graduate students will be assigned engineering tasks as needed. If you are unwilling to participate in engineering projects, please do not choose our group.'
+                  'We are committed to long-term, high-impact research and do not encourage research driven merely by paper publication. If you are only after a degree, better job prospects, or a high publication count, please do not choose us!',
+                  'Except for project-related internships, we do not allow students to take internships before their third year of master\'s or fifth year of PhD studies. If you have an internship fixation, please do not choose us.',
+                  'All graduate students are assigned engineering tasks as needed. If you are unwilling to participate in engineering projects, please do not choose us.'
                 ]
               }
             },
