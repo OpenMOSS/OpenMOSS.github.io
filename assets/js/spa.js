@@ -52,6 +52,46 @@
     renderShell();
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
+
+    // 最新亮点：优先读取可编辑的 assets/highlights.md；失败则用内置数据
+    fetch('assets/highlights.md?_=' + Date.now())
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (txt) {
+        var parsed = parseHighlights(txt);
+        if (parsed.length) {
+          SPA_DATA.highlights = parsed;
+          if ((parseHash().route || 'home') === 'home') handleRoute();
+        }
+      })
+      .catch(function () {});
+  }
+
+  // 解析 highlights.md：用 "---" 分隔各条，每行 "键: 值"（中英文键均可）
+  function parseHighlights(text) {
+    if (!text) return [];
+    text = text.replace(/<!--[\s\S]*?-->/g, '');
+    return text.split(/\n\s*-{3,}\s*\n/).map(function (block) {
+      var h = { title: {}, desc: {} };
+      block.split('\n').forEach(function (line) {
+        var i = line.search(/[:：]/);
+        if (i < 0) return;
+        var k = line.slice(0, i).trim();
+        var v = line.slice(i + 1).trim();
+        if (!v) return;
+        if (k === 'date' || k === '日期') h.date = v;
+        else if (k === '标题' || k === 'title-zh') h.title.zh = v;
+        else if (k === 'title' || k === 'title-en') h.title.en = v;
+        else if (k === '描述' || k === 'desc-zh') h.desc.zh = v;
+        else if (k === 'desc' || k === 'desc-en') h.desc.en = v;
+        else if (k === '图' || k === '图片' || k === 'image') h.image = v;
+        else if (k === '链接' || k === 'url') h.url = v;
+      });
+      if (h.title.zh && !h.title.en) h.title.en = h.title.zh;
+      if (h.title.en && !h.title.zh) h.title.zh = h.title.en;
+      if (h.desc.zh && !h.desc.en) h.desc.en = h.desc.zh;
+      if (h.desc.en && !h.desc.zh) h.desc.zh = h.desc.en;
+      return h;
+    }).filter(function (h) { return h.date || h.title.zh || h.title.en; });
   }
 
   function renderShell() {
@@ -246,10 +286,6 @@
             <div class="page-hero-copy">
               <h1>${t('hero.title')}</h1>
               ${paragraphs.map(p => `<p class="lead">${p}</p>`).join('')}
-              <div class="page-hero-actions">
-                <a class="btn btn-primary" href="#research?scroll=highlights">${t('hero.btn.highlights')}</a>
-                <a class="btn btn-outline" href="#positions">${t('hero.btn.join')}</a>
-              </div>
             </div>
           </div>
         </div>
@@ -270,53 +306,35 @@
   }
 
   function renderHome() {
+    const highlights = (SPA_DATA.highlights || []).map(h => ({
+      title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
+      desc: typeof h.desc === 'object' ? (h.desc[currentLang] || h.desc.zh) : h.desc,
+      date: h.date, url: h.url, image: h.image
+    }));
     return `
       ${renderHero()}
       <section class="container sec">
         <h2>${t('research.title')}</h2>
-        ${renderPillarsGrid(true)}
+        ${renderPillarsGrid()}
       </section>
-      <section class="container sec">
-        <h2>${t('people.title')}</h2>
-        
-        <h3 class="section-subtitle" style="margin-top: 0;">${t('people.subtitle.faculty')}</h3>
-        <div class="team-members">
-          ${renderTeamGrid(teamData.coreMembers || [])}
+      ${highlights.length ? `
+      <section class="container sec" id="home-highlights">
+        <h2>${t('research.highlights.title')}</h2>
+        <div class="highlights-list">
+          ${highlights.map(h => `
+            <article class="highlight-item${h.image ? ' has-img' : ''}" ${h.url ? `onclick="window.open('${h.url}', '_blank')" style="cursor: pointer;"` : ''}>
+              <div class="highlight-content">
+                <div class="highlight-head">
+                  <h3>${h.title}</h3>
+                  <span class="highlight-date">${h.date}</span>
+                </div>
+                <p>${h.desc}</p>
+              </div>
+              ${h.image ? `<img class="highlight-img" src="${h.image}" alt="" loading="lazy">` : ''}
+            </article>
+          `).join('')}
         </div>
-
-        <div class="people-sections">
-          <article class="people-card">
-            <h3>${t('people.card.students.title')}</h3>
-            <p>${t('people.card.students.desc')}</p>
-            <a class="btn btn-outline" href="#people">${t('people.card.students.link')}</a>
-          </article>
-          <article class="people-card">
-            <h3>${t('people.card.alumni.title')}</h3>
-            <p>${t('people.card.alumni.desc')}</p>
-            <a class="btn btn-outline" href="#alumni">${t('people.card.alumni.link')}</a>
-          </article>
-        </div>
-      </section>
-      <section class="container sec">
-        <h2>${t('resources.title')}</h2>
-        <div class="people-sections">
-          <article class="people-card">
-            <h3>${t('resources.highlight.tools.title')}</h3>
-            <p>${t('resources.highlight.tools.desc')}</p>
-            <div class="hero-actions" style="margin-top: auto; width: 100%;">
-              <a class="btn btn-outline" href="https://github.com/OpenMOSS" target="_blank">${t('resources.highlight.tools.btn1')}</a>
-              <a class="btn btn-outline" href="javascript:void(0)" onclick="navigateAndScroll('resources', 'projects', 100, 200)">${t('resources.highlight.tools.btn2')}</a>
-            </div>
-          </article>
-          <article class="people-card">
-            <h3>${t('resources.highlight.courses.title')}</h3>
-            <p>${t('resources.highlight.courses.desc')}</p>
-            <div class="hero-actions" style="margin-top: auto; width: 100%;">
-              <a class="btn btn-outline" href="javascript:void(0)" onclick="navigateAndScroll('resources', 'courses', 100, 200)">${t('resources.highlight.courses.btn')}</a>
-            </div>
-          </article>
-        </div>
-      </section>
+      </section>` : ''}
     `;
   }
 
@@ -476,12 +494,15 @@
         <h2>${t('research.highlights.title')}</h2>
         <div class="highlights-list">
           ${highlights.map(h => `
-            <article class="highlight-item" ${h.url ? `onclick="window.open('${h.url}', '_blank')" style="cursor: pointer;"` : ''}>
-              <div class="highlight-date">${h.date}</div>
+            <article class="highlight-item${h.image ? ' has-img' : ''}" ${h.url ? `onclick="window.open('${h.url}', '_blank')" style="cursor: pointer;"` : ''}>
               <div class="highlight-content">
-                <h3>${h.title}</h3>
+                <div class="highlight-head">
+                  <h3>${h.title}</h3>
+                  <span class="highlight-date">${h.date}</span>
+                </div>
                 <p>${h.desc}</p>
               </div>
+              ${h.image ? `<img class="highlight-img" src="${h.image}" alt="" loading="lazy">` : ''}
             </article>
           `).join('')}
         </div>

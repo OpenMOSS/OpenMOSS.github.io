@@ -597,49 +597,69 @@ html[lang="zh-CN"] .highlight-card h3 {
 
 /* ========== Research Highlights ========== */
 .highlights-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
 .highlight-item {
   display: flex;
-  gap: 24px;
-  padding: 20px;
+  flex-direction: column;
   background-color: var(--white);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 4px 12px var(--shadow-color);
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .highlight-item:hover {
-  transform: translateX(4px);
-  box-shadow: 0 6px 16px var(--shadow-color);
-}
-
-.highlight-date {
-  flex-shrink: 0;
-  width: 80px;
-  font-weight: 600;
-  color: var(--fudan-blue);
-  font-size: 14px;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .highlight-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
 }
 
-.highlight-content h3 {
-  margin: 0 0 8px 0;
+.highlight-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.highlight-head h3 {
+  margin: 0;
   font-size: 18px;
+  line-height: 1.35;
   color: var(--text);
+}
+
+.highlight-date {
+  flex-shrink: 0;
+  color: var(--fudan-blue);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .highlight-content p {
   margin: 0;
   color: var(--text-light);
   line-height: 1.6;
+}
+
+.highlight-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  display: block;
+  border-top: 1px solid var(--border);
+  background: var(--mist);
 }
 
 /* ========== Publications ========== */
@@ -746,13 +766,8 @@ html[lang="zh-CN"] .highlight-card h3 {
 }
 
 @media (max-width: 768px) {
-  .highlight-item {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .highlight-date {
-    width: auto;
+  .highlights-list {
+    grid-template-columns: 1fr;
   }
 }
 
