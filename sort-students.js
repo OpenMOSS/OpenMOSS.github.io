@@ -163,7 +163,7 @@ function getLastName(fullName) {
     return parts[parts.length - 1];
 }
 
-// 在校学生：先按入学年级（旧→新，无年级的排最后），同年级再按英文姓氏
+// 在校学生与校友：先按入学年级（旧→新，无年级的排最后），同年级再按英文姓氏
 function byYearThenLastName(a, b) {
     const ya = a.year ? parseInt(a.year, 10) : Infinity;
     const yb = b.year ? parseInt(b.year, 10) : Infinity;

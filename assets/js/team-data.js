@@ -89,19 +89,6 @@ const teamData = {
             homepage: 'https://scholar.google.com/citations?hl=en&user=3ii0orgAAAAJ'
         },
         {
-            id: 'yuxin-wang',
-            name: {
-                zh: '汪燠欣',
-                en: 'Yuxin Wang'
-            },
-            title: {
-                zh: '研究助理教授',
-                en: 'Research Assistant Professor'
-            },
-            photo: 'assets/img/汪燠欣.jpg',
-            homepage: 'https://scholar.google.co.jp/citations?user=bTo8CT0AAAAJ&hl=en'
-        },
-        {
             id: 'shuang-chen',
             name: {
                 zh: '陈爽',
@@ -126,6 +113,19 @@ const teamData = {
             },
             photo: 'assets/img/Yining Zheng.jpeg',
             homepage: 'https://github.com/WillQvQ'
+        },
+        {
+            id: 'yuxin-wang',
+            name: {
+                zh: '汪燠欣',
+                en: 'Yuxin Wang'
+            },
+            title: {
+                zh: '研究助理教授',
+                en: 'Research Assistant Professor'
+            },
+            photo: 'assets/img/汪燠欣.jpg',
+            homepage: 'https://scholar.google.co.jp/citations?user=bTo8CT0AAAAJ&hl=en'
         }
     ],
 
@@ -227,7 +227,6 @@ const teamData = {
 
     // 硕士研究生
     masterStudents: [
-        { id: 'runyu-peng', name: { zh: '彭润宇', en: 'Runyu Peng' }, photo: 'assets/img/彭润宇.jpg', year: '2022' },
         { id: 'ruifan-deng', name: { zh: '邓瑞凡', en: 'Ruifan Deng' }, photo: 'assets/img/邓瑞凡.jpg', year: '2023' },
         { id: 'yiran-guo', name: { zh: '郭一然', en: 'Yiran Guo' }, photo: 'assets/img/郭一然.jpg', year: '2023' },
         { id: 'mianqiu-huang', name: { zh: '黄绵秋', en: 'Mianqiu Huang' }, photo: 'assets/img/黄绵秋.jpg', year: '2023' },
@@ -342,29 +341,29 @@ const teamData = {
 const alumniData = {
     // 博士后校友
     postdocs: [
-        { name: { zh: '陈爽', en: 'Shuang Chen' }, destination: { zh: '复旦大学副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://scholar.google.com/citations?user=epJpBtYAAAAJ&hl=zh-CN' }
+        { name: { zh: '陈爽', en: 'Shuang Chen' }, destination: { zh: '复旦大学 副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://scholar.google.com/citations?user=epJpBtYAAAAJ&hl=zh-CN' }
     ],
 
     // 博士生校友
     phd: [
-        { name: { zh: '陈新驰', en: 'Xinchi Chen' }, destination: { zh: '复旦大学青年研究员', en: 'Professor, Fudan University' }, homepage: 'https://dalstonchen.github.io/', year: '2013' },
-        { name: { zh: '刘鹏飞', en: 'Pengfei Liu' }, destination: { zh: '上海交通大学副教授', en: 'Associate Professor, Shanghai Jiao Tong University' }, homepage: 'https://plms.ai/people/index.html', year: '2014' },
-        { name: { zh: '龚经经', en: 'Jingjing Gong' }, destination: { zh: '上海创智学院研究助理教授', en: 'Research Assistant Professor, SII' }, homepage: 'https://jjgong.com', year: '2015' },
+        { name: { zh: '陈新驰', en: 'Xinchi Chen' }, destination: { zh: '复旦大学 青年研究员', en: 'Professor, Fudan University' }, homepage: 'https://dalstonchen.github.io/', year: '2013' },
+        { name: { zh: '刘鹏飞', en: 'Pengfei Liu' }, destination: { zh: '上海交通大学 副教授', en: 'Associate Professor, Shanghai Jiao Tong University' }, homepage: 'https://plms.ai/people/index.html', year: '2014' },
+        { name: { zh: '龚经经', en: 'Jingjing Gong' }, destination: { zh: '上海创智学院 研究助理教授', en: 'Research Assistant Professor, SII' }, homepage: 'https://jjgong.com', year: '2015' },
         { name: { zh: '郭琦鹏', en: 'Qipeng Guo' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: 'https://scholar.google.com/citations?user=k3mPGKgAAAAJ&hl=en', year: '2016' },
         { name: { zh: '李林阳', en: 'Linyang Li' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: 'https://www.aminer.cn/profile/56176bb745cedb3397bf2f78', year: '2019' },
         { name: { zh: '邵云帆', en: 'Yunfan Shao' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: 'https://scholar.google.com/citations?user=pw5QEtoAAAAJ&hl=zh-CN', year: '2019' },
-        { name: { zh: '孙天祥', en: 'Tianxiang Sun' }, destination: { zh: '日行迹 CEO、上海创智学院助理教授', en: 'CEO of Analemma, Assistant Professor at SII' }, homepage: 'https://txsun1997.github.io/', year: '2019' },
+        { name: { zh: '孙天祥', en: 'Tianxiang Sun' }, destination: { zh: '日行迹 CEO、上海创智学院 助理教授', en: 'CEO of Analemma, Assistant Professor at SII' }, homepage: 'https://txsun1997.github.io/', year: '2019' },
         { name: { zh: '颜航', en: 'Hang Yan' }, destination: { zh: '奇绩智峰', en: 'Qiji Zhifeng' }, homepage: 'https://dl.acm.org/profile/99659996992', year: '2019' },
-        { name: { zh: '郑逸宁', en: 'Yining Zheng' }, destination: { zh: '复旦大学副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://github.com/WillQvQ', year: '2019' },
+        { name: { zh: '郑逸宁', en: 'Yining Zheng' }, destination: { zh: '复旦大学 副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://github.com/WillQvQ', year: '2019' },
         { name: { zh: '李世民', en: 'Shimin Li' }, destination: { zh: '模思智能 CEO', en: 'CEO, MOSI Intelligence' }, homepage: 'https://openreview.net/profile?id=~Shimin_Li1', year: '2020' },
-        { name: { zh: '李孝男', en: 'Xiaonan Li' }, destination: { zh: '海外创业公司', en: 'Overseas Startup' }, homepage: null, year: '2020' },
+        { name: { zh: '李孝男', en: 'Xiaonan Li' }, destination: { zh: '苹果（美国）', en: 'Apple, USA' }, homepage: null, year: '2020' },
         { name: { zh: '刘向阳', en: 'Xiangyang Liu' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: 'https://scholar.google.com/citations?user=U8QD9mwAAAAJ&hl=en', year: '2020' },
         { name: { zh: '罗琪', en: 'Luo Qi' }, destination: { zh: '模思智能', en: 'MOSI Intelligence' }, homepage: null, year: '2020' },
         { name: { zh: '周云华', en: 'Yunhua Zhou' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: null, year: '2020' },
         { name: { zh: '程沁源', en: 'Qinyuan Cheng' }, destination: { zh: '模思智能 CTO', en: 'CTO, MOSI Intelligence' }, homepage: 'https://xiami2019.github.io/', year: '2021' },
         { name: { zh: '吕凯', en: 'Kai Lv' }, destination: { zh: ' ', en: ' ' }, homepage: 'https://kailv69.github.io/', year: '2021' },
-        { name: { zh: '汪燠欣', en: 'Yuxin Wang' }, destination: { zh: '上海创智学院研究助理教授', en: 'Research Assistant Professor, SII' }, homepage: 'https://scholar.google.co.jp/citations?user=bTo8CT0AAAAJ&hl=en', year: '2021' },
-        { name: { zh: '印张悦', en: 'Zhangyue Yin' }, destination: { zh: ' ', en: ' ' }, homepage: null, year: '2021' }
+        { name: { zh: '汪燠欣', en: 'Yuxin Wang' }, destination: { zh: '上海创智学院 研究助理教授', en: 'Research Assistant Professor, SII' }, homepage: 'https://scholar.google.co.jp/citations?user=bTo8CT0AAAAJ&hl=en', year: '2021' },
+        { name: { zh: '印张悦', en: 'Zhangyue Yin' }, destination: { zh: 'UCL 博士后', en: 'Postdoc, UCL' }, homepage: null, year: '2021' }
     ],
 
     // 硕士生校友
@@ -378,27 +377,27 @@ const alumniData = {
         { name: { zh: '竺晨曦', en: 'Chenxi Zhu' }, destination: { zh: '百度', en: 'Baidu' }, homepage: null, year: '2013' },
         { name: { zh: '姜经翔', en: 'Jingxiang Jiang' }, destination: { zh: '华为', en: 'Huawei' }, homepage: null, year: '2014' },
         { name: { zh: '尹留松', en: 'Liusong Yin' }, destination: { zh: '华为', en: 'Huawei' }, homepage: null, year: '2014' },
-        { name: { zh: '钱鹏', en: 'Peng Qian' }, destination: { zh: '哈佛大学博士后', en: 'Postdoc, Harvard University' }, homepage: 'https://www.mit.edu/~pqian/', year: '2015' },
-        { name: { zh: '陈俊坤', en: 'Junkun Chen' }, destination: { zh: '微软', en: 'Microsoft' }, homepage: 'https://scholar.google.com/citations?user=cHLaJhUAAAAJ&hl=en', year: '2016' },
-        { name: { zh: '戴宁', en: 'Ning Dai' }, destination: { zh: '俄勒冈州立大学博士研究生', en: 'PhD Student, Oregon State University' }, homepage: 'https://ndai.ai/', year: '2016' },
+        { name: { zh: '钱鹏', en: 'Peng Qian' }, destination: { zh: '哈佛大学 博士后', en: 'Postdoc, Harvard University' }, homepage: 'https://www.mit.edu/~pqian/', year: '2015' },
+        { name: { zh: '陈俊坤', en: 'Junkun Chen' }, destination: { zh: '微软（美国）', en: 'Microsoft, USA' }, homepage: 'https://scholar.google.com/citations?user=cHLaJhUAAAAJ&hl=en', year: '2016' },
+        { name: { zh: '戴宁', en: 'Ning Dai' }, destination: { zh: '俄勒冈州立大学 博士研究生', en: 'PhD Student, Oregon State University' }, homepage: 'https://ndai.ai/', year: '2016' },
         { name: { zh: '傅健', en: 'Jian Fu' }, destination: { zh: ' ', en: ' ' }, homepage: null, year: '2016' },
-        { name: { zh: '施展', en: 'Zhan Shi' }, destination: { zh: '皇后大学博士研究生', en: 'PhD Student, Queen University' }, homepage: null, year: '2016' },
+        { name: { zh: '施展', en: 'Zhan Shi' }, destination: { zh: 'TikTok（美国）', en: 'TikTok, USA' }, homepage: null, year: '2016' },
         { name: { zh: '蒋昊', en: 'Hao Jiang' }, destination: { zh: '国企', en: 'State-Owned Enterprise' }, homepage: null, year: '2017' },
         { name: { zh: '柯震', en: 'Zhen Ke' }, destination: { zh: '小米', en: 'Xiaomi' }, homepage: null, year: '2017' },
         { name: { zh: '孙驰', en: 'Chi Sun' }, destination: { zh: '腾讯', en: 'Tencent' }, homepage: null, year: '2017' },
         { name: { zh: '孙付', en: 'Fu Sun' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2017' },
-        { name: { zh: '王少敬', en: 'Shaojing Wang' }, destination: { zh: '国企', en: 'State-Owned Enterprise' }, homepage: null, year: '2017' },
+        { name: { zh: '王少敬', en: 'Shaojing Wang' }, destination: { zh: 'TikTok', en: 'TikTok' }, homepage: null, year: '2017' },
         { name: { zh: '黄璐瑶', en: 'Luyao Huang' }, destination: { zh: '拼多多', en: 'Pinduoduo' }, homepage: null, year: '2018' },
         { name: { zh: '梁建泽', en: 'Jianze Liang' }, destination: { zh: '微软', en: 'Microsoft' }, homepage: null, year: '2018' },
         { name: { zh: '林泽辉', en: 'Zehui Lin' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2018' },
         { name: { zh: '刘枭雄', en: 'Xiaoxiong Liu' }, destination: { zh: '京东', en: 'JD.com' }, homepage: null, year: '2018' },
-        { name: { zh: '王丹青', en: 'Danqing Wang' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2018' },
-        { name: { zh: '王阳刚', en: 'Yanggang Wang' }, destination: { zh: '循环智能', en: 'Recurrent AI' }, homepage: null, year: '2018' },
-        { name: { zh: '许一格', en: 'Yige Xu' }, destination: { zh: '新加坡南洋理工大学博士研究生', en: 'PhD Student, NTU Singapore' }, homepage: 'https://xuyige.github.io/', year: '2018' },
-        { name: { zh: '钟鸣', en: 'Ming Zhong' }, destination: { zh: '伊利诺伊大学厄巴纳-香槟分校博士研究生', en: 'PhD Student, UIUC' }, homepage: 'https://maszhongming.github.io/', year: '2018' },
+        { name: { zh: '王丹青', en: 'Danqing Wang' }, destination: { zh: '卡内基梅隆大学 博士研究生', en: 'PhD Student, CMU' }, homepage: null, year: '2018' },
+        { name: { zh: '王阳刚', en: 'Yanggang Wang' }, destination: { zh: '上海交通大学', en: 'Shanghai Jiao Tong University' }, homepage: null, year: '2018' },
+        { name: { zh: '许一格', en: 'Yige Xu' }, destination: { zh: '新加坡南洋理工大学 博士研究生', en: 'PhD Student, NTU Singapore' }, homepage: 'https://xuyige.github.io/', year: '2018' },
+        { name: { zh: '钟鸣', en: 'Ming Zhong' }, destination: { zh: '伊利诺伊大学厄巴纳-香槟分校 博士研究生', en: 'PhD Student, UIUC' }, homepage: 'https://maszhongming.github.io/', year: '2018' },
         { name: { zh: '陈怡然', en: 'Yiran Chen' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: null, year: '2019' },
         { name: { zh: '籍佗', en: 'Tuo Ji' }, destination: { zh: ' ', en: ' ' }, homepage: null, year: '2019' },
-        { name: { zh: '安晨鑫', en: 'Chenxin An' }, destination: { zh: '香港大学博士研究生', en: 'PhD Student, The University of Hong Kong' }, homepage: 'https://chenxinan-fdu.github.io/', year: '2020' },
+        { name: { zh: '安晨鑫', en: 'Chenxin An' }, destination: { zh: '香港大学 博士研究生', en: 'PhD Student, The University of Hong Kong' }, homepage: 'https://chenxinan-fdu.github.io/', year: '2020' },
         { name: { zh: '耿志超', en: 'Zhichao Geng' }, destination: { zh: 'AWS', en: 'AWS' }, homepage: 'https://deepai.org/profile/zhichao-geng', year: '2020' },
         { name: { zh: '林天扬', en: 'Tianyang Lin' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2020' },
         { name: { zh: '刘毅韬', en: 'Yitao Liu' }, destination: { zh: 'Optiver', en: 'Optiver' }, homepage: null, year: '2020' },
@@ -408,37 +407,37 @@ const alumniData = {
         { name: { zh: '洪嘉伟', en: 'Jiawei Hong' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: null, year: '2021' },
         { name: { zh: '胡先念', en: 'Xiannian Hu' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2021' },
         { name: { zh: '李鹏', en: 'Peng Li' }, destination: { zh: '上海创智学院', en: 'Shanghai Innovation Institution' }, homepage: null, year: '2021' },
-        { name: { zh: '刘腾霄', en: 'Tengxiao Liu' }, destination: { zh: '加州大学圣塔芭芭拉分校博士研究生', en: 'PhD Student, UCSB' }, homepage: 'https://tengxiaoliu.github.io/', year: '2021' },
+        { name: { zh: '刘腾霄', en: 'Tengxiao Liu' }, destination: { zh: '加州大学圣塔芭芭拉分校 博士研究生', en: 'PhD Student, UCSB' }, homepage: 'https://tengxiaoliu.github.io/', year: '2021' },
         { name: { zh: '权国风', en: 'Guofeng Quan' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2021' },
         { name: { zh: '孙瑜', en: 'Yu Sun' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: null, year: '2021' },
         { name: { zh: '吴嘉文', en: 'Jiawen Wu' }, destination: { zh: '世纪前沿资产', en: 'Century Capital' }, homepage: null, year: '2021' },
         { name: { zh: '吴玲玲', en: 'Lingling Wu' }, destination: { zh: 'Optiver', en: 'Optiver' }, homepage: null, year: '2021' },
-        { name: { zh: '杨小珪', en: 'Xiaogui Yang' }, destination: { zh: '模思智能', en: 'MOSI Intelligence' }, homepage: null, year: '2021' },
-        { name: { zh: '杨雨晴', en: 'Yuqing Yang' }, destination: { zh: '南加州大学博士研究生', en: 'PhD Student, USC' }, homepage: 'https://ayyyq.github.io/', year: '2021' },
+        { name: { zh: '杨小珪', en: 'Xiaogui Yang' }, destination: { zh: '模思智能 语音合成负责人', en: 'Head of Speech Synthesis, MOSI Intelligence' }, homepage: null, year: '2021' },
+        { name: { zh: '杨雨晴', en: 'Yuqing Yang' }, destination: { zh: '南加州大学 博士研究生', en: 'PhD Student, USC' }, homepage: 'https://ayyyq.github.io/', year: '2021' },
         { name: { zh: '张啸天', en: 'Xiaotian Zhang' }, destination: { zh: '国内创业公司', en: 'Domestic Startup' }, homepage: null, year: '2021' },
         { name: { zh: '郑彦俊', en: 'Yanjun Zheng' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2021' },
         { name: { zh: '陈科宇', en: 'Keyu Chen' }, destination: { zh: '宁波市奉化区发改局', en: 'Ningbo Fenghua Development and Reform Bureau' }, homepage: null, year: '2022' },
         { name: { zh: '陈云涛', en: 'Yuntao Chen' }, destination: { zh: '上海电网', en: 'Shanghai Electric Grid' }, homepage: null, year: '2022' },
         { name: { zh: '范子越', en: 'Ziyue Fan' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
         { name: { zh: '何俊亮', en: 'Junliang He' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
+        { name: { zh: '彭润宇', en: 'Runyu Peng' }, destination: { zh: ' ', en: ' ' }, homepage: null, year: '2022' },
         { name: { zh: '任可', en: 'Ke Ren' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
         { name: { zh: '汤琼', en: 'Qiong Tang' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: null, year: '2022' },
-        { name: { zh: '张栋', en: 'Dong Zhang' }, destination: { zh: '小米', en: 'Xiaomi' }, homepage: null, year: '2022' },
+        { name: { zh: '张栋', en: 'Dong Zhang' }, destination: { zh: '小米 MiMo', en: 'MiMo, Xiaomi' }, homepage: null, year: '2022' },
         { name: { zh: '张墨执', en: 'Mozhi Zhang' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
-        { name: { zh: '张硕', en: 'Shuo Zhang' }, destination: { zh: '国内创业公司', en: 'Domestic Startup' }, homepage: null, year: '2022' },
+        { name: { zh: '张硕', en: 'Shuo Zhang' }, destination: { zh: '奇绩智峰', en: 'Qiji Zhifeng' }, homepage: null, year: '2022' },
         { name: { zh: '张硕闻', en: 'Shuowen Zhang' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2022' },
-        { name: { zh: '张鑫', en: 'Xin Zhang' }, destination: { zh: '小米', en: 'Xiaomi' }, homepage: null, year: '2022' },
-        { name: { zh: '朱秦', en: 'Qin Zhu' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2022' },
+        { name: { zh: '张鑫', en: 'Xin Zhang' }, destination: { zh: '小米 MiMo', en: 'MiMo, Xiaomi' }, homepage: null, year: '2022' },
+        { name: { zh: '朱秦', en: 'Qin Zhu' }, destination: { zh: '阿里巴巴 千问', en: 'Qwen, Alibaba' }, homepage: null, year: '2022' },
         { name: { zh: '宗一', en: 'Yi Zong' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2022' }
     ],
 
     // 本科生校友
     undergrad: [
         { name: { zh: '常帅晨', en: 'Shuaichen Chang' }, destination: { zh: 'AWS 应用科学家', en: 'Applied Scientist, AWS' }, homepage: 'https://shuaichenchang.github.io/', year: '2013' },
-        { name: { zh: '蒋子恒', en: 'Ziheng Jiang' }, destination: { zh: '字节跳动首席研究科学家', en: 'Principal Research Scientist, ByteDance' }, homepage: 'https://ziheng.org/', year: '2013' },
-        { name: { zh: '曹澍扬', en: 'Shuyang Cao' }, destination: { zh: '彭博研究科学家', en: 'Research Scientist, Bloomberg' }, homepage: 'https://shuyangcao.github.io/', year: '2015' },
+        { name: { zh: '蒋子恒', en: 'Ziheng Jiang' }, destination: { zh: '字节跳动 首席研究科学家', en: 'Principal Research Scientist, ByteDance' }, homepage: 'https://ziheng.org/', year: '2013' },
+        { name: { zh: '曹澍扬', en: 'Shuyang Cao' }, destination: { zh: '彭博 研究科学家', en: 'Research Scientist, Bloomberg' }, homepage: 'https://shuyangcao.github.io/', year: '2015' },
         { name: { zh: '苏津岳', en: 'Jinyue Su' }, destination: { zh: 'Accutar Biotechnology', en: 'Accutar Biotechnology' }, homepage: null, year: '2015' },
-        { name: { zh: '戴宁', en: 'Ning Dai' }, destination: { zh: '俄勒冈州立大学博士研究生', en: 'PhD Student, Oregon State University' }, homepage: 'https://ndai.ai/', year: '2016' },
         { name: { zh: '胡志峰', en: 'Zhifeng Hu' }, destination: { zh: '乾象投资', en: 'Qianxiang Investment' }, homepage: 'https://ichn.xyz', year: '2016' },
         { name: { zh: '裴恒志', en: 'Hengzhi Pei' }, destination: { zh: 'AWS', en: 'AWS, USA' }, homepage: null, year: '2016' }
     ],

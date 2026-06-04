@@ -1,7 +1,6 @@
 (function () {
   const routes = {
     home: renderHome,
-    research: renderResearch,
     people: renderPeople,
     alumni: renderAlumni,
     resources: renderResources,
@@ -60,8 +59,8 @@
 
     const navItems = [
       { id: 'home', key: 'nav.home' },
-      { id: 'research', key: 'nav.research' },
       { id: 'people', key: 'nav.people' },
+      { id: 'alumni', key: 'nav.alumni' },
       { id: 'resources', key: 'nav.resources' },
       { id: 'positions', key: 'nav.positions' }
     ];
@@ -259,19 +258,14 @@
   }
 
   // 渲染研究方向卡片网格；navigate=true 时先跳转到研究页再滚动到对应论文区块
-  function renderPillarsGrid(navigate) {
+  function renderPillarsGrid() {
     return `
         <div class="pillars-grid">
-          ${PILLARS.map(p => {
-      const onclick = navigate
-        ? `navigateAndScroll('research', 'pub-${p.key}')`
-        : `scrollToId('pub-${p.key}')`;
-      return `
-            <article class="pillar-card pillar-card-clickable" onclick="${onclick}">
+          ${PILLARS.map(p => `
+            <article class="pillar-card">
               <h3>${t(p.titleKey)}</h3>
               <p>${t(p.descKey)}</p>
-            </article>`;
-    }).join('')}
+            </article>`).join('')}
         </div>`;
   }
 
@@ -491,44 +485,6 @@
             </article>
           `).join('')}
         </div>
-      </section>
-      
-      <section class="container sec">
-        <h2>${t('research.publications.title')}</h2>
-        ${PILLARS.map(p => {
-      const pubs = SPA_DATA.publications[p.key] || [];
-      return `
-          <div id="pub-${p.key}" class="publication-section">
-            <h3 class="publication-category">${t(p.titleKey)}</h3>
-            <ul class="publication-list">
-              ${pubs.length > 0 ? pubs.map(pub => {
-        // 处理链接显示
-        const processedLinks = pub.links.map(link => {
-          if (link.type === 'ArXiv') {
-            const pdfUrl = link.url.replace('/abs/', '/pdf/');
-            return `<a href="${link.url}" target="_blank" class="pub-link">[Abstract]</a> <a href="${pdfUrl}" target="_blank" class="pub-link">[PDF]</a>`;
-          } else if (link.type === 'GitHub') {
-            return `<a href="${link.url}" target="_blank" class="pub-link">[Resource]</a>`;
-          } else {
-            return `<a href="${link.url}" target="_blank" class="pub-link">[${link.type}]</a>`;
-          }
-        }).join(' ');
-
-        return `
-                <li class="publication-item">
-                  <div class="pub-main-line">
-                    ${pub.support ? '<span class="pub-support">[SUPPORT]</span> ' : ''}<span class="pub-title">${pub.title}</span>${pub.venue ? `, <em>${pub.venue}</em>` : ''}, ${pub.year}.
-                    ${processedLinks}
-                  </div>
-                  <div class="pub-authors">${pub.alphabetical ? '<span class="pub-alphabetical">*</span> ' : ''}${pub.authors}</div>
-                </li>
-              `;
-      }).join('') : '<p style="color: var(--text-light); font-style: italic;">代表工作持续更新中...</p>'}
-            </ul>
-          </div>
-        `;
-    }).join('')}
-        <p class="pub-note">* Authors of projects are listed in alphabetical order.</p>
       </section>
     `;
   }
