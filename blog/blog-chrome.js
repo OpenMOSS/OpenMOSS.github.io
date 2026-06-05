@@ -42,7 +42,7 @@
     nav.className = "om-navbar";
     nav.innerHTML =
       '<div class="om-container nav-container">' +
-        '<a class="brand" href="' + S + '"><img class="brand-logo" src="/assets/img/openmoss-logo.png" alt="OpenMOSS"><span class="brand-name">OpenMOSS</span></a>' +
+        '<a class="brand" href="' + S + '"><img class="brand-logo" src="/assets/img/openmoss-logo.svg" alt="OpenMOSS"></a>' +
         '<button class="nav-toggle" type="button" aria-label="menu"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>' +
         '<ul class="nav-links">' +
           '<li><a href="' + S + '#home">' + T.home + "</a></li>" +

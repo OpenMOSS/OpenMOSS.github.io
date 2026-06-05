@@ -15,9 +15,8 @@ Outputs (committed to the repo, served by GitHub Pages):
 
 Re-run this after adding new Chinese text (new team members, blog cards, etc.):
     python scripts/build-fonts.py
-Any CJK char missing from the subset still renders via the system fallback
-(PingFang SC / Microsoft YaHei) declared in style.css, so the site never breaks —
-re-running just folds the new glyphs into the self-hosted file.
+Any CJK char missing from the subset still falls through to the generic sans-serif
+fallback, but re-running folds the new glyphs into the self-hosted file.
 
 Requires:  pip install fonttools brotli
 """

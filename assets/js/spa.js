@@ -26,6 +26,19 @@
     return window.t ? window.t(key, currentLang) : key;
   }
 
+  function setLanguage(lang, persist) {
+    currentLang = lang === 'zh' ? 'zh' : 'en';
+    window.currentLang = currentLang;
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+    if (persist) localStorage.setItem('language', currentLang);
+  }
+
+  function pick(value, fallback) {
+    if (value == null) return fallback || '';
+    if (typeof value !== 'object') return value;
+    return value[currentLang] || value.zh || value.en || fallback || '';
+  }
+
   function init() {
     // 处理真实路径 /en/* 和 /cn/* 的重定向
     const pathname = window.location.pathname;
@@ -46,10 +59,7 @@
       // 如果浏览器语言是中文（zh, zh-CN, zh-TW 等），使用中文，否则使用英文
       savedLang = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
     }
-    currentLang = savedLang;
-    window.currentLang = currentLang;
-    // 设置 html lang 属性
-    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+    setLanguage(savedLang);
     renderShell();
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
@@ -118,8 +128,7 @@
       <nav class="navbar">
         <div class="container nav-container">
           <a class="brand" href="#home">
-            <img class="brand-logo" src="assets/img/openmoss-logo.png" alt="OpenMOSS Team logo">
-            <span class="brand-name">${SPA_DATA.brand.name}</span>
+            <img class="brand-logo" src="assets/img/openmoss-logo.svg" alt="${SPA_DATA.brand.name}">
           </a>
           <button class="nav-toggle" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
@@ -151,15 +160,9 @@
       nav.classList.toggle('open');
     });
 
-    // 语言切换功能
     const langBtn = root.querySelector('#lang-toggle');
     langBtn.addEventListener('click', () => {
-      currentLang = currentLang === 'zh' ? 'en' : 'zh';
-      localStorage.setItem('language', currentLang);
-      window.currentLang = currentLang;
-      // 更新 html lang 属性
-      document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
-      // 重新渲染整个应用
+      setLanguage(currentLang === 'zh' ? 'en' : 'zh', true);
       renderShell();
       handleRoute();
     });
@@ -227,6 +230,7 @@
     view.innerHTML = renderFn(params);
     // 资源页渲染后填充 GitHub star（系列卡子仓库 + 总数）
     if (route === 'resources') hydrateProjectStars();
+    if (route === 'home') initHomeReveal();
     updateNav(route);
 
     // 滚动到页面顶部
@@ -279,33 +283,71 @@
     });
   }
 
-  // 渲染研究方向卡片网格；navigate=true 时先跳转到研究页再滚动到对应论文区块
-  function renderPillarsGrid() {
-    return `
-        <div class="pillars-grid">
-          ${PILLARS.map(p => `
-            <article class="pillar-card">
-              <h3>${t(p.titleKey)}</h3>
-              <p>${t(p.descKey)}</p>
-            </article>`).join('')}
-        </div>`;
+  function initHomeReveal() {
+    const intro = document.querySelector('.home-intro-reveal');
+    if (!intro) return;
+    if (!('IntersectionObserver' in window)) {
+      intro.classList.add('is-visible');
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          intro.classList.add('is-visible');
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(intro);
   }
 
   function renderHome() {
     return `
       <section class="home-hero">
-        <div class="container home-hero-grid">
-          <div class="home-hero-left">
-            <h1 class="home-hero-title">${t('hero.headline')}</h1>
-          </div>
-          <div class="home-hero-lead">
-            <p class="intro">${t('hero.p1')}</p>
-          </div>
+        <div class="home-hero-motion" aria-hidden="true">
+          <span class="home-hero-mist home-hero-mist-a"></span>
+          <span class="home-hero-mist home-hero-mist-b"></span>
+          <span class="home-hero-mist home-hero-mist-c"></span>
+          <svg class="home-hero-cosmos" viewBox="0 0 1200 700" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="hero-cosmos-line" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="rgba(14,65,156,0)" />
+                <stop offset="0.5" stop-color="rgba(14,65,156,0.42)" />
+                <stop offset="1" stop-color="rgba(86,228,254,0)" />
+              </linearGradient>
+            </defs>
+            <path class="cosmos-orbit cosmos-orbit-a" d="M96 218 C300 72 900 72 1104 218" />
+            <path class="cosmos-orbit cosmos-orbit-b" d="M176 512 C388 666 812 666 1024 512" />
+            <path class="cosmos-line cosmos-line-a" d="M104 430 C252 318 380 298 510 352 S768 506 1092 342" />
+            <path class="cosmos-line cosmos-line-b" d="M184 258 C376 394 522 174 700 276 S920 424 1052 228" />
+            <path class="cosmos-line cosmos-line-c" d="M226 548 C404 426 500 462 632 380 S858 236 1044 292" />
+            <path class="cosmos-signal cosmos-signal-a" d="M110 430 C258 318 380 298 510 352 S768 506 1092 342" />
+            <path class="cosmos-signal cosmos-signal-b" d="M184 258 C376 394 522 174 700 276 S920 424 1052 228" />
+            <circle class="cosmos-node node-a" cx="184" cy="258" r="3.5" />
+            <circle class="cosmos-node node-b" cx="372" cy="314" r="2.5" />
+            <circle class="cosmos-node node-c" cx="510" cy="352" r="4" />
+            <circle class="cosmos-node node-d" cx="632" cy="380" r="3" />
+            <circle class="cosmos-node node-e" cx="700" cy="276" r="3.5" />
+            <circle class="cosmos-node node-f" cx="858" cy="236" r="2.5" />
+            <circle class="cosmos-node node-g" cx="1016" cy="320" r="3.5" />
+          </svg>
+          <span class="home-hero-line home-hero-line-a"></span>
+          <span class="home-hero-line home-hero-line-b"></span>
+          <span class="home-hero-line home-hero-line-c"></span>
+        </div>
+        <div class="container home-hero-inner">
+          <h1 class="home-hero-title">${t('hero.headline')}</h1>
+          <p class="home-hero-subtitle">${t('hero.subtitle')}</p>
+        </div>
+      </section>
+      <section class="home-intro-reveal">
+        <div class="container home-intro-reveal-inner">
+          <p>${t('hero.p1')}</p>
         </div>
       </section>
       <section class="container home-section">
         <div class="home-section-head">
-          <h2 class="home-section-title">${t('research.title')}</h2>
+          <h2 class="section-title">${t('research.title')}</h2>
           <p class="intro">${t('research.intro')}</p>
         </div>
         <div class="home-tiles">
@@ -349,8 +391,8 @@
       var htags = (h.tags && (h.tags[currentLang] || h.tags.zh)) || [];
       items.push({
         tags: htags.concat([t('blog.tag.external')]),
-        title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
-        desc: typeof h.desc === 'object' ? (h.desc[currentLang] || h.desc.zh) : h.desc,
+        title: pick(h.title),
+        desc: pick(h.desc),
         date: h.date, sort: dateKey(h.date), image: h.image,
         url: h.url || 'javascript:void(0)', external: !!h.url
       });
@@ -370,7 +412,7 @@
     return `
       <section class="container sec" id="blog-main">
         <div class="page-hero-copy" style="margin-bottom: 36px;">
-          <h1>${t('blog.title')}</h1>
+          <h1 class="section-title">${t('blog.title')}</h1>
           <p class="intro">${t('blog.intro')}</p>
         </div>
         <div class="blog-list">
@@ -397,7 +439,7 @@
     return `
       <section class="container sec" id="people-main">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
-          <h1>${t('people.title')}</h1>
+          <h1 class="section-title">${t('people.title')}</h1>
           <p class="intro">${t('people.desc')}</p>
         </div>
 
@@ -430,28 +472,22 @@
   function renderTeamGrid(list, showTitle = true) {
     if (!list.length) return `<p>${t('people.updating')}</p>`;
     return list.map(member => {
-      const name = member.name?.[currentLang] || member.name?.zh || member.name;
+      const name = pick(member.name);
+      const title = pick(member.title);
+      const year = member.year
+        ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>`
+        : '';
+      const photo = member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : '';
+      const meta = showTitle && title ? `<p class="member-title">${title}</p>` : '';
+      const content = `
+          ${photo}
+          <h4 class="member-name">${name}</h4>
+          ${meta}
+          ${year}`;
 
-      // 如果有主页链接，整个卡片都可点击
-      if (member.homepage) {
-        return `
-          <a href="${member.homepage}" target="_blank" class="member-card member-card-link">
-            ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
-            <h4 class="member-name">${name}</h4>
-            ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
-            ${member.year ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>` : ''}
-          </a>
-        `;
-      } else {
-        return `
-        <div class="member-card">
-          ${member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : ''}
-            <h4 class="member-name">${name}</h4>
-          ${showTitle && member.title ? `<p class="member-title">${member.title[currentLang] || member.title.zh || member.title}</p>` : ''}
-          ${member.year ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>` : ''}
-        </div>
-      `;
-      }
+      return member.homepage
+        ? `<a href="${member.homepage}" target="_blank" class="member-card member-card-link">${content}</a>`
+        : `<div class="member-card">${content}</div>`;
     }).join('');
   }
 
@@ -471,7 +507,7 @@
     return `
       <section class="container sec" id="alumni-main">
         <div class="page-hero-copy" style="min-height: auto; margin-bottom: 24px;">
-          <h1>${t('alumni.title')}</h1>
+          <h1 class="section-title">${t('alumni.title')}</h1>
         </div>
 
         <aside class="toc-sidebar">
@@ -506,10 +542,10 @@
     return list.map(item => `
       <div class="alumni-row">
         <span class="name">
-          ${item.homepage ? `<a class="alumni-name-link" href="${item.homepage}" target="_blank">${item.name[currentLang] || item.name.zh || item.name}</a>` : (item.name[currentLang] || item.name.zh || item.name)}
+          ${item.homepage ? `<a class="alumni-name-link" href="${item.homepage}" target="_blank">${pick(item.name)}</a>` : pick(item.name)}
         </span>
         <span class="year">${item.year ? (currentLang === 'en' ? item.year : item.year + '级') : ''}</span>
-        <span class="destination">${item.destination?.[currentLang] || item.destination?.zh || item.destination || ''}</span>
+        <span class="destination">${pick(item.destination)}</span>
       </div>
     `).join('');
   }
@@ -668,7 +704,7 @@
     return `
       <section class="container sec">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
-          <h1>${t('resources.title')}</h1>
+          <h1 class="section-title">${t('resources.title')}</h1>
           <p class="intro">${t('resources.desc')}</p>
         </div>
 
@@ -728,7 +764,7 @@
     return `
       <section class="container sec">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
-          <h1>${t('positions.title')}</h1>
+          <h1 class="section-title">${t('positions.title')}</h1>
           <p class="intro">${t('positions.intro')}</p>
         </div>
         <div class="resource-grid">
@@ -757,10 +793,10 @@
         <h2>${t('positions.detail.title')}</h2>
         ${SPA_DATA.positions.details.map(detail => `
           <article class="detail-section" id="${detail.id}">
-            <h3>${detail.title[currentLang] || detail.title.zh}</h3>
+            <h3>${pick(detail.title)}</h3>
             <div class="detail-content">
               ${detail.blocks.map(block => `
-                <h3>${block.subtitle[currentLang] || block.subtitle.zh}</h3>
+                <h3>${pick(block.subtitle)}</h3>
                 ${(block.paragraphs[currentLang] || block.paragraphs.zh).map(p => `<p>${p}</p>`).join('')}
               `).join('')}
             </div>
@@ -775,14 +811,14 @@
     return `
       <section class="container sec">
         <div class="page-hero-copy">
-          <h1>${t('webmaster.title')}</h1>
+          <h1 class="section-title">${t('webmaster.title')}</h1>
           <p class="intro">${t('webmaster.intro')}</p>
         </div>
         <div class="alumni-list">
           ${SPA_DATA.webmaster.members.map(member => `
             <div class="alumni-row">
-              <span class="name"><a href="${member.github}" target="_blank" class="webmaster-link">${member.name[currentLang] || member.name.zh}</a></span>
-              <span class="destination">${member.role[currentLang] || member.role.zh}</span>
+              <span class="name"><a href="${member.github}" target="_blank" class="webmaster-link">${pick(member.name)}</a></span>
+              <span class="destination">${pick(member.role)}</span>
             </div>
           `).join('')}
         </div>

@@ -1,13 +1,5 @@
-/* OpenMOSS — unify the research blog (Distill) typography with the main site.
- *
- *   Chrome / title / byline / section headings / TOC / listing pages
- *        -> SANS:  Roboto (self-hosted, same as the main site) + 思源黑体 / 系统黑体
- *   Long-form article body (paragraphs, lists, quotes)
- *        -> SERIF: Palatino / Georgia (Latin) + 宋体 / 思源宋体 (CJK)   [kept on purpose]
- *
- * Loaded via a versioned <link> in each blog page's <head>.
- * Code blocks and KaTeX math are deliberately NOT targeted, so they keep
- * their own monospace / math fonts.
+/* OpenMOSS blog typography: keep article pages aligned with the main site.
+ * Code blocks, KaTeX math, and embedded visualizations keep their own fonts.
  */
 
 @font-face {
@@ -18,25 +10,38 @@
   src: url("/assets/fonts/roboto-subset.woff2") format("woff2");
 }
 
-/* ---- SANS: UI, titles, headings, TOC, listing pages ---- */
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/assets/fonts/noto-sans-sc-subset.woff2") format("woff2");
+  unicode-range: U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}
+
+:root {
+  --om-sans: "Roboto", "Noto Sans SC", system-ui, sans-serif;
+}
+
 body,
+h1, h2, h3, h4, h5, h6,
+p, li, blockquote,
 d-title, d-title h1, d-title h2, d-title p,
 d-byline, d-byline *,
+d-article, d-article p, d-article li, d-article ul, d-article ol,
+d-article blockquote,
 d-article h1, d-article h2, d-article h3,
 d-article h4, d-article h5, d-article h6,
+d-abstract, d-abstract p,
 d-contents, d-contents *,
 d-appendix, d-appendix h2, d-appendix h3,
+dt-article, dt-article p, dt-article li, dt-article ul, dt-article ol,
+dt-article blockquote,
+dt-byline, dt-byline *,
+dt-appendix, dt-appendix h2, dt-appendix h3,
 figcaption, .figcaption,
 .description, .description h2, .description p, .description *,
 .posts-list, .post-preview, .post-preview h2, .post-preview p,
 h2.post-tag {
-  font-family: "Roboto", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif !important;
-}
-
-/* ---- SERIF: long-form article body (bilingual) ---- */
-d-article,
-d-article p, d-article li, d-article ul, d-article ol,
-d-article blockquote,
-d-abstract, d-abstract p {
-  font-family: Palatino, Georgia, "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif !important;
+  font-family: var(--om-sans) !important;
 }

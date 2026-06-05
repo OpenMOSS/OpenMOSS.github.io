@@ -14,7 +14,8 @@
 
             // 首页 Hero
             'hero.title': 'OpenMOSS 团队',
-            'hero.headline': '追求极致的<span class="home-hero-em">开放 AI 研究</span>',
+            'hero.headline': '追求极致的<wbr><span class="home-hero-em">AI前沿探索</span>',
+            'hero.subtitle': '<span>开放</span><span>好奇心</span><span>团队协作</span><span>AI共生</span>',
             'hero.p1': '人工智能正在深刻改变世界。OpenMOSS 团队由上海创智学院、复旦大学自然语言处理实验室与模思智能联合共建，以"产学研深度融合"为核心，坚持开放协作的研究路线，深入探索智能的本质与边界。',
             'hero.btn.highlights': '最新亮点',
             'hero.btn.join': '加入我们',
@@ -173,7 +174,8 @@
 
             // Hero
             'hero.title': 'OpenMOSS Team',
-            'hero.headline': '<span class="home-hero-em">Open AI research</span>, in pursuit of the ultimate',
+            'hero.headline': 'Frontier <span class="home-hero-em">AI exploration</span>,<wbr> in pursuit of the ultimate',
+            'hero.subtitle': '<span>Open</span><span>Curiosity</span><span>Collaboration</span><span>AI Symbiosis</span>',
             'hero.p1': 'AI is profoundly reshaping the world. OpenMOSS Team is jointly established by the Shanghai Innovation Institution (SII), the Fudan University NLP Lab, and MOSI Intelligence, centered on the deep integration of industry, academia, and research, and committed to an open, collaborative path, probing the essence and the limits of intelligence.',
             'hero.btn.highlights': 'Highlights',
             'hero.btn.join': 'Join Us',
