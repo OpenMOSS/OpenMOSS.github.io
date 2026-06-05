@@ -898,23 +898,11 @@ html[lang="en"] .home-hero-title {
 
 .home-intro-reveal p {
   margin: 0;
-  color: var(--text);
-  font-size: 22px;
-  line-height: 1.9;
+  color: var(--text-soft);
+  font-size: 16px;
+  line-height: 1.7;
   font-weight: 400;
   text-wrap: pretty;
-}
-
-html[lang="zh-CN"] .home-intro-reveal p {
-  text-align: justify;
-  text-align-last: left;
-  text-justify: inter-character;
-}
-
-@media (min-width: 900px) {
-  html[lang="zh-CN"] .home-intro-reveal p {
-    text-align-last: justify;
-  }
 }
 
 .home-section {
@@ -1039,12 +1027,8 @@ html[lang="zh-CN"] .home-intro-reveal p {
     padding: 56px 0 36px;
   }
   .home-intro-reveal p {
-    font-size: 17px;
-    line-height: 1.85;
-  }
-  html[lang="zh-CN"] .home-intro-reveal p {
-    text-align: left;
-    text-align-last: left;
+    font-size: 16px;
+    line-height: 1.7;
   }
   .home-section { padding: 60px 0 32px; }
 }

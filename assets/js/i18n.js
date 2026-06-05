@@ -16,7 +16,7 @@
             'hero.title': 'OpenMOSS 团队',
             'hero.headline': '追求极致的<wbr><span class="home-hero-em">AI前沿探索</span>',
             'hero.subtitle': '<span>开放</span><span>好奇心</span><span>团队协作</span><span>AI共生</span>',
-            'hero.p1': '人工智能正在深刻改变世界。OpenMOSS 团队由上海创智学院、复旦大学自然语言处理实验室与模思智能联合共建，以"产学研深度融合"为核心，坚持开放协作的研究路线，深入探索智能的本质与边界。',
+            'hero.p1': '人工智能正在深刻改变世界。OpenMOSS 团队由上海创智学院、复旦大学自然语言处理实验室与模思智能联合共建，"研创学"深度融合，坚持开放协作，深入探索智能的本质与边界。',
             'hero.btn.highlights': '最新亮点',
             'hero.btn.join': '加入我们',
 
