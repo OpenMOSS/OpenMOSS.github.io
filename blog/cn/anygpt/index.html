@@ -1,0 +1,398 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "AnyGPT：基于自回归离散序列建模的多模态LLM",
+    "description": "基于原始的GPT结构和多模态离散化表示，AnyGPT统一了文本、语音、图像、音乐四种模态，并实现任意模态组合的相互转换。",
+    "authors": [
+        {
+            "author": "詹俊",
+            "authorURL": "https://scholar.google.com/citations?user=GfrhPE8AAAAJ",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2402.12226",
+    "publishedDate": "Mar 02, 2024",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>AnyGPT：基于自回归离散序列建模的多模态LLM</h1>
+    <p>基于原始的GPT结构和多模态离散化表示，AnyGPT统一了文本、语音、图像、音乐四种模态，并实现任意模态组合的相互转换。</p>
+  </d-title>
+
+  <d-article>
+    <!-- model -->
+    <h2>引言</h2>
+    <p>大语言模型（LLM）通过Decoder Only Transformer的架构和Next Token Prediction任务，在海量文本数据上进行训练，不仅学会了各种NLP任务，并涌现出In Context
+      Learning、Chain-of-Thought等新能力。然而，有人预测互联网上的高质量文本数据将在未来几年内用尽，而现有的LLM仍未达到我们对通用人工智能（AGI）的展望。互联网不仅包含文本，还涵盖了图像、音视频等多种模态的数据，赋予大语言模型以多模态能力成为研究的热点方向。
+    </p>
+
+    <p> <d-cite key="Sun2023GenerativePI, Ge2023MakingLS,Zhang2023SpeechGPTEL"></d-cite>
+      推动了相关研究，通过将文本与另一模态对齐，让大语言模型实现跨模态理解与生成。<d-cite
+        key="Tang2023AnytoAnyGV, wu2023next,tang2023codi, lu2023unified"></d-cite>
+      通过将多模态的编解码器与大语言模型结合，探索Any-to-Any的多模态生成，然而多模态的输入与输出在表示上不统一，使得模型的训练和推理变得复杂，这引出了一个问题：我们如何统一高效地训练多模态数据？</p>
+    <p>AnyGPT提出了一种生成式训练方案，将所有模态的数据转换为统一的离散化表示，采用Next Token
+      Prediction任务在LLM上统一训练。从压缩即智能的角度出发：当Tokenizer的质量足够高，LLM的困惑度（PPL）足够低，就有可能将互联网的海量多模态数据压缩在同一个模型中，并涌现出纯文本LLM没有的能力。基于原始的GPT结构和多模态离散化表示，AnyGPT统一了文本、语音、图像、音乐四种模态，并实现任意模态组合的相互转换。
+    </p>
+
+    <p>我们工作的主要贡献如下：</p>
+    <li>我们提出了AnyGPT，一个基于离散化表示的Any-to-Any多模态语言模型，可以理解和生成各种模态，包括语音、文本、图像和音乐。 </li>
+    <li>我们基于现有的生成模型，构建了包含108k个多轮对话的数据集AnyInstruct-108k，包含了503k条语音，205k张图片和113k条音乐。</li>
+    <li>我们证明了离散表示能在语言模型中有效地统一多个模态。
+    </li>
+
+    <h2>模型</h2>
+    <p>
+      我们的兴趣在于使用大型语言模型（LLMs）实现任何模态到任何模态的生成。为了实现这一点，我们提出了一个统一框架。如<a href="#model_jpg"
+        class="model_jpg">图1</a>所示，该框架由三个组成部分构成：（1）多模态分词器，（2）作为核心的多模态大语言模型，以及（3）多模态生成器。分词器将连续的非文本模态转换为离散的token，随后将这些token组合成多模态交错序列。然后语言模型使用Next
+      Token Prediction
+      Loss在这些序列上进行训练。在推理过程中，多模态token通过对应的生成器解码回原始的表示形式。为了提高生成的质量，可以使用多模态增强模块来对生成的结果进行后处理，如声音克隆或图像超分辨率等。在接下来的部分，我们将介绍每个模块的详细信息。
+    </p>
+    <figure id="model_jpg">
+      <img src="images/model1.jpg"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_figure" class="figure-number">图1</a>
+          AnyGPT模型架构概述：所有模态均被标记为离散的标记，LLM自回归执行多模态理解和生成。只需要数据预处理和后处理，模型的架构和训练目标保持不变。</center>
+      </figcaption>
+    </figure>
+
+
+    <h3>分词器</h3>
+    <p><b>图像分词器</b> 我们使用 SEED <d-cite key="ge2023planting"></d-cite> 分词器作为图像分词器。
+      图像分词器：我们使用SEED <d-cite key="ge2023planting"></d-cite> 作为图像分词器，它由ViT编码器、因果Q-Former、VQ（Vector
+      Quantization）码本、多层感知机（MLP）和UNet解码器组成，内部码本（codebook）包含8192个码元（entry）。SEED将224×224的RGB图像分解成16×16的patch，经过编码并转换成量化的码元序列，这些码元与预训练的unCLIP
+      Stable Diffusion模型的编码空间对齐，通过UNet解码器恢复成图像。</p>
+    </li>
+
+    <p><b>语音分词器</b> 我们使用 SpeechTokenizer <d-cite key="zhang2023speechtokenizer"></d-cite>
+      分词器作为语音分词器。内部包含8个码本，每个码本包含1024个词元表示。SpeechTokenizer基于编码器-解码器架构和残差向量量化（RVQ），将单通道音频序列压缩成离散矩阵，下采样后的帧率为50。通过结合语义损失和重建损失，SpeechTokenizer将语音信息解耦为语义信息和副语言信息。
+    </p>
+    <p>
+      举例来说，10秒的音频将被转换为一个500×8的矩阵，其中包含500×1的语义token和500×8声学token。在AnyGPT中，大型语言模型（LLM）被用来建模语义token，而一个声音克隆模型补充了剩余的副语言学信息。因此，LLM中的语音词汇表大小等同于一个码本的大小，即1024。
+    </p>
+
+    <p>
+      <b>音乐分词器</b> 我们使用 Encodec <d-cite key="Defossez2022HighFN"></d-cite>
+      分词器作为音乐分词器。内部包含4个码本，每个码本包含2048个词元表示。我们使用了一个在音乐数据上预训练的模型<d-footnote id="d-footnote-1"><a
+          href="https://huggingface.co/facebook/encodec_32khz">https://huggingface.co/facebook/encodec_32khz</a></d-footnote>，接受32kHz的单声道音频作为输入，编码器生成的嵌入向量通过RVQ（Residual
+      Vector
+      Quatization）量化，包含四个量化器，每个2048个码元，得到的音乐token总数为8192。我们使用5s长度的音频，量化成一个250×4的码元矩阵。我们以逐帧方式展平成一维序列，便于语言模型预测完整的音乐信息。
+    </p>
+
+
+    <h3>大语言模型</h3>
+    <p>
+      为了将多模态离散表示纳入预训练的大型语言模型（LLMs），我们扩展了词汇表，加入每个模态的token，并扩展了相应的嵌入和预测层，新加入的参数随机初始化。所有模态的token组合形成一个新的词汇表，大小是所有模态的token数之和。
+    </p>
+    <p> 有了特定模态的分词器，我们可以将多模态数据压缩成离散的token序列，语言模型在这个序列上使用Next Token
+      Prediction任务进行训练，使得核心的LLM能自然地以自回归的方式统一多模态感知、理解、推理和生成等任务。
+      我们使用LLaMA-2 7B<d-cite key="touvron2023llama"></d-cite>的参数初始化LLM，除了对嵌入矩阵和预测头进行了扩展，语言模型的其余部分保持不变。</p>
+
+    <h3>多模态生成器</h3>
+    <p>
+      使用语言模型生成高质量的多模态数据是一项具有挑战性的任务，因为它需要大量的存储来准确表示图像和音频，导致序列长度增加，增加了语言模型的计算复杂度。为了解决这一问题，我们采用了两阶段框架进行高质量生成，包括语义信息建模和感知信息建模。在语义层面，自回归语言模型生成经过融合和对齐的多模态token序列，然后非自回归模型将多模态语义token转换为高保真的多模态内容，实现了性能和效率之间的平衡。
+    </p>
+
+    <p>
+      具体地，我们使用SEED标记进行视觉语言建模，通过扩散模型将其解码为高质量图像。对于语音，我们利用SoundStorm模型生成声学token，并将其解码为原始音频数据。对于音乐，我们使用Encodec标记过滤高频细节，并通过Encodec解码器将其重构为高保真音频数据。这一框架使得AnyGPT能够在保证生成效果的同时显著减少了语音序列长度，实现对多模态数据的高质量生成。
+    </p>
+
+    <h2>训练</h2>
+    <h3>预训练数据</h3>
+    <p>
+      实现多种模态的对齐需要有这些模态对齐的训练数据，而这类数据十分稀缺。
+      对此，我们构建了一个以文本为中心的双模态对齐数据构成的多模态对齐数据集，其中文本作为对齐各个模态的的中介，通过将不同模态与文本模态进行对齐，打通任意模态间的对齐。
+      <a href="#data_mix_table">表1</a>展示了预训练使用的所有数据集及其采样率，<a
+        href="#data_mix_figure">图2</a>展示了具体的token比例。对于数据量较小的模态，训练时通过一定的过采样以保证训练时一个batch数据中各个类型数据均衡。
+    </p>
+
+    <figure id="data_mix_table">
+      <img src="images/data_table.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_table" class="figure-number">表1</a>
+          预训练使用的所有数据集及其采样率</center>
+      </figcaption>
+    </figure>
+
+    <figure id="data_mix_figure">
+      <img src="images/mix.jpg"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_figure" class="figure-number">图2</a>
+          按token数划分的预训练数据分布，内环、中环、外环分别为模态、数据类型和数据集。</center>
+      </figcaption>
+    </figure>
+
+    <h3>多模态交错的指令遵循数据</h3>
+    <p>
+      自然的人机交互应当允许用户和对话机器人任意使用多种模态来交换信息。然而模态数量的增加也使得数据收集更加复杂，当前仍缺乏一个包含两个模态以上的大规模指令数据集。这对开发能够理解生成各种模态交织对话模型产生了极大的限制
+    </p>
+    <p>
+      为解决这一局限，我们设计了一个利用生成模型构造集成了多个模态的对话数据的方法，并得到一个包含108k个多轮对话的数据集AnyInstruct-108k。如<a
+        href="#data_construct">图3</a>所示，具体的数据合成流程分为两个阶段，第一个阶段合成以文本形式描述多模态元素的对话，第二个阶段使用文生图、文生语音、文生音乐模型将其中文本描述的多模态元素转换至对应的模态。
+      其中，为了保证样本的多样性，第一个阶段拆分为三个具体步骤：
+    <ol>
+      <li>人工选取元话题(matatopics)并使用模型将其细化为多个具体话题(topic)，得到话题池；</li>
+      <li>将话题扩充为对话场景(scenarios)，描述对话中用户和机器人的行为，其中行为的选取通过指令的组合得到；</li>
+      <li>根据场景描述生成完整对话，其中图片、音乐以特定标记的文本描述表示。</li>
+    </ol>
+    </p>
+    <p>
+      在第二阶段，我们使用最新的多模态生成模型将对话中的文本描述转换为多模态内容。我们使用OpenAI的DALL-E 3<d-cite
+        key="Lin2014MicrosoftCC"></d-cite>进行图像生成，MusicGen<d-cite key="Copet2023SimpleAC"></d-cite>进行音乐生成，以及Microsoft
+      Azure的语音合成API<d-cite key="Azure_text2speech"></d-cite>将文本对话内容转换为语音。
+    </p>
+    <figure id="data_construct">
+      <img src="images/data.jpeg"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-top: auto; margin-bottom: auto;">
+      <figcaption style="grid-column: kicker; ">
+        <a href="#data_construct" class="figure-number">图3</a>
+        多模态交错的指令遵循数据集AnyInstruct-108k的构建过程分为两个阶段： 生成包含多模态元素的文本对话（第1-3步）和文本到多模态转换（第4步）。第一阶段生成话题、情景和文本对话，第二阶段生成最终的多模态对话。
+      </figcaption>
+    </figure>
+    <p>
+      经过筛选，我们最终获得了一个包含108k各种模态交错对话的数据集，该数据集包括约205k张图片、503k条语音和113k条音乐。此外，我们通过从现有的文本指令数据集中提取适合朗读的内容，通过使用语音合成获得了100k个语音对话，以增强数据集。
+    </p>
+
+    <h3>训练</h3>
+    <p>
+      我们使用多种模板将多模态数据构建成多模态序列。每种非文本模态内容的都通过放置在开头和结尾的特殊标记来识别。通常配对的数据包括一种非文本模态（X）- 例如图像，语音或音乐及其对应的文本。我们提示OpenAI
+      GPT-4生成数百个双向生成指令，分别是X到文本或文本到X，例如"Please generate an image based on the provided
+      text."，给定一个标记序列（S）和相关文本（T），我们从我们预先建立的池中随机挑选一个生成方向以及一个指令（I），形成一个三元组（I，S，T）。然后，根据生成方向，使用模板将这个三元组合并到一个序列中
+    </p>
+    <p>
+      <b>[Human]: {I}.{S}&lt;eoh&gt;。[AnyGPT]: {T}&lt;eos&gt;</b>。
+    </p>
+    <p>
+      或其变体 <b>[Human]: {I}.This is input:{T}&lt;eoh&gt;。[AnyGPT]: {S}&lt;eos&gt;</b>.
+    </p>
+    对于像图文交错的网页这样的多模态交错数据，因为它们自然形成句子，我们直接用相应的非文本内容替换。
+    由于大多数图像和音乐数据来源于网络，存在一定的噪声，这可能影响多模态生成的质量。因此，在第一阶段预训练之后，我们选择性地使用高质量数据集——JourneyDB和LAION-Aesthetics进行文本到图像生成，以及LAION-COCO进行图像到文本生成。对于音乐数据，我们整合了AnyInstruct-108k数据集中的音乐-描述对。剩余的数据保持不变，我们继续对模型进行额外的4000步预训练。
+    <p><a href="#training">表2</a>报告了AnyGPT的详细训练设置和超参数。</p>
+    <figure id="training">
+      <img src="images/training_params.png"
+        style="display: block; margin: auto; width: 600px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#training" class="figure-number">表2</a>
+          AnyGPT的预训练和微调相关配置。</center>
+      </figcaption>
+    </figure>
+
+    <h2>评估</h2>
+    <h3>跨模态任务</h3>
+    <p>为了测试预训练过程中不同模态之间的对齐情况，我们在多模态理解和生成任务上评估预训练得到的AnyGPT基座模型的基本能力。具体来说，我们测试了每种模态的“文本到X”和“X到文本”任务，其中X分别是图像、音乐和语音。
+      为了模拟真实世界的场景，所有评估都在零样本的设置下进行，即AnyGPT在下游训练样本上未经过微调或预训练。这种要求模型能够泛化到未知的测试分布，从而展示了AnyGPT在不同模式下的通用能力。评估结果表明，AnyGPT在各种多模态理解和生成任务中取得了优良的表现，具体实验结果如下。
+    </p>
+    <p><b>图像理解</b> 我们通过图像标注（image captioning）任务来评估模型图像理解能力，结果如<a href="#image_understanding">表3</a>所示。我们使用MS-COCO
+      2014<d-cite key="Lin2014MicrosoftCC"></d-cite>作为评测数据集，并参照先前工作<d-cite
+        key="Li2023BLIP2BL,Tang2023AnytoAnyGV"></d-cite>使用Karpathy式测试集划分</p>
+
+    <figure id="image_understanding">
+      <img src="images/results1.png"
+        style="display: block; margin: auto; width: 450px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#image_understanding" class="figure-number">表3</a>
+          图像标注任务的比较结果。灰色表示模型在对应的训练集上进行了训练。</center>
+      </figcaption>
+    </figure>
+
+    <p><b>图像生成</b> 如<a href="#image_generation">表4</a>所示，我们使用文生图任务评估图像生成。与先前工作一致<d-cite
+        key="Koh2023GeneratingIW,Ge2023MakingLS,Sun2023GenerativeMM"></d-cite>，我们随机从MS-COCO<d-cite
+        key="Lin2014MicrosoftCC"></d-cite>验证集中采样30k个图片，并使用CLIP Score作为评估指标。该指标使用CLIP-ViTL<d-cite
+        key="Radford2021LearningTV"></d-cite>计算生成的图片及其对应的真实图片文本描述的相似度分数。</p>
+
+    <figure id="image_generation">
+      <img src="images/results2.png"
+        style="display: block; margin: auto; width: 350px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#image_generation" class="figure-number">表4</a>
+          文生图任务的比较结果。我们采用MS-COCO中的图片描述生成图像，并计算CLIP Score进行评估。</center>
+      </figcaption>
+    </figure>
+
+    <p><b>语音识别</b> 我们在LibriSpeech<d-cite key="panayotov2015librispeech"></d-cite>的test-clean集上进行语音识别，并计算词错误率（Word
+      Error
+      Rate, WER）来评估语音识别能力，结果如<a href="speech_understanding">表5</a>所示。</p>
+
+    <figure id="speech_understanding">
+      <img src="images/results3.png"
+        style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#speech_understanding" class="figure-number">表5</a>
+          语音识别结果，指标为单词错误率（Word Error Rate）</center>
+      </figcaption>
+    </figure>
+
+    <p><b>零样本语音合成</b> 我们在VCTK数据集上进行零样本语音合成（Zero-shot Text-to-Speech, TTS）来评测语音生成能力（<a
+        href="speech_generation">表6</a>），计算说话人相似度（Speaker similarity）<d-footnote id="d-footnote-2"><a
+          href="https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py">https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py</a></d-footnote>和词错误率（WER）作为指标，其中后者着重于语音质量。
+    </p>
+    <figure id="speech_generation">
+      <img src="images/results4.png"
+        style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#sspeech_generation" class="figure-number">表6</a>
+          零样本语音合成结果</center>
+      </figcaption>
+    </figure>
+    <p><b>音乐理解和生成</b> 我们在MusicCaps<d-cite key="Agostinelli2023MusicLMGM"></d-cite>基准评估音乐理解和生成能力，使用CLAP Score<d-cite
+        key="Wu2022LargeScaleCL, Huang2023MakeAnAudioTG"></d-cite>作为指标，该指标描述了生成的音乐和对应文本描述之间的相似性，结果如<a
+        href="music_result">表7</a>所示。
+      我们在MusicCaps基准测试（Agostinelli等人，2023）上评估了AnyGPT在音乐理解和生成任务上的表现。我们使用CLAP
+      Score（Wu等人，2022；Huang等人，2023）作为客观评价标准，它测量生成音乐与文本描述之间的相似性。
+    </p>
+    <p>
+      对于音乐字幕的评估，我们发现现有的客观评价指标可能在表达音乐字幕任务的表现时有限制。音乐的多样性和主观性导致个人之间的观点不同。只有特定的音乐类型和乐器具有可以容易识别的独特特征。为了确保客观评估，我们计算了&lt;music,
+      real caption&gt;对和&lt;music, generated caption&gt;对的CLAP Score进行比较。</p>
+
+    <figure id="music_result">
+      <img src="images/results5.png"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#music_result" class="figure-number">表7</a>
+          音乐理解和生成的结果，指标为CLAP Score。在音乐标注（Music Captioning）中，我们对比“音乐-真实标注对”（&lt;music, real
+          caption&gt;）的相似度以及“音乐-生成标注对”（&lt;music, generated caption&gt;）的相似度。
+        </center>
+      </figcaption>
+    </figure>
+
+    <h3>Any-to-Any多模态对话</h3>
+    <p>在AnyInstruct-108k微调后，AnyGPT展示出了任意模态间对话的能力。AnyGPT能够理解文字、语音、图像、音乐构成的指令，并选择合适的模态组合进行回复。更多样例请参照我们的<a
+        href="https://junzhan2000.github.io/AnyGPT.github.io/">项目主页</a>。</p>
+    <div class="publication-video">
+      <iframe src="https://www.youtube.com/embed/oW3E3pIsaRg" frameborder="0" allow="autoplay; encrypted-media"
+        allowfullscreen
+        style="display: block; margin: auto; width: 600px; height: 280px; margin-bottom: -0px; margin-top: -0px;"></iframe>
+      <figcaption style="grid-column: kicker">
+        <center><a href="#publication-video" class="figure-number">视频1</a>
+          演示Demo
+        </center>
+      </figcaption>
+    </div>
+    <h2>总结</h2>
+    <p>
+      在这项工作中，我们介绍了AnyGPT，一个Any-to-Any多模态语言模型，它利用离散表示来统一处理各种模态，包括语音、文本、图像和音乐。离散的多模态表示促进了新模态的无缝集成——类似于加入一种外语——而不需要更改现有的LLM架构或训练范式。为了使模型能够处理任意组合的多模态输入和输出，我们合成了第一个大规模的Any-to-Any多模态指令数据集AnyInstruct-108k，包含了精细交织各种模态的多轮对话。实验结果表明，AnyGPT在各种跨模态任务中取得了有希望的结果，并展示了令人印象深刻的Any-to-Any多模态对话能力，证明了离散表示可以有效且便捷地在统一的大型语言模型内统一多个模态。
+    </p>
+
+    <h2>限制与展望</h2>
+    <p>
+      <b>Any-to-Any多模态LLM评估基准</b> Any-to-Any多模态LLM评估基准正在成为研究热点。然而，缺少专门的基准评估这类模型的多维能力，我们迫切需要开发全面的评估基准。
+    </p>
+    <p>
+      <b>更强的LLM</b> 尽管使用离散化表示的多模态大模型训练比较稳定，但相较单模态，仍会有更高的训练损失，从而影响性能。改善策略可能包括使用更大的LLM和分词器，或采用混合专家（MOE）架构。
+    </p>
+    <p>
+      <b>改进分词器</b> 在多模态LLMs中，分词器质量直接影响模型的理解与生成能力。可以从多个方面改进分词器，包括优化码本训练、更统一的多模态表征等。
+    </p>
+    <p>
+      <b>扩展上下文</b> 多模态内容如图像和音频常涉及长序列，导致更大的训练难度和更高的数据要求。对于多模态对话，更长的上下文能增加对话轮数，提升交互深度和复杂度。
+    </p>
+
+
+  </d-article>
+
+  <d-appendix>
+    <h3>Acknowledgments</h3>
+    <p>
+      Many thanks to Dong Zhang, JiaSheng Ye, RuiBin Yuan and the other co-authors for their help; this project is a
+      result of our collaborative effort.
+    </p>
+
+    <p>
+      Sincere thanks to Junqi Dai and Dr. Yunhua Zhou for their guidance and support, meeting you was a
+      fortunate turn in my journey.
+    </p>
+
+    <p>
+      I am particularly grateful to Dr. Tianxiang Sun for his guidance throughout the entire process of this project.
+      My
+      heartfelt thanks go to my advisor, Prof. Xipeng Qiu, for his unwavering trust and support.
+    </p>
+
+    <p>
+      Special thanks to the Shanghai AI Lab for providing extensive training resources, and to Dr. Hang Yan and Shuo
+      Zhang for their support on resources.
+    </p>
+
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+</body>

@@ -1,0 +1,224 @@
+.subgrid {
+  grid-column: screen; 
+  display: grid; 
+  grid-template-columns: inherit;
+  grid-template-rows: inherit;
+  grid-column-gap: inherit;
+  grid-row-gap: inherit;
+}
+
+d-figure.base-grid {
+  grid-column: screen;
+  background: hsl(0, 0%, 97%);
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+d-figure {
+  margin-bottom: 1em;
+  position: relative;
+}
+
+d-figure > figure {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.shaded-figure {
+  background-color: hsl(0, 0%, 97%);
+  border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+  border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+  padding: 30px 0;
+}
+
+.pointer {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 26px;
+  left: -48px;
+}
+
+#contents nav a {
+  color: rgba(0, 0, 0, 0.8);
+  border-bottom: none;
+  text-decoration: none;
+}
+
+#contents nav ul li {
+  margin-bottom: .25em;
+}
+
+#contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6);
+}
+
+#contents nav details ul {
+  margin-top: 0;
+}
+
+#contents nav details > a {
+  margin-left: 1.06em;
+}
+
+#contents nav summary,
+#contents nav > div,
+#contents nav details > a {
+  display: block;
+  outline: none;
+  margin-bottom: 0.5em;
+}
+
+#contents nav > div {
+  margin-left: 1.06em;
+}
+
+#contents nav summary {
+  cursor: context-menu;
+}
+
+#contents nav summary,
+#contents nav > div > a {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+a.figure-number,
+a.section-number {
+  border-bottom-color: hsla(206, 90%, 20%, 0.3);
+  text-transform: uppercase;
+  font-size: .85em;
+  color: hsla(206, 90%, 20%, 0.7);
+}
+a.figure-number::before {
+  content: "Figure ";
+}
+a.figure-number:hover,
+a.section-number:hover {
+  border-bottom-color: hsla(206, 90%, 20%, 0.6);
+}
+
+/* 更美观的高亮行样式 */
+.highlight-row {
+  background: linear-gradient(90deg, #fceabb 0%, #e8d9f1 50%, #a3cef1 100%);
+  /* color: #5a3e85; */
+  /* color: #000000; */
+  font-weight: normal;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Add styles for the full-width container */
+d-figure.full-width {
+  grid-column: screen;
+  /* background-color: hsl(0, 0%, 97%);  */
+}
+
+.table-container {
+  overflow-x: auto;
+  text-align: center;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+
+.demo-table {
+  display: inline-block;
+  /* min-width: 900px; */
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  text-align: left;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: auto;
+  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); */
+}
+
+.demo-table th,
+.demo-table td {
+  padding: 0.5rem 0.5rem 0.5rem 0.1rem !important;
+  /* padding-top: 0.5rem; 
+  padding-bottom: 0.2rem; */
+  /* padding: 0.5rem; */
+  border-bottom: 1px solid #e9ecef;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.demo-table th {
+  font-weight: 600;
+  color: #343a40;
+  text-align: center; /* Center the header text */
+}
+
+.demo-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.demo-table .topic-cell {
+  font-weight: 500;
+  position: relative;
+  text-align: left;
+}
+
+
+.topic-trigger {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: #209cee;
+}
+
+.tooltip-content {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 320px;
+  text-align: left;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 12px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #2c3e50 transparent transparent transparent;
+}
+
+.topic-cell:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-content p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.tooltip-content p:last-child {
+  margin-bottom: 0;
+}

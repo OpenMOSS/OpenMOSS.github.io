@@ -1,0 +1,568 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+
+    #contents nav a {
+      color: rgba(0, 0, 0, 0.8);
+      border-bottom: none;
+      text-decoration: none;
+    }
+
+    #contents nav ul li {
+      margin-bottom: .25em;
+    }
+
+    #contents nav a:hover {
+      text-decoration: underline solid rgba(0, 0, 0, 0.6);
+    }
+
+    #contents nav details ul {
+      margin-top: 0;
+    }
+
+    #contents nav details>a {
+      margin-left: 1.06em;
+    }
+
+    #contents nav summary,
+    #contents nav>div,
+    #contents nav details>a {
+      display: block;
+      outline: none;
+      margin-bottom: 0.5em;
+    }
+
+    #contents nav>div {
+      margin-left: 1.06em;
+    }
+
+    #contents nav summary {
+      cursor: context-menu;
+    }
+
+    #contents nav summary,
+    #contents nav>div>a {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    a.figure-number,
+    a.section-number {
+      border-bottom-color: hsla(206, 90%, 20%, 0.3);
+      text-transform: uppercase;
+      font-size: .85em;
+      color: hsla(206, 90%, 20%, 0.7);
+    }
+
+    a.figure-number::before {
+      content: "Figure ";
+    }
+
+    a.figure-number:hover,
+    a.section-number:hover {
+      border-bottom-color: hsla(206, 90%, 20%, 0.6);
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "Can AI Assistants Know What They Don't Know?",
+    "description": "Can we enhance the truthfulness of AI assistants based on large language models in practical applications by aligning them in a way that allows them to recognize what they don't know and express this ignorance through language?",
+    "authors": [
+        {
+            "author": "Qinyuan Cheng",
+            "authorURL": "https://scholar.google.com/citations?user=nu_iPXAAAAAJ&hl=en",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2401.13275",
+    "publishedDate": "2024-01-24",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>Can AI Assistants Know What They Don't Know?</h1>
+    <p>Can we enhance the truthfulness of AI assistants based on large language models in practical applications by
+      aligning them in a way that allows them to recognize what they don't know and express this ignorance through
+      language?</p>
+  </d-title>
+
+  <d-article>
+
+    <h2 id="introduction">Introduction</h2>
+
+    <p>
+      Recently, AI assistants based on large language models (LLMs) have demonstrated impressive performance across a
+      variety of tasks, including casual conversation with users, solving mathematical problems, writing code, and
+      utilizing external tools.
+      Despite possessing a wide range of world knowledge, large language models are still highly susceptible to model
+      hallucinations, such as producing factual errors or imitative falsehoods.<d-cite
+        key="HalluQA,TruthfulQA,Factuality_Survey"></d-cite>。
+      These untruthful responses from AI assistants pose potential risks to the real world.
+      One reason for erroneous responses from AI assistants lies in the fact that most existing AI assistants often
+      attempt to answer all questions to assist users as much as possible, even when they lack the necessary knowledge.
+      If an AI assistant has the ability to recognize and acknowledge its knowledge limitations by refusing to answer
+      questions that are beyond its scope of knowledge, it can reduce factual errors and enhance truthfulness.
+      Therefore, in this blog, we primarily investigate the following question: "Can AI assistants recognize what they
+      do not know and express this through natural language?"
+      To address this question, we endeavor to teach the AI assistant to aware its knowledge boundary. When it
+      encounters knowledge it does not know, the AI assistant needs to politely decline to answer the user's questions,
+      thereby ensuring the truthfulness of its responses.
+      First, we construct a "I don't know" (Idk) dataset for the AI assistant based on the open-domain question
+      answering dataset TriviaQA, which includes questions it knows and does not know, along with annotations for
+      correct responses or refusal to answer.
+      Then, we use this Idk dataset for alignment, observing whether the AI assistant could refuse to answer the
+      questions it does not know after alignment.
+      Since the AI assistant discussed in this blog is primarily based on large language models, we will alternately use
+      "AI assistant" and "model" to refer to the AI assistant in the subsequent discussion.
+    </p>
+
+    <p>
+      The main findings of this blog are as follows:
+    <ol>
+      <li>After aligning with the Idk dataset, AI assistants can significantly understand what they know and what they
+        don't, and refuse to answer questions they don't know.
+        For instance, Llama-2-7b-chat can explicitly determine whether it knows the answers to 78.96% of the questions
+        in the test set at most.
+        Additionally, the aligned AI assistant performs well on out-of-distribution test sets.</li>
+      <li>Among various alignment methods, Supervised Fine-tuning can make the model overly cautious, leading to the
+        incorrect rejection of questions it should know.
+        Preference-aware Optimization can help mitigate this phenomenon by reducing the instances of erroneously
+        refusing to answer known questions.</li>
+      <li>The uncertainty threshold defined for known and unknown questions influences the behavior of AI assistants.
+        The more questions are marked as "I don't know," the higher the likelihood of the AI assistant refusing to
+        answer questions.
+        However, overall, using a higher threshold results in an AI assistant that makes fewer mistakes and is generally
+        more truthful.</li>
+      <li>Models with a larger number of parameters are better at distinguishing what they know from what they do not
+        know.
+        For instance, after supervised fine-tuning, Llama-2-70b-chat can achieve a performance improvement of about 5.8%
+        compared to Llama-2-7b-chat.</li>
+    </ol>
+    </p>
+
+    <h2 id="knowledge_quadrants">Knowledge Quadrants: Partitioning the Different Knowledges of AI Assistants</h2>
+    <figure id="knowledge_quadrants_figure">
+      <img src="images/Knowledge_quadrants_new.png"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#knowledge_quadrants_figure" class="figure-number">1</a>
+        AI assistant's knowledge quadrants："Unknowns" represent the knowledge that AI assistants actually do not
+        possess, while "Knowns" represent the knowledge they actually do possess. "Known" refers to the knowledge AI
+        assistants believe they have, and "Unknown" refers to the knowledge they believe they lack. "Known Knowns" are
+        the knowledge AI assistants correctly understand they possess, "Known Unknowns" are the knowledge they correctly
+        understand they lack. "Unknown Knowns" represent the knowledge AI assistants are unaware they possess, and
+        "Unknown Unknowns" represent the knowledge they are unaware they lack.
+      </figcaption>
+    </figure>
+
+    <p>The understanding of AI assistants about their own knowledge can be divided through the knowledge quadrant<d-cite
+        key="Self-aware"></d-cite>.
+      As shown in <a href="#knowledge_quadrants_figure">Figure 1</a>, the knowledge quadrant can split all knowledge
+      into four parts: Known Knowns, Known Unknowns, Unknown Knowns, and Unknown Unknowns.
+      Known Knowns is crucial for the helpfulness and reliability of AI assistants, and we use IK-IK (I know I know) to
+      represent this category.
+      The more IK-IK knowledge there is, the more helpful the AI assistant becomes.
+      Additionally, for AI assistants, it's crucial to perceive and express the limitations of their knowledge, which
+      corresponds to Known Unknowns. We use IK-IDK to represent this type of knowledge, indicating "I know I don't
+      know."
+      Unknown Unknowns (represented by IDK-IDK, meaning "I don't know I don't know") and Unknown Knowns (represented by
+      IDK-IK, meaning "I don't know I know") can lead to inaccurate or unhelpful outputs.
+      To maintain truthfulness in AI assistants, we hope to enable them to recognize what they know and don't know, thus
+      converting Unknown Knowns and Unknown Unknowns into Known Knowns and Known Unknowns.
+    </p>
+
+    <h2 id="construction_Idk_dataset">Idk dataset: Determining what exactly the AI assistant knows and doesn't know</h2>
+
+    <figure id="construct_idk_dataset_figure">
+      <img src="images/construct_idk_and_preference_data.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#construct_idk_dataset_figure" class="figure-number">2</a>
+        Top: The construction process of the Idk dataset. Bottom: The construction process of preference data. Green
+        represents correct responses, red represents incorrect responses, blue represents templates for refusal to
+        answer.
+      </figcaption>
+    </figure>
+
+    <p>
+      To let the AI assistant know what it knows and doesn't know, we try using a model-specific "I don't know" (Idk)
+      dataset to align the AI assistant.
+      The Idk dataset contains questions that a specific AI assistant knows and does not know the answers to.
+      We build the Idk dataset based on a popular knowledge-intensive open-domain question answering dataset,
+      TriviaQA<d-cite key="TriviaQA"></d-cite>.
+      Assessing whether a language model possesses certain knowledge is a difficult task, as the model has varying
+      degrees of uncertainty about knowledge in different domains.
+      When random sampling is activated, there is still a chance to guess the answer correctly, even if the model is
+      highly uncertain about some questions.
+      To define what the model knows and what it does not know, we adopt the common practice from previous work<d-cite
+        key="Know_what_they_know,express_uncertainty"></d-cite>, which involves randomly sampling multiple responses for
+      each question and calculating the accuracy of these responses. This accuracy can serve as the model's confidence
+      level for that question.
+      Then, we can define a specific confidence level as the threshold for judging whether the language model knows the
+      answer to this question, which we call the Ik threshold.
+      We use Lexical Matching to automatically evaluate whether the model's response is correct, that is, to check
+      whether the ground truth appears in the model's response.
+      According to the conclusions of previous work<d-cite key="QA-eval"></d-cite>, on the validation set of TriviaQA,
+      the Lexical Matching method can achieve a consistency rate of about 90% with human expert evaluations.
+      Therefore, we believe that using Lexical Matching on the TriviaQA dataset can achieve accurate automatic
+      evaluation results.
+    </p>
+
+    <p>
+      As shown in the upper part of <a href="#construct_idk_dataset_figure">Figure 2</a>, we randomly sample ten
+      responses for each question and then determine whether these responses are correct, obtaining the accuracy for
+      each question.
+      For questions with an accuracy higher than the given Ik threshold, we consider that the model knows the answer to
+      this question and randomly select one of the model's generated correct answers as the annotated reply. Otherwise,
+      we consider that the model does not know the answer to this question and use a template for refusing to answer as
+      the annotated reply, which we represent in the figure with "I don't know."
+      The lower half of <a href="#construct_idk_dataset_figure">Figure 2</a> shows the method we used to construct
+      preference data.
+      To construct preference data, we will first use half of the Idk data for SFT training, and then use the model
+      trained with SFT to collect responses on the other half of the Idk data to construct pairs of preferences.
+      Each preference pair is composed of a question, a chosen response, and a rejected response.
+      For each question, we sample ten responses on the SFT model.
+      For questions where the model knows the answer, as shown in the light green box in the figure, we use all correct
+      responses generated by all models as the chosen responses, and the refusal template as the rejected response.
+      For questions where the model does not know the answer, as shown in the light blue box in the figure, we use all
+      incorrect responses generated by the model as the rejected responses, and the refusal template as the chosen
+      response.
+      For simplicity, we set the Ik threshold to 1.0.
+      That is, for a question, only when all ten responses from the model are correct, do we consider that the model
+      knows the answer to this question.
+      We will discuss the effects of different values of the Ik threshold on the behavior of the model later.
+    </p>
+
+    <h2 id="alignment">
+      Alignment: Letting the AI assistant know what it knows and what it doesn't know</h2>
+
+    <p>
+      After acquiring the Idk dataset, we can attempt to teach the AI assistant to perceive its own knowledge boundaries
+      by alignment, so that it politely refuses to answer users' questions when it encounters knowledge it does not
+      know.
+      For the original AI assistant, such as a Llama-2-7b-chat model, we find that it does not exhibit obvious behaviors
+      of refusing to answer questions it does not know<d-footnote id="d-footnote-1">In our search of the answers
+        generated by Llama-2-7b-chat for keywords like "I don't know", "not sure", "Sorry", etc., we found that only a
+        very few responses contained these keywords that indicate a refusal to answer.</d-footnote>. It attempts to
+      answer all questions to the best of its ability, striving to provide assistance to users. However, this also led
+      to a significant number of factual inaccuracies.
+      To ensure the AI assistant knows what it knows and what it doesn't, we attempt to use the Idk dataset for
+      alignment.
+      The simplest method is to directly instruct or use prompt words to prevent the AI assistant from answering
+      questions it doesn't know.
+      Secondly, we can directly use the Idk dataset to conduct SFT training.
+      Furthermore, since we design and build preference data for learning to say "I don't know," we also utilize various
+      preference optimization algorithms to further align the AI assistant.
+      We list representative results of the original AI assistant, using prompts, models trained with SFT, and models
+      trained with preference-aware optimization (DPO) in the figure below.
+    </p>
+
+    <figure id="combined_quadrants_change_figure">
+      <img src="images/combined_quadrants_change.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#combined_quadrants_change_figure" class="figure-number">3</a>
+        IK-IK: The AI assistant correctly answers the question; IDK-IK: The AI assistant knows the answer to the
+        question but incorrectly refuses to answer; IDK-IDK: The AI assistant incorrectly answers the question; IK-IDK:
+        The AI correctly refuses to answer a question it does not know.
+        w/Idk-Prompting: For models that can follow instructions, directly using prompts can transform some of the
+        IDK-IDK problems into IK-IDK problems.
+        w/Idk-SFT: Idk-SFT allows AI assistants to refuse more questions they don't know, but it also makes the model
+        more conservative, leading to the erroneous refusal of some questions they should know.
+        w/Idk-DPO: Using preference-aware optimization, such as DPO, can alleviate the model's overly conservative
+        problem and reduce the instances of incorrectly rejecting known questions.
+      </figcaption>
+    </figure>
+
+    <p>
+      As shown in <a href="#combined_quadrants_change_figure">Figure 3</a>, directly instructing the model to refuse to
+      answer questions it doesn't know through prompts is somewhat effective, but there are still a significant number
+      of "IDK-IK" and "IDK-IDK" questions.
+      After conducting SFT with the IDK dataset, the number of "IDK-IK" and "IK-IK" questions significantly decreased,
+      indicating that the model's ability to perceive its own knowledge boundaries has been enhanced.
+      However, we discover that SFT introduces an unexpected side effect, making the model more conservative, which
+      leads to a reduction in the number of "IK-IK" questions.
+      Yet, we further find that compared to SFT models, employing preference-aware optimization (such as DPO) can
+      mitigate this phenomenon, encouraging the model to answer questions more frequently and reducing the instances of
+      erroneously refusing to answer questions it knows.
+    </p>
+
+
+    <figure id="main_results_figure">
+      <img src="images/main_result.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#main_results_figure" class="figure-number">4</a>
+        The results of various alignment algorithms on the TriviaQA test set and two Out-of-Domain (OOD) test sets,
+        Natural Questions and ALCUNA.
+      </figcaption>
+    </figure>
+
+    <p>
+      In <a href="#main_results_figure">Figure 4</a>, we present more detailed experimental results, including the
+      outcomes of various alignment algorithms such as SFT, DPO<d-cite key="DPO"></d-cite>, BoN, PPO<d-cite
+        key="PPO"></d-cite>, HIR<d-cite key="HIR"></d-cite>, etc.
+      In addition to TriviaQA, we also select two additional datasets, Natural Questions<d-cite key="NQ"></d-cite> and
+      ALCUNA<d-cite key="ALCUNA"></d-cite>, as out-of-distribution test sets. This means that after training on the Idk
+      dataset constructed based on TriviaQA, we directly test the model on Natural Questions and ALCUNA.
+      Natural Questions is an open-domain question-answering dataset of the same type as TriviaQA, but it is more
+      difficult than TriviaQA. In the test set of Natural Questions, only 24.65% of the questions are considered to be
+      answerable by Llama-2-7b-chat.
+      ALCUNA is a dataset for synthesizing knowledge, which includes some questions about creatures that do not actually
+      exist, such as combining Alpaca and Vicuna to form Alcuna. Therefore, the model needs to refuse to answer all
+      questions in this test set.
+    </p>
+
+    <p>
+      The number of IK-IK and IK-IDK questions contained in the test set can be approximately seen as an upper limit.
+      TRUTHFUL represents the sum of the proportions of IK-IK and IK-IDK, because both IK-IK and IK-IDK questions are
+      types of truthful answers and do not generate additional false information. Therefore, TRUTHFUL can represent the
+      model's truthfulness.
+      Simply using an "Idk" prompt to make the model refuse to answer questions it doesn't know can be somewhat
+      effective, but the model's TRUTHFUL rate remains only at 66.93%, with a significant number of IDK-IDK questions.
+      Idk-SFT can increase the TRUTHFUL rate to 74.75%, but it will lead to a decrease in the IK-IK rate. This is a side
+      effect of SFT, which can be considered a kind of "alignment tax."
+      Further, we find that preference-aware optimization can encourage models to answer questions more frequently,
+      thereby mitigating such side effects.
+      Preference-aware optimization algorithms like DPO, PPO, and BoN can reduce the decline in IK-IK while maintaining
+      a relatively high IK-IDK rate.
+      Idk-BoN achieves the highest TRUTHFUL rate, and Idk-HIR can improve the IK-IDK ratio but offers less help in
+      increasing the IK-IK ratio.
+      However, Idk-HIR provides a method for switching the Ik threshold without the need to retrain the model.
+      In summary, by aligning the AI assistant with the Idk dataset (which represents its knowledge boundaries), we can
+      transform IDK-IK and IDK-IDK questions into IK-IK and IK-IDK questions.
+      The AI assistant is able to clearly perceive whether it knows the answers to most questions in the test set, and
+      its accuracy significantly improves compared to before alignment.
+    </p>
+
+    <p>
+      Although TriviaQA itself cannot improve test set performance by fine-tuning on the training set (as the training
+      set does not introduce the knowledge needed for the test set), we still introduce two different datasets as
+      Out-of-distribution (OOD) tests, and models trained on TriviaQA also demonstrate good generalization ability on
+      OOD test sets.
+      We construct the Idk dataset (which only includes the test set portion) based on the Natural Questions using the
+      same method, with the Ik threshold also set at 1.0.
+      The results on Natural Questions are similar to those on TriviaQA; compared to simply using prompts, the trained
+      model achieved a higher TRUTHFUL rate.
+      On the ALCUNA test set, where all answers must be rejected, the model is also able to refuse to answer most
+      questions.
+    </p>
+
+    <h2 id="ablation">Ablation: Factors that affect the AI assistant's perception of its own knowledge boundaries</h2>
+
+    <figure id="ablation_results_figure">
+      <img src="images/ablation_results.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#ablation_results_figure" class="figure-number">5</a>
+        Ablation experiment results.
+      </figcaption>
+    </figure>
+
+    In this section, we primarily analyze three factors that may influence an AI assistant's perception of its own
+    knowledge boundaries: model size, data sources, and different Ik threshold values.
+
+    <h3 id="effect_of_model_size">Effect of model size</h3>
+
+    <p>
+      The capabilities of large language models are generally related to their size in terms of parameters, with larger
+      models often exhibiting stronger abilities.
+      Therefore, to explore the impact of model size, we conduct Idk-SFT training on three different sizes of models:
+      Llama-2-7b-chat, Llama-2-13b-chat, and Llama-2-70b-chat, to investigate how model size affects AI assistants'
+      recognition of their own knowledge limitations.
+      It is important to note that the label distribution of the Idk dataset varies across different models (the larger
+      the model, the more IK-IK problems there are), which means that the IK-IK rate and the IK-IDK rate cannot be
+      directly compared across models.
+      Hence, our primary focus is on the TRUTHFUL rate of different models.
+      The experimental results from <a href="#ablation_results_figure">Figure 5</a> indicate that the 13B model has a
+      slightly higher TRUTHFUL rate than the 7B model.
+      The TRUTHFUL rate of the 70B model is significantly higher than that of both the 13B and 7B models.
+      This demonstrates that larger models are indeed better at distinguishing between what they know and what they
+      don’t know.
+    </p>
+
+    <h3 id="effect_of_data_sources">Effect of data sources</h3>
+
+    <p>
+      Different pretrained models possess distinct knowledge due to their unique pretraining processes.
+      During the training process, we construct model-specific Idk (I don't know) datasets for different pretrained
+      models because we want the models to determine whether they know the answer to a question based on their internal
+      knowledge, rather than learning to recognize questions with certain specific patterns.
+      A model-specific Idk dataset can link the model's internal knowledge with the labels of the Idk dataset.
+      To explore the impact of using non-model-specific Idk datasets on training, we construct two Idk datasets using
+      Mistral-7B-Instruct-v0.1 and Baichuan2-7B-chat, named "Idk-Mistral" and "Idk-Baichuan," respectively.
+      Experimental results from <a href="#ablation_results_figure">Figure 5</a> show that using non-model-specific Idk
+      datasets, such as "Idk-Mistral" or "Idk-Baichuan," indeed leads to a decrease in the TRUTHFUL rate of the models.
+      Since the Idk-Mistral and Idk-Baichuan datasets contain a large number of Idk questions, the trained models tend
+      to reject answering questions more often, leading to a significant reduction in the number of IK-IK (I Know-I
+      Know) questions, much lower than the proportion in the test set.
+      This indicates that constructing model-specific Idk datasets is necessary to help models perceive what they know
+      and what they do not.
+    </p>
+
+    <h3 id="effect_of_Ik_threshold">Effect of Ik threshold</h3>
+    <figure id="label_train_distribution_and_f1_figure">
+      <img src="images/label_train_distribution_and_f1.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#label_train_distribution_and_f1_figure" class="figure-number">6</a>
+        The label distribution of the Idk dataset for different Ik threshold values, as well as the changes in the
+        IK-IK, IK-IDK, and TRUTHFUL rates.
+      </figcaption>
+    </figure>
+
+    <p>
+      Here, we discuss the impact of different Ik thresholds on model behavior.
+      Our primary focus is on the effects of the Ik threshold on Idk-SFT and conducting experiments with
+      Llama-2-7b-chat.
+      The most direct impact of the Ik threshold is on the distribution of labels in the Idk dataset, where a higher
+      threshold indicates that more questions will be marked as "I don't know."
+      As shown in the left graph of <a href="#label_train_distribution_and_f1_figure">Figure 6</a>, the higher the
+      threshold, the larger the proportion of Idk questions.
+      This is because, at a high Ik threshold, only those questions that the model is very confident about will be
+      marked as known by the model.
+      As shown in the right graph of <a href="#label_train_distribution_and_f1_figure">Figure 6</a>, increasing the Ik
+      threshold results in a decrease in the IK-IK rate and an increase in the IK-IDK rate.
+      With the increase of the Ik threshold, the model's TRUTHFUL rate will continue to rise.
+      In other words, setting a higher Ik threshold helps the model better distinguish between what it knows and does
+      not know, making the model overall more truthful.
+      Conversely, setting a lower Ik threshold can make the model more helpful, as the number of IK-IK questions will
+      increase.
+      Additionally, we find that as the proportion of Idk questions in the dataset increases, the model tends to refuse
+      to answer questions more frequently.
+    </p>
+
+    <figure id="all_knowledge_quadrants_figure">
+      <img src="images/all_knowledge_quadrants.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#all_knowledge_quadrants_figure" class="figure-number">Figure 7</a>
+        The distribution of the knowledge quadrants after conducting SFT on the Llama-2-7b-chat model using Idk datasets
+        corresponding to different Ik threshold values.
+      </figcaption>
+    </figure>
+
+    <p>
+      In <a href="#all_knowledge_quadrants_figure">Figure 7</a>, we demonstrate the distribution of knowledge quadrants
+      after performing Supervised Fine-Tuning (SFT) on Llama-2-7b-chat using the Idk dataset corresponding to different
+      Ik threshold values.
+      It can be observed that as the Ik threshold increases, the number of IK-IK issues decreases, the number of IK-IDK
+      issues increases, and the overall TRUTHFUL rate rises.
+    </p>
+
+    <h2 id="conclusion">Conclusion</h2>
+
+    <p>
+      In this work, we explore the question of "Can AI assistants know what they don't know?"
+      We find that by aligning AI assistants, such as Llama-2-7b-chat, with a model-specific Idk ("I don't know")
+      dataset that records what they know and don't know, AI assistants can largely identify the questions they do not
+      know.
+      In open-domain question-answering tests, Llama-2-7b-chat is able to accurately determine whether it knew the
+      answer to 78.96% of the questions and refused to answer the questions it did not know.
+      To achieve this, we explore various alignment strategies using the Idk dataset, including supervised fine-tuning
+      and preference-aware optimization.
+      Our analysis shows that the Ik threshold, which decides whether the model knows an answer to a certain question,
+      affects the model's tendency to refuse to answer.
+      Additionally, using a non-model-specific Idk dataset tends to lower performance.
+      Employing models with a larger number of parameters, such as Llama-2-70b-chat, results in a higher TRUTHFUL rate.
+      The ability of AI assistants to refuse to answer questions beyond their knowledge effectively reduces the model's
+      factual errors and other hallucinations. We believe this is an important capability that a truthful AI assistant
+      needs to have.
+    </p>
+
+  </d-article>
+
+
+
+  <d-appendix>
+    <h3>Acknowledgments</h3>
+    <p>
+      I especially thank Tianxiang Sun, Xiangyang Liu , Wenwei Zhang and other co-authors for their guidance and help. I
+      really enjoy the teamwork with them.
+    </p>
+
+    <p>
+      Thanks to my advisor, Prof. Xipeng Qiu, for his guidance, support, helping me persevere and complete this work.
+    </p>
+
+    <p>
+      I am also grateful to Xinyang Pu for her support. I know we'll both make it through.
+    </p>
+
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+</body>

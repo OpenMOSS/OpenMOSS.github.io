@@ -1,0 +1,81 @@
+/* OpenMOSS blog — replicate the main-site header (nav bar) and footer so Distill
+ * articles share the same chrome as the homepage. Built by blog-chrome.js;
+ * both are loaded via versioned tags in each blog page's <head>.
+ * Palette + rules mirror /assets/css/style.css. */
+
+:root {
+  --fudan-blue: #0e419c;
+  --text: #1a2233;
+  --text-soft: #51607a;
+  --border: #dbe3f2;
+  --band: #eef3fb;
+  --sand-light: #f7f9fc;
+}
+
+/* hide Distill's own header + footer in favour of the OpenMOSS chrome */
+distill-header, distill-footer { display: none !important; }
+
+/* page background matches the homepage (style.css --sand-light) */
+html, body { background-color: var(--sand-light); }
+
+.om-container { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
+
+/* ---------- header / nav ---------- */
+nav.om-navbar {
+  position: sticky; top: 0; z-index: 999;
+  background-color: var(--band);
+  border-bottom: 1px solid var(--border);
+  font-family: "Roboto", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+.om-navbar .nav-container { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; min-height: 48px; }
+.om-navbar .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; }
+.om-navbar .brand-logo { width: 38px; height: 38px; object-fit: contain; display: block; }
+.om-navbar .brand-name { color: var(--text); font-size: 24px; font-weight: 600; letter-spacing: 0.04em; }
+.om-navbar .nav-links { list-style: none; display: flex; align-items: center; gap: 24px; margin: 0; padding: 0; }
+.om-navbar .nav-links li { margin: 0; }
+.om-navbar .nav-links a { color: var(--text-soft); font-weight: 400; letter-spacing: 0.02em; text-decoration: none; }
+.om-navbar .nav-links a.active { color: var(--fudan-blue); font-weight: 600; }
+.om-navbar .nav-links a:hover { color: var(--text); }
+.om-navbar .lang-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: none; color: var(--text); padding: 6px 8px; font-size: 14px; cursor: pointer; }
+.om-navbar .lang-text { color: var(--text-soft); }
+.om-navbar .lang-text.active { color: var(--fudan-blue); font-weight: 600; }
+.om-navbar .lang-separator { color: var(--border); }
+.om-navbar .nav-toggle { display: none; background: none; border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 4px; cursor: pointer; }
+.om-navbar .nav-toggle .icon-bar { display: block; width: 20px; height: 2px; margin: 4px 0; background-color: var(--text); }
+
+/* ---------- footer ---------- */
+footer.om-footer {
+  background-color: var(--band);
+  color: var(--text-soft);
+  border-top: 1px solid var(--border);
+  padding: 56px 0 24px;
+  margin-top: 56px;
+  font-family: "Roboto", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+.om-footer .footer-grid { display: grid; grid-template-columns: 0.6fr 1.3fr 1.1fr; gap: 24px; width: 100%; }
+.om-footer h4 { color: var(--text); font-weight: 600; font-size: 18px; margin: 0 0 18px; }
+.om-footer ul { list-style: none; margin: 0; padding: 0; }
+.om-footer li { margin-bottom: 10px; color: var(--text-soft); font-weight: 300; }
+.om-footer a { color: var(--text-soft); font-weight: 300; text-decoration: none; }
+.om-footer a:hover { color: var(--fudan-blue); }
+.om-footer .footer-inline-link { color: inherit; text-decoration: none; }
+.om-footer .footer-inline-link:hover { text-decoration: underline; }
+.om-footer .footer-note { text-align: center; margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 14px; }
+.om-footer .footer-note a { color: var(--text-soft); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 992px) {
+  .om-footer .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .om-navbar .nav-links {
+    position: absolute; inset: auto 0 0 0; background-color: var(--fudan-blue);
+    flex-direction: column; align-items: center; gap: 12px; padding: 20px 0;
+    transform: translateY(-150%); transition: transform 0.3s ease;
+  }
+  .om-navbar .nav-links.open { transform: translateY(0); }
+  .om-navbar .nav-links a, .om-navbar .nav-links a.active { color: #fff; }
+  .om-navbar .nav-toggle { display: inline-flex; flex-direction: column; justify-content: center; }
+  .om-navbar .nav-container { position: relative; }
+  .om-footer .footer-grid { grid-template-columns: 1fr; }
+}

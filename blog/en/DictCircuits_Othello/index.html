@@ -1,0 +1,1256 @@
+<!--
+  Copyright 2018 The Distill Template Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!doctype html>
+
+<head>
+  <script src="/blog/template.v2.js?v=3"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf8">
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script id='distill-front-matter' type="text/json">{
+    "title": "Dictionary Learning Improves Patch-Free Circuit Discovery in Mechanistic Interpretability",
+    "description": "With dictionary learning, we dig in a small transformer trained on a synthetic task and find a number of human-understandable information flow inside of it.",
+    "published": "Mar 5, 2023",
+    "authors": [
+      {
+        "author":"Zhengfu He",
+        "authorURL":"",
+        "affiliations": [{"name": "OpenMOSS"}]
+      }
+    ],
+    "katex": {
+      "delimiters": [
+        {"left": "$$", "right": "$$", "display": false}
+      ]
+    }
+  }</script>
+  </d-front-matter>
+  <d-title>
+    <p></p>
+    <p><i>With dictionary learning, we dig in a small transformer trained on a synthetic task and find a number of
+        human-understandable fine-grained information flow inside of it.</i></p>
+  </d-title>
+  <d-byline></d-byline>
+  <d-article>
+    <p><i>
+        An informal post to share our recent progress on circuit discovery with dictionary learning. We recommend
+        readers to see <a href="https://arxiv.org/abs/2402.12201">our first arxiv version</a> for cleaner demonstration
+        (More experiments coming up). Open source code is to be published at <a
+          href="https://github.com/OpenMOSS/DictionaryCircuits-Othello">our GitHub repository</a>.
+      </i></p>
+    <h2>Introduction</h2>
+    <p>
+      In recent years, advances in transformer-based language models have sparked interest in better understanding the
+      internal computational workings of these systems.
+      Researchers have made some progress in identifying interpretable circuits and algorithms within GPT-2, but much of
+      the model's broad language generation capabilities remain opaque.
+      The emerging field of <i>Mechanistic Interpretability</i><d-cite
+        bibtex-key="cammarata2020distillcircuitthread,elhage2021mathematical"></d-cite> aims to reverse engineer neural
+      networks in order to map their internal components to understandable computational primitives.
+      By decomposing these black box systems into basic building blocks carrying out discrete functions, the goal is to
+      shed light on how complex behaviors like language modeling emerge from combinations of simple computational
+      elements.
+    </p>
+    <p>
+      In the mechanistic view of transformers, understanding model activations is a central task.
+      Activations answer an important question in mechanistic interpretability: what high-level features does the model
+      compute?
+      Recent advances in sparse dictionary learning have opened up new possibilities for extracting more interpretable,
+      monosemantic features out of superposition.
+      Hypothesis of linear representation grants researchers the convenience of feature superposition and attacking the
+      dimension curse.
+      By learning sparse dictionaries that decompose activations into semantically meaningful directions in the
+      representation space, we are able to gain more microscopic insight of model representations.
+    </p>
+    <p>
+      This work proposes a circuit discovery framework utilizing sparse dictionaries to decompose activation spaces into
+      interpretable information flows that can be traced through a subset of layers or end-to-end in the model.
+      Our framework aims to answer three questions:
+    <ul>
+      <li>
+        Explaining dictionary features w.r.t inputs / outputs.
+      </li>
+      <li>
+        Explaining how high-level features are computed from low-level ones.
+      </li>
+      <li>
+        Explaining how features affect model logits.
+      </li>
+    </ul>
+    </p>
+    <p>
+      These questions as a whole explains almost every property of a model. They, however, are somehow orthogonal in our
+      research agenda.
+      Developing dictionary training techniques and better interpreting methods of dictionary features is crucial in the
+      first question. Prior work has made some advances on this topic.
+      The second question is in comparison less discussed in the literature. The last can be solved with existing
+      techniques in Mech Interp.
+    </p>
+    <p>
+      We apply our theoretical framework to analyze a decoder-only transformer trained on a synthetic task called
+      Othello.
+      Experiments provide concrete evidence that dictionary learning can extract interpretable features and improve
+      end-to-end circuit discovery.
+      Moreover, we are able to determine how a given feature is activated by its lower-level computations, which has
+      been challenging for existing mechanistic interpretability methods like probing and patching.
+    </p>
+
+    <h2>Summary of Results</h2>
+    <ul>
+      <li>
+        <b>Interpretation of dictionary features：</b>
+        Dictionaries decompose the activations into families of interpretable features. Some of them have been found in
+        prior work.
+        Dictionary learning discovers these features in an unsupervised way.
+        However, better interpretation still requires human knowledge.
+      </li>
+      <li>
+        <b>Information flow of attention modules:</b>
+        Our theory posits that dictionary features of each attention module output can be decomposed into contributions
+        from features of other tokens, and the magnitude of these contributions indicates how the attention module
+        transfers residuals of other tokens into the information for the current token.
+      </li>
+      <li>
+        <b>Formation of attention patterns:</b>
+        In our theory, the attention score between any pair of tokens in a given attention head at a given layer can be
+        decomposed into a sum of contributions from features of the two tokens, which can reveal the reasons behind the
+        attention pattern generated.
+      </li>
+      <li>
+        <b>Information processing of MLPs:</b>
+        Theoretically, we can explain how each dictionary feature outputted by an MLP is computed from its bottom
+        features, thereby understanding how the massive parameters in an MLP operate on the information flow. We have
+        some discussions on the extensions of our MLP theory.
+      </li>
+      <li>
+        <b>Experimental validation:</b>
+        We have relatively optimistic results in practice on Othello models.
+        Applying the above theoretical framework allows computing an interpretable circuit for most features, with
+        significantly improved granularity and generality compared to existing circuit discovery methods.
+      </li>
+    </ul>
+
+    <h2>Our Theoratical Framework</h2>
+    <p>
+      Sparse dictionary has shown its great potential on extracting monosemantic features in transformers in an
+      unsupervised manner. It works to an unprecedented extent on multiple positions of the residual stream and on
+      multiple sizes of models.
+      We claim that dictionary learning also grants new possibilities for circuit discovery. We can start from any
+      feature (or model output), recursively tracing down to the input embedding to find one (or a group) of local (or
+      end-to-end) circuits.
+    </p>
+    <p>
+      We follow <a href="https://transformer-circuits.pub/2021/framework/index.html">A Mathematical Framework of
+        Transformer Circuits</a><d-cite bibtex-key="elhage2021mathematical"></d-cite> to divide transformers into 3 main
+      components: QK, OV and MLP.
+      We correspondingly answer the following questions:
+    </p>
+    <ul>
+      <li>
+        <b>What information does the attention module transfer:</b>
+        For each attention head, after determining the attention weights, representations are transferred from one token
+        to another by multiplying the representations with two weight matrices <d-math>W_{V}</d-math> and
+        <d-math>W_{O}</d-math>.
+        Which features of the source token are transformed into which features of the target token through this
+        information move?
+      </li>
+      <li>
+        <b>How are the attention weights formed:</b>
+        The attention head computes the inner product of the Q and K vectors of two tokens to obtain the attention score
+        between them, which is then normalized to the attention weight via the Softmax function.
+        For a given attention score between two tokens, we want to understand which features caused this attention.
+      </li>
+      <li>
+        <b>How does the MLP process features:</b>
+        The MLP output introduces new information into the residual stream.
+        Which features are used to compute this new information?
+      </li>
+    </ul>
+
+    <h3>Interpretable Sparse Coding with Dictionary Learning</h3>
+    <p>
+      If the internal structure of Transformers were more interpretation-friendly, with linear interpretable features
+      neatly corresponding to neurons and their activation strengths, it would be straightforward to analyze each
+      neuron's purpose based on when it activates, and understand the model's reasoning by looking at each neuron's
+      activation value for a given output.
+      This assumption has major limitations <d-cite bibtex-key="Donnelly2019sentiment,Morcos2018neurons"></d-cite>, but
+      interpretable neurons can still be found in many language models <d-cite
+        bibtex-key="Karpathy2015RNNNeurons"></d-cite>, vision models <d-cite bibtex-key="Bau2017CNNNeurons"></d-cite>,
+      and multimodal models <d-cite bibtex-key="goh2021multimodal"></d-cite>.
+      From the most intuitive perspective, even without considering any high-level features, if the vocabulary size is
+      greater than the hidden layer dimension, the model has to cram more features than its dimensionality into a
+      limited space.
+      Superposition hypothesis <d-cite bibtex-key="elhage2022superposition"></d-cite> assumes that features are
+      "squeezed" into this crowded space in an interfering way.
+      In this case, there must exist at least one feature whose direction in the representational space does not align
+      with any one neuron.
+    </p>
+    <p>
+      Furthermore, prior work on Privileged Bases <d-cite bibtex-key="elhage2023privileged"></d-cite> suggests models
+      represent features through a mixture of:
+    </p>
+    <ul>
+      <li>
+        <b>Arbitrary directions:</b>
+        Applying arbitrary rotations uniformly across the parameters of a Transformer results in an equivalence family
+        of Transformers with equal standing and identical behavior.
+        Since Transformer computations have invariance to rotations applied uniformly to every matrix, in theory it does
+        not need to place features along axes determined by the neurons.
+      </li>
+      <li>
+        <b>Preference for neuron directions:</b>
+        Although in representational space, the basis determined by the neurons are on equal footing with any other
+        orthogonal basis, there are factors that make Transformers likely to "place" features along the
+        neuron-determined directions.
+      </li>
+    </ul>
+    <p>
+      Due to the aforementioned issues with understanding neural network model internal from the neuron perspective,
+      there is a need for a more general approach to find an "interpretable basis" constituting these explainable
+      directions, which are quite likely to be overcomplete.
+      Moreover, a major drive behind superposition is the sparsity of the features, which is also an important property
+      often present in real-world tasks.
+      Therefore, utilizing sparse dictionary learning to extract features aligns well with these two important
+      properties of overcompleteness and sparsity.
+      Overall, the goal of sparse dictionary learning is to find, through an autoencoder, a set of overcomplete bases
+      <d-math>\mathbf{d}</d-math> such that for any activation <d-math>\mathbf{x}</d-math> at a given model location, it
+      can be decomposed into a sparse weighted sum over this set of bases:
+    </p>
+    <d-math block>
+      \mathbf{x} \approx \sum_{i}{c_i \mathbf{d}_i};\quad \text{s.t.} \quad \min{\lVert \{c_i | c_i\in \mathbf{c}, c_i >
+      0\} \rVert}
+    </d-math>
+    <p>
+      <d-math>c_i</d-math> is the activation magnitude of the <d-math>i</d-math>-th dictionry feature.
+      By constraining the sparsity of the activations over the dictionary features, the dictionary is forced to find the
+      fundamental features implicitly contained in the representation and compute the most sparse (under a given metric)
+      composition over this set of features that can reconstruct the given representation.
+    </p>
+    <p>
+      For a model activation captured at a given position in the transformer, we can decompose it into a weighted sum of
+      a group of (more) interpretable dictionary features:
+    </p>
+    <figure><img src="pics/Dictionary.jpg" style="width:100%; border: None;" /></figure>
+
+    <h3>Where Should We Train Dictionary on?</h3>
+    <figure><img src="pics/decomposition_choice.jpg" style="width:100%; border: None;" /></figure>
+    <p>
+      Viewing the residual stream as the memory management center of transformer, and each Attention and MLP module read
+      from and write to it, is an important concept for understanding how information flows in transformers.
+      Previous work based on dictionary learning has typically studied: word embedding<d-cite
+        bibtex-key="chen2017dict,subramanian2018dict,zhang2019dict,panigrahi2019dict"></d-cite>, residual streams<d-cite
+        bibtex-key="yun2021dict,cunningham2023dict"></d-cite>, and MLP hidden layers<d-cite
+        bibtex-key="bricken2023monosemanticity"></d-cite>.
+      Here is a brief commentary on these works:
+    </p>
+    <ul>
+      <li>
+        <b>Decomposing word representations:</b>
+        Word representations are the initial state of the residual stream and trigger of subsequent computation.
+        Existing work that uses dictionary learning to decompose word representations into interpretable additive
+        features is a good starting point.
+        However, this alone is not enough to fully understand the entire model.
+      </li>
+      <li>
+        <b>Decomposing the residual stream:</b>
+        Decomposing the residual stream between each transformer block has the benefit of being intuitive, clearly
+        capturing internal feature changes.
+        However, this approach has some problems. If a shared dictionary is used to decompose all positions of the
+        residual stream, distributional shifts at different model depth will greatly impact dictionary features.
+        If each position is trained separately, the input and output will lie in two different vector spaces spanned by
+        different dictionary bases, so their difference cannot be directly computed.
+        Corresponding concepts between the two bases would need to be identified to enable interpretation.
+      </li>
+      <li>
+        <b>Decomposing MLP hidden layers:</b>
+        This choice is based on the fact that in the prevalent pre-norm Transformer architecture, we only need to
+        understand the components written to the residual stream by each module and sum them to obtain the final result,
+        without needing to interpret the residual stream itself.
+        Under this view, we have two strategies: decomposing the MLP output or MLP hidden layers.
+        Compared to the former, directly analyzing the MLP hidden layers increases the number of trainable model
+        parameters by 4-16 times <d-footnote>(d_mlp / d_model) squared</d-footnote>.
+        In addition, since the MLP downprojection matrix MLP_out represents a linear mapping from a high-dim to low-dim
+        space, some decomposed features could lie in its nullspace.
+      </li>
+    </ul>
+    <p>
+      Based on the above analysis, we believe it could be beneficial to use dictionary learning to decompose the
+      following three parts: word representations, the output of each Attention layer, and the output of each MLP layer.
+      Although there has already been considerable Mechanistic Interpretability work analyzing Attention heads compared
+      to MLPs, we think incorporating them into a unified dictionary learning framework is necessary.
+      This setting would be helpful for understanding Transformers in a systematic and scalable way.
+    </p>
+
+    <h3>Module Input Decomposition</h3>
+    <figure><img src="pics/decomposition_residual_stream.jpg" style="width:100%; border: None;" /></figure>
+    <p>
+      As shown above, the input of any Attention or MLP block <d-math>x</d-math> can be linearized as the sum of all
+      outputs of its lower module. For example, the input of L1M (MLP block in layer 1) can be decomposed into 4 parts:
+    </p>
+    <d-math block>
+      x_{\text{L1M}} = \text{LN}(\textbf{Embed} + \textbf{Out}_{\text{L0A}} + \textbf{Out}_{\text{L0M}} +
+      \textbf{Out}_{\text{L1A}})
+    </d-math>
+
+    <h3>Dealing with Non-linearity of LayerNorm</h3>
+    <p>
+      In prevalent transformer architectures, LayerNorm is usually applied after each module makes a copy of the
+      residual flow, i.e. pre-norm.
+      Although the input to each module can be linearly decomposed into the sum of outputs from all bottom modules,
+      LayerNorm itself is not a linear operation.
+      This prevents us from attributing a certain consequence to each linear component, which is an important issue to
+      resolve for facilitating subsequent analyses.
+    </p>
+    <d-code block language="python">
+      x = x - x.mean() # Linear Operation
+      x = x * (1 / x.std()) # Non-Linear Operation !!
+      x = ln.w @ x + ln.b # Linear Operation
+    </d-code>
+    <p>
+      The above pseudocode describes the computation process of LayerNorm, where the step of calculating the standard
+      deviation is non-linear to the input x.
+      To address this, we treat the standard deviation of x as a constant rather than a function of x.
+      This allows us to transform LayerNorm into a linear function of x without changing the computational result.
+      With this transformation, we can now apply the modified LayerNorm separately to any linear decomposition of x to
+      estimate the impact of each component on the result.
+      This resolves the issue of analyzing LayerNorm for facilitating subsequent analyses.
+    </p>
+    <p>
+      Specifically, when we are interested in the final LayerNorm before the unembedding, this technique can be used to
+      analyze the impact of each module on the output logits.
+      This technique is called Direct Logit Attribution and has been applied in quite a few Mech Interp works.
+    </p>
+
+    <h3>Dissecting OV Circuits</h3>
+    <figure><img src="pics/OV.jpg" style="width:100%; border: None;" /></figure>
+    <p>Each attention head needs to transfer the input of token <d-math>j</d-math> to token <d-math>i</d-math> through
+      the following process:</p>
+    <d-math block>
+      \textbf{OV}^h_{i \gets j} = \textbf{AttnPattern}^h_{ij}W_O^hW^h_Vx_j
+    </d-math>
+    <p>
+      The superscript <d-math>h</d-math> indicates that the corresponding model parameters/activations are independent
+      for each head.
+      <d-math>\textbf{AttnPattern}^h_{ij}</d-math> represents the weight coefficients for information transfer,
+      <d-math>W^h_OW^h_V</d-math> are the OV weight matrices for this attention head, which can be intuitively
+      understood as additional processing when transferring information.
+      <d-math>x_j</d-math> is the input to this attention module, which is the same for each head.
+    </p>
+    <p>
+      Due to the independent additivity of multi-head attention, the output of the attention module at token
+      <d-math>i</d-math> can be expressed as:
+    </p>
+    <d-math block>
+      \textbf{Out}_{\text{LXA},i} = \sum_h \sum_j \textbf{OV}^h_{i \gets j} = \sum_h \sum_j
+      \textbf{AttnPattern}^h_{ij}W_O^hW^h_Vx_j
+    </d-math>
+    <p>
+      Therefore, the output of an attention module at token <d-math>i</d-math> is the sum of the outputs from each head,
+      and the output of each head is in turn the sum of the OV outputs computed by that head over every other token.
+      Furthermore, we can also decompose the input to this module at each of the other tokens into the sum of all of its
+      bottom module outputs:
+    </p>
+    <d-math block>
+      \textbf{Out}_{\text{LXA},i} = \sum_h \sum_j \textbf{AttnPattern}^h_{ij}W_O^hW^h_V \text{LN}(\sum_{m
+      \in\text{Bottom Modules of LXA}}\textbf{Out}_m)
+    </d-math>
+    <p>
+      Moreover, we decompose the output of each module into weighted sum of dictionary features:
+    </p>
+    <d-math block>
+      \textbf{Out}_{\text{LXA},i} \approx \sum_h \sum_j \textbf{AttnPattern}^h_{ij}W_O^hW^h_V \text{LN}(\sum_{m
+      \in\text{Bottom Modules of LXA}}(\sum_{k\in {\text{Dict }m}} {c^m_k \mathbf{d}^m_k}))
+    </d-math>
+    <p>
+      Each dictionary decomposition is composed of a group of activation magnitude <d-math>c^{\text{L.C.}}_k</d-math>
+      multiplying a unit vector standing for the feature direction <d-math>\mathbf{d}^{\text{L.C.}}_k</d-math>.
+    </p>
+    <p>
+      Dictionary encoder of LXA takes in <d-math>\textbf{Out}_{\text{LXA},i}</d-math> and applies a linear map
+      <d-math>\{ W^{\text{LXA}}_{e, Y}, \mathbf{b}^{\text{LXA}}_{e, Y}\}</d-math> for the activation magnitude of
+      feature Y:
+    </p>
+    <d-math block>
+      \tilde{\mathbf{c}}_{\text{LXAY}, i} \approx W^{\text{LXA}}_{e, Y} \sum_h \sum_j
+      \textbf{AttnPattern}^h_{ij}W_O^hW^h_V \text{LN}(\sum_{m \in\text{Bottom Modules of LXA}}(\sum_{k\in {\text{Dict
+      }m}} {c^m_k \mathbf{d}^m_k})) + \mathbf{b}^{\text{LXA}}_{e, Y}
+    </d-math>
+    <p>
+      By utilizing the linearized LayerNorm introduced in the last section, we manage to attribute the activation
+      magnitude of Y-th dictionary feature in the i-th token to all dictionary features in the bottom of LXA of all
+      tokens.
+    </p>
+
+    <h3>Attributing Attention Patterns to Dictionary Features</h3>
+    <figure><img src="pics/QK.jpg" style="width:100%; border: None;" /></figure>
+    <p>
+      In LXA, each head determines how much proportion of its attention from token <d-math>i</d-math> be assigned to
+      token <d-math>j</d-math> through the following process:
+    </p>
+    <d-math block>
+      \textbf{AttnPattern}_{ij} = \text{Softmax}(x_iW_QW^\mathrm{T}_Kx^\mathrm{T})_j
+    </d-math>
+    <p>
+      <d-math>x\in \mathrm{R}^{L \times D}</d-math> is the input of all tokens to LXA，<d-math>x_i\in \mathrm{R}^{1
+        \times D}</d-math> is input of token <d-math>i</d-math> to LXA.
+      <d-math>W_Q, W_K \in \mathrm{R}^{D \times d}</d-math> is the QK circuit of the given attention head. <d-math>D,
+        d</d-math> stands for the hidden dimension of the model and the head, respectively.
+      We omit the superscript indicating head index since QK circuit is independent in each head of LXA.
+    </p>
+    <p>
+      We denote the item before Softmax <d-math>x_iW_QW^\mathrm{T}_Kx^\mathrm{T}</d-math> Attention Score.
+      As an important nonlinear module, Softmax normalizes the Attention Score, and this processing causes any change in
+      the elements of the attention scores to affect the attention strengths across the entire sequence, making it
+      difficult for explanation.
+      Therefore, it is challenging to fully understand the attention scores across the entire sequence. We have to
+      settle for seeking a more qualitative question:
+      For a given attention head in LXA that assigns attention between two tokens, which pair of features in their
+      respective residual streams has generated a stronger "resonance"?
+    </p>
+    <p>
+      In particular, since input of each token to LXA can be decomposed to dictionary features of bottom modules in its
+      own residual stream, i.e.
+    </p>
+    <d-math block>
+      x_{\text{LXA}} = \text{LN}(\sum_{m \in\text{Bottom Modules of LXA}}\textbf{Out}_m) \approx \text{LN}(\sum_{m
+      \in\text{Bottom Modules of LXA}}(\sum_{k\in {\text{Dict }m}} {c^m_k \mathbf{d}^m_k}))
+    </d-math>
+    <p>
+      By further denoting the sum of all dictionary features of all bottom modules as a whole, we get a clear bilinear
+      form to dissect <d-math>\textbf{AttnScore}_{ij}</d-math> (with linearized LayerNorm):
+    </p>
+    <d-math block>
+      \textbf{AttnScore}_{ij} \approx \underbrace{\text{LN}(\sum_s c_s \mathbf{d}_s)}_{\text{Residual Stream of the }
+      i\text{-th token}}W_QW^\mathrm{T}_K\underbrace{\text{LN}(\sum_t c_t \mathbf{d}_t)^\mathrm{T}}_{\text{Residual
+      Stream of the } j\text{-th token}}
+    </d-math>
+    <p>
+      Thus for any given <d-math>\textbf{AttnScore}_{ij}</d-math>, we manage to decompose it into the sum of
+      contributions of feature pairs in the two corresponding residual stream.
+    </p>
+
+    <h3>Attributing MLP features</h3>
+    <figure><img src="pics/MLP.jpg" style="width:100%; border: None;" /></figure>
+    <p>
+      The MLP module accounts for over half of the parameters in Transformer models, yet research on interpreting MLPs
+      is significantly less than for attention modules in the field.
+      This may be because the MLP itself has a simpler form, while neuron-based research has certain limitations.
+      Under the framework of dictionary learning, we appear able to understand more about the internal features of the
+      MLP.
+    </p>
+    <p>The output of LXM can be written as follows:</p>
+    <d-math block>
+      \textbf{Out}_{\text{LXM}} = \text{MLP}_{\text{X}}(x_\text{LXM}) \approx \text{MLP}_{\text{X}}(\text{LN}(\sum_{m
+      \in\text{Bottom Modules of LXM}}(\sum_{k\in {\text{Dict }m}} {c^m_k \mathbf{d}^m_k})))
+    </d-math>
+    <p>
+      Again, by viewing all dictionary features in one residual stream as a whole, we thus get the activation of the
+      Y-th dictionary feature of the X-th layer:
+    </p>
+    <d-math block>
+      c_{\text{LXMY}} = \text{ReLU}(W^{\text{LXM}}_{e, Y} \text{MLP}_{\text{X}}(\text{LN}(\sum_s c_s \mathbf{d}_s)) +
+      \mathbf{b}^{\text{LXM}}_{e, Y})
+    </d-math>
+    <p>
+      <d-math>W^{\text{LXM}}_{e, Y}</d-math> is the Y-th row of LXM dictionary encoder.
+      <d-math>\mathbf{b}^{\text{LXM}}_{e, Y}</d-math> is its corresponding encoder bias.
+    </p>
+    <p>
+      We conjecture that a given MLP feature is activated by a small subset of lower features. To verify this, we need
+      to measure the contribution of each lower feature to the MLP feature.
+      In addition, if this is true, it would be inspiring to identify these core contributors.
+    </p>
+
+    <h4>Definition</h4>
+    <p>
+      We define the <i>approximate direct contribution</i> <d-math>\textbf{ADC}</d-math> of each feature <d-math>c_s
+        \mathbf{d}_s</d-math> composing <d-math>x</d-math> to the output <d-math>\textbf{Out}</d-math>:
+    </p>
+    <d-math block>
+      \textbf{ADC}(c_s \mathbf{d}_s) = W^{\text{LXM}}_{e, Y} W_{out}(\underbrace{(W_{in}c_s
+      \mathbf{d}_s)}_{\text{Dictionary Feature}}\cdot\overbrace{\sigma(W_{in}x)}^{\text{Leave MLP input unchanged for
+      }\sigma})
+    </d-math>
+    <p>
+      We omitted LayerNorm in the definition above for simplicity since it can be linearized. Then the dictionary
+      feature of an MLP output can be written as:
+    </p>
+    <d-math block>
+      c_{\text{LXMY}} = \text{ReLU}(\sum_s \textbf{ADC}(c_s \mathbf{d}_s) + \mathbf{b}^{\text{LXM}}_{e, Y})
+    </d-math>
+    <p>
+      The intuition behind <d-math>\textbf{ADC}</d-math> is quite simple. The non-linear MLP is transformed into a
+      linear function of contributions of input features.
+      Just like how we deal with LayerNorm, we treat the input of the activation function as a constant, and the other
+      item as a linear function of the input features.
+    </p>
+
+    <h4>Properties</h4>
+    <p>
+      The non-linearity introduced by the activation function Act_fn in MLP hidden layers is key to interpretability.
+      We find that prevalent activation functions are always in some form of self-gating
+      <d-math>x\cdot\sigma(x)</d-math>:
+      For ReLU, <d-math>\sigma(x)</d-math> is the sign function; for SiLU it is the sigmoid function; for GELU it is the
+      cumulative distribution function of a Gaussian distribution.
+      These functions all take values between 0-1 and are monotonically non-decreasing.
+    </p>
+    <d-math block>
+      \text{Act\_fn}(W_{in}x) = (W_{in}x) \cdot \sigma(W_{in}x)
+    </d-math>
+    <p>
+      We consider the effect of input features on each MLP neuron since the activation of any dictionary feature is a
+      linear function of MLP neurons.
+    </p>
+    <p>
+      If we consider the contribution of a single input feature <d-math>c_s \textbf{d}_s</d-math> to the output feature
+      <d-math>c_{\text{LXMY}}</d-math>,
+      there are only two sources of contribution: <i>neurons with a positive (linear) effect on
+        <d-math>c_{\text{LXMY}}</d-math> are activated by <d-math>c_s \textbf{d}_s</d-math></i> and <i>neurons having a
+        negative (linear) effect on <d-math>c_{\text{LXMY}}</d-math> are activated by <d-math>c_s
+          \textbf{d}_s</d-math></i>.
+    </p>
+    <p>
+      Approximate direct contribution can capture the former type of contribution since for any monotonically
+      non-decreasing non-negative self-gating function <d-math>\sigma(x)</d-math>, <d-math>\frac{\partial}{\partial x}
+        x\sigma(x)</d-math> is always positive.
+      Specifically, if an input feature <d-math>c_s \textbf{d}_s</d-math> adds on a pre-activation MLP neuron, and that
+      neuron is activated via <d-math>\sigma(x)</d-math> and contributes to some output feature
+      <d-math>c_{\text{LXMY}}</d-math>, then this neuron propagates a positive contribution from <d-math>c_s
+        \textbf{d}_s</d-math> to <d-math>c_{\text{LXMY}}</d-math>.
+      Summing up such contribution (can be positive or negative) across all neurons results in <d-math>\textbf{ADC}(c_s
+        \textbf{d}_s)</d-math>.
+    </p>
+    <p>
+      However, the latter type of contribution, suppressing neurons with negative effects, is not captured well by
+      <d-math>\textbf{ADC}</d-math>.
+      In this case, <d-math>\textbf{ADC}(c_s \textbf{d}_s)</d-math> is always zero.
+    </p>
+
+    <h2>Experiments</h2>
+
+    <h3>Game of Othello</h3>
+    <p>
+      We used a 1.2M parameter decoder-only Transformer to learn a programmable game prediction task named Othello.
+      The model only learns to play legal moves, not tactics.
+    </p>
+    <p>
+      The rule of Othello is as follows:
+      Two players compete, using 64 identical game pieces ("disks") that are light on one side and dark on the other.
+      Each player chooses one color to use throughout the game. Players take turns placing one disk on an empty tile,
+      with their assigned color facing up.
+      After a play is made, any disks of the opponent's color that lie in a straight line bounded by the one just played
+      and another one in the current player's color are turned over.
+    </p>
+    <iframe src="pics/game_example.html" height="800" style="border:none;"></iframe>
+    <p>
+      The figure above shows the progress of a game<d-footnote>There is a long-standing plotly bug where parts of the
+        canvas are not cleared when the animation goes back to previous frames.</d-footnote>. The chessboard starts with
+      4 pieces placed in an interleaved pattern. The two sides keep placing pieces until the entire board is
+      filled<d-footnote>There are rare cases where the board is not completely filled but no more moves can be made, we
+        do not consider such rare cases here</d-footnote>. The goal is to occupy more positions on the board at the end.
+    </p>
+    <p>
+      As shown in the figure, there are 60 empty slots on the chessboard, so the game lasts 60 moves in total.
+      By recording the position of each move, we can represent a game using a sequence of length 60:
+    </p>
+    <d-code block language="python" id="sample data">
+      [37, 29, 18, 45, 22, 26, 19, 12, 54, 53, 25, 44, 38, 21, 62, 34,
+      46, 63, 13, 55, 42, 30, 23, 17, 5, 39, 11, 15, 16, 60, 7, 20, 43,
+      24, 31, 61, 32, 4, 47, 2, 10, 52, 51, 9, 0, 14, 33, 58, 59, 41,
+      49, 50, 3, 6, 57, 48, 56, 1, 8, 40]
+    </d-code>
+    <p>
+      By sampling a position from the set of valid moves at each step, we can generate millions of such game records.
+      Our setup is to model these sequences in an auto-regressive manner.
+      Just like a language model predicts the probability of the next word, this task models the probability of the next
+      legal move.
+    </p>
+    <p>
+      This task was originally proposed in this ICLR 2023 spotlight paper <d-cite bibtex-key="li2022othello"></d-cite>.
+      The main idea of the original work was to validate the formation of world models on this task.
+      Through clever probing and interventions, the authors provided strong evidence for world model formation: the
+      model first computes the state of the board and makes decisions accordingly, rather than simply memorizing surface
+      patterns.
+      Such tasks are more complex than previous addition, multiplication, and division tasks <d-cite
+        bibtex-key="power2022grokking,zhong2023clock,nanda2023clock"></d-cite>, yet simpler than language models.
+    </p>
+    <p>
+      One ingenious aspect of this task is that the input sequence itself provides very little information: only the
+      order of moves, without the current state of the board.
+      In addition, the model has no prior knowledge about the board or rules - it does not know the input sequence
+      unfolds according to alternating players, nor the mapping between the input sequence and board positions.
+      Given such difficult conditions, it is remarkable that the model can complete this task. Even if humans know the
+      real-world meaning of the sequence, figuring out the next valid move requires recursively simulating the process
+      and careful deduction.
+      The Transformer's computational resources are fixed, it cannot explicitly complete such recursive reasoning.
+      Therefore, even without taking this task as a starting point to understand large language models, fully
+      understanding its principles can provide great insight into the inner mechanism of Transformers.
+    </p>
+
+    <h3>Model Configuration</h3>
+    <p>
+      We focus on decoder-only Transformer. The model architecture is shown below:
+    </p>
+    <d-code block language="python">
+      {
+      'act_fn': 'gelu',
+      'd_head': 16,
+      'd_mlp': 512,
+      'd_model': 128,
+      'd_vocab': 61,
+      'd_vocab_out': 61,
+      'n_ctx': 60,
+      'n_heads': 8,
+      'n_layers': 6,
+      'n_params': 1179648,
+      'normalization_type': 'PreLayerNorm',
+      'positional_embedding_type': 'learned',
+      'p_dropout': 0.0
+      }
+    </d-code>
+    <p>
+      Although previous work<d-cite bibtex-key="li2022othello"></d-cite> has open-sourced the model architecture and
+      parameters, this article makes some modifications for the following reasons:
+    </p>
+    <ul>
+      <li>
+        <b>Removing Dropout:</b> Dropout naturally introduces redundancy which increases the difficulty of inversion.
+      </li>
+      <li>
+        <b>Reducing model parameters:</b> Without sacrificing model performance or interpretability conclusions, we made
+        the model shallower to reduce repetitive experimental sections.
+      </li>
+    </ul>
+
+    <h3>Dictionary Learning Experiments</h3>
+    <p>
+      The model has a total of 12 Attn/MLP modules. We train a dictionary for the output of each module, where the input
+      dimension of the dictionary is always d_in=128, and the hidden layer has n_components=1024.
+      We sample 4e8 sequences for training the dictionaries, i.e. 4e8 * 60 = 2.4e10 tokens. For each token, we input it
+      together with the context into the Transformer model, and record the output of each module.
+      Although each token depends on the context, we treat the representations obtained for each token as completely
+      independent during training. We shuffle and sample them to train the dictionary for reconstructing each module's
+      output.
+    </p>
+    <p>
+      The figure below shows the 2-norm of the average input representation for each layer.
+      The almost invisible error bars indicate the average reconstruction error.
+      <b>The dictionaries can reconstruct the output of each module with almost no loss</b>:
+    </p>
+    <iframe id="Average_input_representation_norm"
+      src="pics/Average_input_representation_norm_vs._reconstruction_error.html" height="400"
+      style="border:none;"></iframe>
+    <p>
+      After training, we have 12 dictionaries corresponding to the 0th layer Attn to the 5th layer MLP from bottom to
+      top.
+      We denote them as L0A-L5M for the Attn and MLP layers of layers 0-5.
+    </p>
+    <p>
+      For each dictionary, we compute the activation level of the features.
+      Under the assumption that dictionary learning can extract meaningful (maybe not human-understandable) features,
+      <b>there is feature superposition across all layers in this model</b>:
+    </p>
+    <iframe id="active_features_of_each_dictionary" src="pics/active_features_of_each_dictionary.html" height="400"
+      style="border:none;"></iframe>
+    <p>
+      Since the world that needs to be modeled for this task is much simpler compared to language modeling, while its
+      hidden dimension d_model differs from language models by only 1-2 orders of magnitude, the superposition is
+      expected to be even more severe in real language models.
+      In addition, techniques like resampling dead dictionary neurons can extract even more features and finer-grained
+      interpretability <d-cite bibtex-key="bricken2023monosemanticity"></d-cite>.
+    </p>
+    <p>
+      The figure above describes the over-completeness of features inside the model.
+      Another important property of the internal features is sparsity.
+      The figure below shows the average number of activated features per token in each dictionary.
+      <b>In this model, the output of all layers can be reconstructed with fewer features than the hidden dimension</b>:
+    </p>
+    <iframe id="Average_L0" src="pics/Average_L0-norm_of_each_dictionary_activations.html" height="400"
+      style="border:none;"></iframe>
+    <p>
+      For the same reason, features in real-world LMs should be more sparse<d-cite
+        bibtex-key="cunningham2023dict"></d-cite>.
+    </p>
+
+    <h3>Feature Interpretation</h3>
+    <p>
+      For a given input sequence, we can determine a unique board state.
+    </p>
+    <d-code block language="python" id="sample data">
+      [37, 29, 18, 45, 22, 26, 19, 12, 54, 53, 25, 44, 38, 21, 62, 34,
+      46, 63, 13, 55, 42, 30, 23, 17]
+    </d-code>
+    <p>
+      The figure below shows the board state corresponding to the above sequence:
+    </p>
+    <iframe src="pics/board_state_example.html" height="400" style="border:none;"></iframe>
+    <p>
+      In the original work <d-cite bibtex-key="li2022othello"></d-cite>, the authors trained a separate probe classifier
+      for each board position and residual stream in the model to categorize the current color of the position (black,
+      white or empty) and determine whether knowledge about the current board state is contained internally.
+      The authors found that when the classifier is linear, the error rate is around 20%, which is relatively high.
+      Using nonlinear classifiers can reduce the error rate to 1.7%. Thus the conclusion in the original work was that
+      world knowledge with nonlinear representations exists internally.
+      Subsequent work <d-cite bibtex-key="nanda2023emergent"></d-cite> found that the conclusions in the original paper
+      were insufficient.
+      If the probe target is changed from (black/white/empty) to (same color as current piece / different color /
+      empty), linear classifiers can also achieve good performance.
+      This observation provides profound insights into the linearity assumption of features, which we elaborate on in
+      the <a href="#dictionary_and_probing">Dictionary Learning and Probing</a> chapter.
+    </p>
+    <p>
+      Based on the "Mine vs. Theirs" perspective, we can better understand the dictionary features introduced below.
+    </p>
+    <p>
+      For the features extracted by dictionary learning, we only examine the "active features" that have activation
+      frequencies above a certain threshold.
+      We denote these active features as follows: For the Y-th feature decomposed from the Attn/MLP output of layer X,
+      we name it LX{A/M}Y<d-footnote>For example, the 728-th feature from the dictionary of the 3rd layer Attn is called
+        L3A728, the 17-th feature from the 0-th layer MLP dictionary is called L0M17.</d-footnote>.
+    </p>
+    <p>
+      For each feature, we examine the samples that activate it the most. The figure below shows an example of the 64
+      inputs that activate L0A622 the most:
+    </p>
+    <figure style="grid-column: page; margin: 1rem 0;"><img src="pics/L0A622_ta.png"
+        style="width:100%; border: None;" /></figure>
+    <p>
+      It is difficult to directly observe patterns from such images, and it is very prone to visual illusions.
+      Therefore, we designed the following interface:
+    </p>
+    <iframe src="pics/L0A622.html" height="1080" style="border:none;" class="l-page"></iframe>
+    <p>
+      For a given dictionary feature, we examine the top-k inputs that activate it the most among 1.2M tokens and
+      compute the following statistics over the k input sequences/board states:
+    </p>
+    <ul>
+      <li>
+        <b>Current player:</b>
+        The pie chart in the first row first column shows the proportion of piece colors among the k inputs.
+      </li>
+      <li>
+        <b>Current move position:</b>
+        The heatmap in the first row second column shows the number of times each cell is played in the k moves.
+      </li>
+      <li>
+        <b>Legal move positions:</b>
+        The heatmap in the first row third column shows the number of times each cell is a legal move in the k board
+        states.
+      </li>
+      <li>
+        <b>Board state:</b>
+        The heatmap in the second row first column: for each cell in the k board states, take 1 if the cell has the same
+        color as the current player ("own piece"), -1 if different color ("opponent piece"), and 0 if empty.
+        Summing over the k boards gives the total board state.
+      </li>
+      <li>
+        <b>Flip counts:</b>
+        The heatmap in the second row second column shows how many times a piece is flipped on each cell among the k
+        moves.
+      </li>
+      <li>
+        <b>Number of empty cells:</b>
+        The heatmap in the second row third column shows the number of empty cells in the k board states.
+      </li>
+      <li>
+        <b>Game length:</b>
+        The bar plot in the third row shows the distribution of game lengths.
+      </li>
+    </ul>
+    <p>
+      In the above statistical plots, k is taken as 2048.
+      Each such statistical plot reflects the behavior of one feature.
+      The heatmap in the first row second column shows that among the 2048 inputs L0A622 is most interested in, all
+      current moves are at position f-1.
+      Therefore, we can interpret this as a "current move = f-1" feature.
+      We discuss our method of interpreting dictionary features in detail in the <a
+        href="#interpreting_dictionary_features">How to Interpret Dictionary Features?</a> section.
+    </p>
+    <p>
+      We mainly found the following types of features:
+    </p>
+    <ul>
+      <li>
+        <b>Current move position features:</b>
+        There are many features in L0A and L0M that respond to the current move being at a specific position, e.g.
+        {L0A53: current move at g-5}, {L0A80: current move at e-0}, {L0M996: current move at a-4 flipping the piece
+        above}, {L0M195: current move at c-1 flipping the piece on the right}, {L0M205: current move at c-1 flipping the
+        piece at top right}.
+      </li>
+      <li>
+        <b>Features representing board state:</b>
+        There are many features in L1A to L4M describing the current board state, e.g. {L1A626: f-1 is opponent's
+        piece}, {L1M158: e-2 is own piece}.
+      </li>
+      <li>
+        <b>Features for empty cells:</b>
+        L5A contains many features describing a cell being empty, e.g. {L5A336: c-3 is empty}.
+      </li>
+      <li>
+        <b>Features for legal moves:</b>
+        L5M contains many features indicating a position is a legal move, e.g. {L5M733: b-3 is legal}.
+      </li>
+    </ul>
+    <p>
+      Compared to previous work, we have some new findings:
+    <ul>
+      <li>
+        Almost all features representing empty cells appear in L5A, which is quite different from the probing-based work
+        by Neel Nanda et al.<d-cite bibtex-key="nanda2023emergent"></d-cite>.
+        They found empty cells can be probed right after L0A, while we see these features are explicitly computed only
+        in L5A.
+      </li>
+      <li>
+        We discover features in L0M of the form "moving to X and flipping the piece in some fixed direction", different
+        from the "piece at Y flipped this move" features found by probing.
+      </li>
+    </ul>
+    </p>
+    <p>
+      These two differences are not contradictory. We think the probed behaviors are a kind of <a
+        href="#basic_and_compositional_features">compositional feature</a>.
+    </p>
+    <p>
+      Overall, we find a significant portion of features can be interpreted, although some features remain opaque,
+      usually with small activation values.
+    </p>
+
+    <h2>Discovering Circuits in Othello Model</h2>
+    <p>
+      In this section, we introduce circuits discovered in the Othello model.
+    </p>
+    <h3>Understanding Features and Model Output with Direct Logit Attribution</h3>
+    <p>
+      By applying Direct Logit Attribution, many Mech Interp works attribute specific logits to certain MLPs or
+      attention heads, to help analyze their roles. Here we ask a more detailed question: <b>If dictionary learning can
+        decompose each module's output into a sum of interpretable features, which features contribute more to a given
+        logit?</b>
+    </p>
+    <p>We randomly sample a batch of data, and randomly pick one step from it. The corresponding board state is as
+      follows:</p>
+    <iframe src="pics/board_state_4_1.html" height="400" style="border:none;"></iframe>
+    <p>The model predicts the following result:</p>
+    <iframe src="pics/Logits_4_1.html" height="400" style="border:none;"></iframe>
+    <p>The model successfully predicts legal moves. We can analyze any logit, for example the 33rd position on the
+      board, which has a logit of about 8.29. We compute the Direct Logit Attribution for each feature, with results
+      shown below:</p>
+    <iframe src="pics/contribution_4_1.html" height="400" style="border:none;"></iframe>
+    <p>In the above figure, we have removed features with absolute contributions smaller than 0.1. We find L5M499 has a
+      particularly prominent contribution. The behavior of this feature is:</p>
+    <iframe src="pics/L5M499.html" height="1080" style="border:none;" class="l-page"></iframe>
+    <p>We focus on the first row, third column statistic describing legal positions. This heatmap represents that among
+      the 2048 inputs with the strongest activation of L5M499, a large portion describe "d-1, e-1, f-1" as legal, which
+      coincides precisely with the aforementioned board state. Combining this with the other examples we attempted, we
+      arrive at a conclusion: <b>The majority of logits on the board are primarily activated by a few L5M features,
+        exhibiting direct causality, and these features tend to be relatively specialized in their responses.</b></b>
+    </p>
+
+    <h3>Understanding MLP Feature Activations Through Approximate Direct Contributions</h3>
+    <figure><img src="pics/MLP_example.jpg" style="width:100%; border: None;" /></figure>
+    <p>In the previous section, we established a connection between the model output and the features of the highest MLP
+      layer. A natural follow-up question is: how are these MLP features computed?</p>
+    <p>We randomly select a board state again, as shown below:</p>
+    <iframe src="pics/board_state_4_2.html" height="400" style="border:none;"></iframe>
+    <p>In the board state shown above, we choose the feature L2M845 with the highest activation in L2M, which has an
+      activation value of 1.4135. The behavior of this feature is relatively easy to understand; it indicates that the
+      model plays a move on b-4 or b-5 and flips the piece at c-4:</p>
+    <iframe src="pics/L2M845.html" height="1080" style="border:none;" class="l-page"></iframe>
+    <p>We list the features with absolute approximate direct contribution values less than 0.05:</p>
+    <iframe src="pics/contribution_4_2.html" height="400" style="border:none;"></iframe>
+    <p>We find that there are four important contributors: L0A837, L1M280, embedding, and L1M49. A brief description of
+      the corresponding features is as follows:</p>
+
+    <ul>
+      <li>
+        <b>L0A837:</b> The current move is played on b-4.
+      </li>
+      <li>
+        <b>L1M280:</b> The current move is played on c-4<d-footnote>This does not match the current move.</d-footnote>,
+        and d-4, e-4 are the player's own pieces.
+      </li>
+      <li>
+        <b>embedding:</b> The current move is played on b-4.
+      </li>
+      <li>
+        <b>L1M49:</b> The current move is played on b-4, and the pieces from b-4 to e-4 are likely the player's own
+        pieces.
+      </li>
+    </ul>
+    <p>The common aspect of these four features is that they all describe the flipping situation in column 4. From a
+      human-understandable perspective, these features are sufficient conditions for {L2M845: c-4 is flipped}. We have
+      some confidence that this reveals a pattern in which the model derives higher-level features from lower-level
+      features.</p>
+
+    <h3>Understanding Information Transfer in the OV Circuit</h3>
+    <figure><img src="pics/OV_example.jpg" style="width:100%; border: None;" /></figure>
+    <p>We again randomly sample a board state:</p>
+    <iframe src="pics/board_state_4_3.html" height="400" style="border:none;"></iframe>
+    <p>We find that L2A474 primarily describes a specific board state centered around c-2, which corresponds well to the
+      current board state, with an activation value of 0.70 in the current state:</p>
+    <iframe src="pics/L2A474.html" height="1080" style="border:none;" class="l-page"></iframe>
+    <p>Using the analysis theory of the OV circuit, we list the contributions of all features below L2A to this feature:
+    </p>
+    <iframe src="pics/contribution_4_3.html" height="400" style="border:none;"></iframe>
+    <p>The image omits features with absolute contributions less than 0.03, where PX represents information from the
+      residual stream of the Xth token (X ranges from 0-7 in this example). We find that the three features with the
+      largest contributions are all related to this board state:</p>
+    <ul>
+      <li><b>P7L1M379:</b> Located in the same token residual stream as P7L2A474, it describes that c-3 and d-4 are the
+        player's own pieces, which may directly affect P7L2A474's response to these two positions.</li>
+      <li><b>P6L1M755:</b> Located in the preceding token residual stream of P7L2A474, due to the opposite move color,
+        the two have opposite concepts of the player's own pieces and the opponent's pieces on the board state. Since
+        L1M755 describes that c-2, d-3, e-4 are the player's own pieces, its contribution to P7L2A474 is that "since c-2
+        was the player's own piece in the previous move, it will become the opponent's piece in the next move."</li>
+      <li><b>P5L1M179:</b> Located two token residual streams before P7L2A474, corresponding to the board state two
+        moves ago. L1M179 describes that d-2, d-3, d-4 are the player's own pieces, and its contribution to P7L2A474 is
+        that "since d-2 was the player's own piece two moves ago, it should still be the player's own piece."</li>
+    </ul>
+    <p>Additionally, we find that P6L0A629 has a strong side effect on the activation of P7L2A474, which also has a
+      strong interpretable meaning: L0A629 mainly describes that c-3 is the player's own piece, but since P6L0A629 is
+      located in the preceding token residual stream of P7L2A474, this contradicts P7L2A474's description that c-3 is
+      the opponent's piece, because the perception of one's own pieces and the opponent's pieces is flipped in residual
+      streams separated by an odd number of steps. This contradiction mainly arises because P7's move happens to flip
+      the piece at c-3, while the previous residual stream does not contain future information. We conjecture that there
+      is a very subtle balance in the model, where the negative impact brought by past tokens due to piece flipping is
+      eliminated or even overridden by the positive impact of features describing the piece flipping, thereby always
+      maintaining the most accurate board state information as the game progresses.</p>
+    <p>For readers, understanding this part should be quite difficult, as the Othello model's unique way of
+      understanding "self vs. opponent" and the complicated board notation pose great challenges for both expression and
+      comprehension. In short, we find that the information transferred through the OV circuit has strong interpretable
+      meanings. The Attn in one residual stream can largely transform the interpretable features brought from other
+      residual streams into interpretable features in the current residual stream. This repeatedly leaves us in awe of
+      the miraculous information flow mechanism inside the Transformer. At the same time, we become more convinced that
+      understanding the model's behavior is not an extremely complex problem; with careful observation, we have a good
+      chance of comprehending these complex information flows.</p>
+
+    <h3>Understanding the Formation of Attention Strengths</h3>
+    <figure><img src="pics/QK_example.jpg" style="width:100%; border: None;" /></figure>
+    <p>Attention strength is one of the most accessible entry points for interpretability research. Through attention
+      distribution heatmaps, we can easily recognize how much attention each token pays to other tokens. In this
+      section, we analyze one of the most prevalent attention patterns in this model, which takes the following
+      interleaved attention structure:</p>
+    <iframe src="pics/example_attn_pattern.html" height="400" style="border:none;"></iframe>
+    <p>We conjecture that the formation of this attention pattern is to transfer information from the residual streams
+      corresponding to the player's own moves and the opponent's moves, respectively. If a token is an even number of
+      steps away from the current token, the features describing "belonging to oneself" in the past residual streams
+      should enhance the corresponding features of the current step. We find that this mechanism is often implemented
+      through positional encoding.</p>
+    <p>Here, we provide an example. In the attention pattern shown in the image above, the last token assigns strong
+      attention to the tokens corresponding to the opponent's moves.</p>
+    <p>Applying our circuit analysis theory, we investigate which features contribute to token 14's attention score of
+      5.80 towards token 13 before the softmax operation. The linear decomposition of the contributions is shown in the
+      following image:</p>
+    <iframe src="pics/contribution_4_4.html" height="600" style="border:none;" class="l-page"></iframe>
+    <p>We previously discovered that the positional encoding learned by the model contains significant information about
+      the current move color, and the lower layers of the model have several features representing similar concepts. We
+      find that many of the top contributing feature pairs in the image include positional encoding, and we also find
+      that several other important features (e.g., P13L0M1015 and P14L0A195) are strongly correlated with the current
+      move color. This indicates that our circuit discovery theory can identify features related to positional encoding
+      and find that these features directly contribute to the aforementioned attention patterns.</p>
+
+    <h3>Summary</h3>
+    <p>This part is the core of this paper. Through experiments, we are more confident that our circuit discovery theory
+      can discover the circuits of the model at an unprecedented granularity (i.e., dictionary-learned features). We can
+      understand how a considerable portion of the MLP features and Attn features are computed, and the experimental
+      results are consistent with human understanding.</p>
+    <p>Under our theoretical framework, along with careful experimentation and summarization, we can gain a relatively
+      in-depth understanding of the general workflow of the Othello model:</p>
+    <ul>
+      <li><b>The lower layers of the model contain a lot of local information. With the synergy between the lower
+          modules and the embedding, the model can understand the impact of the current move on the board state and
+          comprehend which pieces are flipped in that move.</b></li>
+      <li><b>The model (mainly in the middle layers) transfers the board state from the OV circuits of past tokens to
+          avoid redundant computations as much as possible. Combined with the flipping state computed in the previous
+          step, the model can understand the current board state with relatively high accuracy.</b></li>
+      <li><b>The model (mainly in the higher layers) computes the legal positions based on the board state in the MLP,
+          and combines the information about whether the board is empty from the higher-layer Attn to directly output
+          the decision to the logits.</b></li>
+    </ul>
+    <p>The findings in this chapter alone are sufficient for us to gain a considerable understanding of the internal
+      structure of the Transformer. For example, in the OV circuit analysis, we discovered that the interpretable
+      relationships and contribution/suppression relationships between features have a strong positive correlation.
+      Additionally, the formation of high-level abstract features in the MLP can often be decomposed into lower-level
+      basic features in a human-understandable manner through approximate direct contributions.</p>
+    <p>These results give us confidence in understanding language models, and we also gain a lot of knowledge about
+      Transformer models from them. In this chapter, we only show some representative results; this theory can discover
+      far more phenomena than what is presented here. Interested readers can download and run the interactive
+      open-source implementation from the <a href="https://github.com/OpenMOSS/DictionaryCircuits-Othello">GitHub
+        repo</a> to reproduce or explore the circuits inside this model.</p>
+
+    <h2>Overall Discussion</h2>
+
+    <h3 id="Othello_and_LMs">Othello and Language Models</h3>
+    <p>Our ultimate goal is to reverse engineer Transformer language models, with the Othello model serving only as a
+      proof of concept. The Othello task is a decent simplified proxy for a language model because its complexity cannot
+      be accomplished solely through memorization; the internal world of this "Othello language" is relatively rich and
+      contains several abstract concepts. This level of complexity makes it valuable as an initial attempt, as tasks
+      that are too different from language models, such as arithmetic tasks, may not yield transferable conclusions. At
+      the same time, it is not overly complex to increase the difficulty of training the dictionary or interpretation,
+      with only 60 tokens in the vocabulary size and the property of no repeated inputs, which to some extent makes our
+      interpretation more clear by excluding many confusing concepts.</p>
+    <p>We summarize two key differences between Othello and language models that we believe are worth noting within the
+      framework of dictionary learning:</p>
+    <ul>
+      <li><b>Dictionary features are far denser than in language models:</b> We find that the model, especially in the
+        middle layers, has a vast number of features used to describe the board state. As the game progresses and the
+        board state becomes more complex, more features are activated frequently. This is consistent with existing
+        observations of language models<d-cite bibtex-key="elhage2022solu"></d-cite>. As shown in the <a
+          href="#Average_L0">figure above</a>, decomposing the L0-norm of higher MLP layers sometimes approaches the
+        full d_model of 128, indicating that the dictionary decomposition is barely sparse at all. Compared to other
+        attempts on language models, such as Anthropic's decomposition of single-layer language models, which can often
+        sparsely activate 10-20 features out of a 512-dimensional representation, the sparsity of our dictionary model
+        is far inferior. We largely attribute this to the fact that the Othello world is much simpler and denser in
+        features compared to the language world, as well as the possibility that the dictionary training implemented in
+        this work is not optimal.</li>
+      <li><b>Feature superposition is not as apparent:</b> Similarly, due to the simplicity of the Othello world, we
+        believe that feature superposition is not as apparent in this model, meaning that the d_model of 128 may
+        represent fewer than 128 features. Although the <a href="#active_features_of_each_dictionary">figure above</a>
+        shows that the active dictionary features of each layer's output exceed the d_model, we find that the Othello
+        model is more likely to exhibit the phenomenon of "opposite feature pairs" compared to language models. For
+        example, "b-3 is the player's piece" and "b-3 is the opponent's piece" can be seen as two independent 0-1
+        features, but from the perspective of "the board state of b-3," these two features can be interpreted as the
+        positive and negative projections of the same feature in certain directions. In other words, if we extend the
+        definition of features from directions in the representation space to include their opposites, the dictionary
+        features would need to exceed twice the d_model to strictly demonstrate the existence of superposition. Although
+        this caveat may exist, we believe that at most, it weakens the motivation for using dictionary learning to
+        understand this model, but does not substantially affect our theory and experimental results.</li>
+    </ul>
+    <p>Both the superposition hypothesis and our dictionary learning process assume that the representation space can be
+      decomposed into a sum of interpretable features. These features appear in the form of unit vectors in space, and
+      their activation strengths represent the strengths of these features.</p>
+    <p>The activation strengths of these features are non-negative values. In our implementation, we use the ReLU
+      function of the dictionary-learned hidden layer to remap all negative feature activations to zero for this reason.
+    </p>
+    <p>Under this assumption, features in opposite directions generally have a strong negative correlation, rather than
+      representing the positive and negative activations of a single feature. These two cases are not entirely mutually
+      exclusive. For example, in the feature superposition structure shown in the following figure, the green and blue
+      features represent two unrelated concepts, which are represented in opposite directions due to sparsity.
+      Meanwhile, the model places two mutually exclusive features along the lower-left to upper-right direction, which
+      we can equivalently understand as the positive and negative activations of a single feature. Regardless of how we
+      interpret it, this space must have experienced feature superposition.</p>
+    <iframe src="pics/opposite_features.html" height="630" style="border:none;"></iframe>
+    <p>Overall, we believe that the results from this task have some reference value, and the differences from real
+      language models will not affect our basic conclusions but remain important details.</p>
+
+    <h3 id="interpreting_dictionary_features">How to Interpret Dictionary-Learned Features?</h3>
+    <p>Suppose we extract the dictionary-learned features and can obtain several inputs with relatively high activations
+      for each feature. How should we interpret these inputs? In the long run, we will inevitably need some form of
+      automated method, such as using large language models to interpret language features<d-cite
+        bibtex-key="bills2023autointerp"></d-cite>. Even so, human interpretation is still needed to verify and
+      supplement these results, as the ultimate goal of interpreting features is for human understanding. At least one
+      stage of the entire interpretation process requires human intervention. We believe that how to interpret these
+      features at scale is an important question. We conjecture that we could use powerful multimodal large models to
+      interpret the board states that a particular feature is most interested in, and then employ human efforts to
+      adjust the interpretation results. However, since this is not our research focus, we did not use these methods,
+      but rather relied on human intuitive interpretation.</p>
+    <p>To evaluate the interpretation results, we conducted verification on a small number of features, following a
+      process similar to existing automated interpretation approaches. We illustrate with an example:</p>
+    <ul>
+      <li>First, we observe important statistics of a particular feature. As shown in the following figure, we
+        hypothesize that L5A172 indicates that the position f-4 is empty:</li>
+    </ul> <iframe src="pics/L5A172.html" height="1080" style="border:none;" class="l-page"></iframe>
+    <ul>
+      <li>We randomly sample N inputs and, based on the game rules, determine whether these inputs conform to the
+        pattern corresponding to the hypothesis, categorizing them into two groups.</li>
+      <li>We then examine the activation differences of the two groups of board states for the given feature:</li>
+    </ul> <iframe src="pics/feature_interp.html" height="400" style="border:none;"></iframe>
+    <p>Visualizing the feature activations can provide an intuitive understanding of activation specificity and
+      sensitivity, but quantitative evaluation metrics are still necessary, which we believe is an important direction
+      for future research.</p>
+
+    <h3 id="dictionary_and_probing">Dictionary Learning and Probing</h3>
+    <p>Both dictionary learning and probing<d-cite bibtex-key="Alain2017probe"></d-cite> can discover interpretable
+      directions in a model's hidden layers. An important difference between them is that dictionary learning
+      additionally introduces a reconstruction error, clarifying the distance from fully understanding the hidden
+      features. Ideally, if dictionary learning can achieve zero reconstruction error, and each feature is highly
+      monosemantic and interpretable, we would be able to completely understand the entire set of features contained in
+      this hidden layer.</p>
+    <p>Another important difference is that, compared to probing methods that require first proposing definitions or
+      classification labels for features, dictionary learning can extract features in an unsupervised manner. However,
+      supervisory signals may still be necessary because interpreting these features is likely to require a significant
+      amount of prior knowledge. The task demonstrated in this paper is an excellent example. In the original work, the
+      authors' linear probing for black and white pieces did not perform well, but subsequent work significantly
+      improved the probing performance from the perspective of "self" and "opponent," indicating that our prior
+      understanding of the internal feature families of dictionary learning may help us interpret a large batch of
+      originally unclear features.</p>
+    <p>We believe that the most important issue is the fundamentality of dictionary-learned features, which we discuss
+      separately in the next section.</p>
+
+
+    <h3 id="basic_and_compositional_features">Basic Features and Compositional Features</h3>
+    <p>In prior research on OthelloGPT, researchers used probing methods to discover <i>Flipped features</i> in the
+      model, which indicate whether a certain board position was flipped in the current move. However, we did not
+      directly find such features in our dictionary learning results. But similarly, we identified a series of features
+      that indicate the current move is played at a certain location and flips pieces in a fixed direction. For example,
+      in L0M, there is a pair of features, both corresponding to the current move being played at c-2, but L0M195 is
+      only activated when the move flips the pieces to the right, while L0M205 is activated when the move flips the
+      pieces to the upper right. These two features have a cosine similarity of -0.13 in the representation space,
+      indicating a considerable degree of independence between them.</p>
+    <p>Therefore, we conjecture that the set of features obtained through dictionary learning may be more "basic"
+      features. In the above example, the <i>Flipped features</i> obtained through probing could be a linear combination
+      of the corresponding flipping features from the eight surrounding directions of that board position, making it a
+      compositional feature formed by basic features. This is a rather vague topic. We believe that "basicness" is a
+      relative concept. Anthropic's dictionary learning research has shown that as the dictionary hidden layer keeps
+      expanding, the granularity of the descriptions of the obtained features becomes finer, and subsets of the features
+      in a large dictionary can form a "feature cluster" that manifests as a single or fewer subsets in a smaller
+      dictionary. Based on this observation, we believe that the larger the dictionary, the more basic the features
+      obtained through decomposition, due to the motivation in the dictionary training process to form sparse
+      decompositions with a limited number of neurons. In contrast, the feature directions obtained through probing do
+      not have any prior notion of basicness, which is the basis for our conclusion above.</p>
+    <p>Similarly, we conjecture that features in real language models indicating sentiment or factuality <d-cite
+        bibtex-key="tigges2023sentiment,Li2023ITI"></d-cite> may also be linear combinations of a set of basic features.
+      We believe this issue could be highly important in future dictionary learning research plans.</p>
+
+    <h3>Circuits and Randomness</h3>
+    <p>In the three circuits of QK, OV, and MLP, we can characterize a certain type of contribution. In the QK circuit,
+      this contribution is the bilinear product of arbitrary feature pairs from two residual streams; in the OV circuit,
+      it is the result of features from other token residual streams passing through the OV circuit; and in the MLP, it
+      is the approximate direct contribution.</p>
+    <p>However, due to feature superposition, independent feature pairs cannot be represented in orthogonal directions,
+      so their contributions should follow some random distribution. We need to clarify whether the contribution between
+      any two features arises from randomness or is a result of the circuits learned by the Transformer.</p>
+    <p>For example, in the approximate direct contribution figure mentioned earlier, we cannot determine where to draw
+      the line to clearly distinguish whether the strong contributing features before that point are intentionally
+      implemented by the model, while those after are just minor noise caused by feature superposition:</p> <iframe
+      src="pics/contribution_4_3.html" height="400" style="border:none;"></iframe>
+    <p>The reality is more likely that such a line does not exist. An important motivation for feature superposition is
+      to reduce training loss, so establishing a weak positive superposition between two weakly positively correlated
+      features aims to minimize information interference in expectation. Therefore, the contributions we observe to some
+      extent reflect the strength of these correlation relationships.</p>
+    <p>This blurs our understanding of circuit definitions. Combined with existing circuit research, we are more
+      convinced that most behaviors inside the model are a combination of multiple positive and negative circuits. Just
+      as the model's predicted logits are a mixed strategy, the internal flow of information is also a mixture.</p>
+    <p>Under this conjecture, we may only be able to understand the most significant part and be prepared to encounter
+      potential explainability illusions at any time. Nevertheless, we believe that this alone is sufficient for us to
+      gain a very deep understanding of how Transformers work internally.</p>
+    <p>Furthermore, since features in real language models are sparser, the hidden layers are wider, and the semantic
+      set (i.e., the world) spanned by all features is more extensive, we conjecture that the information flow from the
+      OV circuit will be more explicit in language models.</p>
+
+    <h3>Scalability of This Paper's Theoretical Framework</h3>
+    <p>Ultimately, we hope to apply the methods discussed in this paper, with many engineering improvements, to larger
+      language models using similar analyses. Although the model used in this paper is relatively small and the task is
+      not language modeling, we believe that the existing results are sufficient to support direct application to
+      language models since both the dictionary learning and circuit analysis parts are independent of model size or
+      task.</p>
+    <p>An important outstanding issue is dictionary training for language models. On the most basic sparse autoencoder
+      structure, many works have proposed algorithmic improvements and practical experiences; better algorithm design
+      can help us find the Pareto optimal boundary among computational resources, reconstruction error, and feature
+      interpretability. This problem is crucial for all dictionary learning works. For instance, the ultimate goal of
+      sparse constraint optimization should be the L0-norm of the dictionary hidden layer. The widely adopted L1-norm
+      has nice properties such as convexity, but whether better sparse constraint losses exist is a potentially
+      important question. In dictionary optimization, techniques like warming up Adam momentum <d-cite
+        bibtex-key="Kingma2015adam"></d-cite> and resampling dormant features also need to be verified and supplemented.
+    </p>
+    <p>The interpretation of dictionary features has been discussed previously. In language models, using powerful
+      language models to automatically interpret features can at least provide a reasonably credible initial value for
+      each feature. Additionally, building an interactive interpretability interface will likely be the core interface
+      for human fine-tuning or analysis. We believe that these engineering problems can potentially be integrated and
+      developed into a more mature interpretability paradigm through continuous optimization.</p>
+    <p>Our circuit analysis theory itself is not affected by scaling issues, but certain adjustments need to be made to
+      accommodate developments in the Transformer architecture. The analysis of the QK circuit is fully compatible with
+      popular positional encoding methods. The GLU module <d-cite bibtex-key="Shazeer2020GLU"></d-cite> adopted in the
+      popular Llama architecture <d-cite bibtex-key="Touvron2023llama"></d-cite> uses a portion of the parameters to
+      perform data-dependent gating, which would cause approximate direct contributions to lose more information. We
+      need to better generalize approximate direct contributions to better address the interpretation of the MLP
+      circuit.</p>
+    <p>In the practice of circuit analysis, an interactive interface would greatly facilitate circuit discovery. These
+      engineering problems could potentially become byproducts of the process of scaling up interpretability.</p>
+
+    <h3>Summary</h3>
+    <p>We propose a highly general interpretability theory. Under the assumption that dictionary learning can extract as
+      many interpretable features as possible from each MLP and attention module, we further propose a circuit discovery
+      theoretical framework that can connect all features in the computation graph, forming an extremely dense
+      connection diagram.</p>
+    <p>Although this ideal diagram involves a vast number of connections, we believe that feature sparsity and a
+      considerable degree of independence between features are helpful for understanding these connections, allowing us
+      to comprehend the relationship between each feature and all its bottom features within a complexity acceptable to
+      humans. Sparsity ensures that each input only activates a few features, and we conjecture that the activation of
+      each feature originates from only a few of its bottom features rather than the joint action of all features.</p>
+    <p>Due to the generality of our theory, our scope covers many previous mechanistic interpretation research
+      approaches. We conjecture that features discoverable through training linear probes can also be found through
+      dictionary learning, and methods such as Activation Patching can also be naturally applied within this framework.
+      If this method can be applied to at least GPT2-small level language models, we believe that we can "rediscover"
+      many existing conclusions within this framework, including the local effects of attention heads (groups),
+      knowledge in the MLP, and the discovery of various global circuits, and help us uncover new phenomena.</p>
+    <p>We can summarize the significance of this theory with two "generalities". First is feature generality: we do not
+      need any prior knowledge about the internal information of the model; we only need to train a dictionary in an
+      unsupervised manner to decompose many interpretable features. Second is circuit generality: our circuit analysis
+      weakens the prior understanding of circuit structures; we only need to locate the relevant features and start from
+      them (or more simply, from the output), decomposing feature activations into the contributions of their (or other
+      tokens') bottom features. This process can easily discover local circuits, and recursively applying this process
+      may help us uncover many composite circuits.</p>
+    <p>However, precisely because of its generality, it is unrealistic to discuss all the details in a single essay like
+      this. Even the core dictionary learning component requires substantial coverage to elucidate many important
+      details. At the same time, due to this generality, the conclusions we can present here are only a tiny fraction of
+      the model's many behaviors. If we view the portions we have presented as representatives of "feature clusters" and
+      "circuit clusters", we can be somewhat confident that we may understand part of the model's internal workings, but
+      we have not yet explained all phenomena of Othello-GPT, such as endgame circuits.</p>
+    <p>Although we believe that this analysis has decomposed many mysteries about Transformers, how to systematize
+      understanding for humans remains an issue. Understanding the source of activation for a specific logit or feature
+      has a relatively fine granularity, and therefore, such understanding would need to be repeated an astronomical
+      number of times to fully comprehend every feature and behavior of the model.</p>
+    <p>Furthermore, we believe that we are at an early stage in both dictionary learning and circuit discovery theory.
+      We cannot claim that dictionary learning has completely extracted all features, or that every feature is
+      monosemantic or interpretable, or that every discovered feature activation can be sufficiently or accurately
+      decomposed into its lower-level sources. Any optimization of dictionary learning and circuit discovery theory may
+      open up new possibilities for interpretability.</p>
+    <p>But regardless of which details we are concerned about, we believe that this theory lays a good foundation for
+      subsequent interpretability research, especially dictionary learning-based research, giving us more hope for the
+      ultimate goal of fully understanding the internal workings of Transformers.</p>
+    <p>Another important significance of this work is that it is the first post from the Open-MOSS Interpretability
+      group, clarifying some of our thoughts on interpretability research. We hope to focus on the systematic
+      development of Mechanistic Interpretability, find a connection between human understanding and high-dimensional
+      representation spaces, and peel away billions of model parameters to understand their intelligence. Dictionary
+      learning is currently a foundation we place high hopes in, but we are always ready to embrace new possibilities.
+    </p>
+
+
+  </d-article>
+
+  <d-appendix>
+
+    <h3>Contributions</h3>
+    <p>Zhengfu He proposed the theoretical framework of this paper, completed the experiments, and wrote the initial
+      draft. Tianxiang Sun provided extensive feedback on the paper and raised the viewpoints covered in the
+      "Interpreting Dictionary Features" section of the general discussion. Qiong Tang was responsible for the
+      visualizations and figures in the paper, and provided constructive suggestions for the experimental design in the
+      fourth part. Xipeng Qiu is the team's supervisor, offering important advice on the "Othello and Language Models"
+      and "Scalability" sections of the general discussion.</p>
+    <h3>Acknowledgments</h3>
+    <p>The open-source research on OthelloGPT by Kenneth Li and Neel Nanda had a significant impact on this work. We
+      made modifications based on the existing substantial work on the Othello game and board state visualization, which
+      greatly reduced the interpretation cost of dictionary features.</p>
+    <p>Neel Nanda's contributions to the Mech Interp community and insightful idea sharing had an important influence on
+      the conception of this paper. His open-source Transformer_lens library solved a considerable portion of the
+      engineering challenges in the Mech Interp field and provided an essential framework for implementing the work
+      presented in this paper.</p>
+    <p>The computational resources used in this paper were supported by the Intelligent Computing Platform (CFFF) of
+      Fudan University. The enthusiasm and professionalism of the CFFF staff provided substantial assurance for the
+      smooth progress of this work.</p>
+    <p>The completion of this paper would have been extremely difficult without any of the aforementioned contributions,
+      and we are deeply grateful for the support from all parties involved.</p>
+
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+  </d-appendix>
+
+  <distill-footer></distill-footer>
+
+</body>

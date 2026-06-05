@@ -1,0 +1,513 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      overflow: hidden;
+      ;
+    }
+
+    .slides-container {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .slides-container.grabbing {
+      cursor: grabbing;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    .slide {
+      flex: 1 0 100%;
+    }
+
+    .iframe-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .arrow {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ddd;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background-color: #007bff;
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "SpeechGPT 2.0-preview",
+    "description": "SpeechGPT 2.0-preview 是我们在迈向情景智能推出的第一个拟人化实时交互系统。基于在百万级高质量语音数据上训练的端到端语音大模型。",
+    "authors": [
+        {
+            "author": "OpenMOSS Team",
+            "affiliation": "Fudan NLP Lab, Shanghai Innovation Institute",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "publishedDate": "Jan 26, 2025",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>SpeechGPT 2.0-preview</h1>
+    <p>Our first human-like real-time interaction system towards context intelligence.</p>
+  </d-title>
+
+  <d-article>
+    <!-- model -->
+    <h2>Introduction</h2>
+    <p>
+      <strong> SpeechGPT 2.0-preview</strong> is our first human-like real-time interaction system as we move towards
+      context
+      intelligence. Trained on millions of hours of speech data, this end-to-end spoken language model features
+      human-like spoken expressions and low-latency responses at the millisecond level, enabling natural, fluid
+      real-time interruption interactions. SpeechGPT 2.0-preview aligns speech and text modalities well. On one hand, it
+      demonstrates significant speech style generalization capabilities, following user commands to achieve
+      multi-emotion, multi-style, and multi-tone control with intelligent switching. It also has strong role-playing
+      abilities, simulating various characters' tones and emotional states. Additionally, it showcases a range of vocal
+      talents, including poetry recitation, storytelling, and speaking in dialects. On the other hand, while it excels
+      in vocal expressiveness, it also has impressive intelligence and text capabilities, enabling it to support tool
+      calls, online searches, and external knowledge base access. Currently, SpeechGPT 2.0-preview has been trained only
+      on Chinese speech data and has not been trained on English voice data. As a result, the model does not yet support
+      English conversation.
+    </p>
+    <p>
+      We have open-sourced the inference code, model weights, and a brief methodology introduction for SpeechGPT
+      2.0-preview on <a
+        href="https://github.com/OpenMOSS/SpeechGPT-2.0-preview/blob/main/README_EN.md">https://github.com/OpenMOSS/SpeechGPT-2.0-preview/blob/main/README_EN.md</a>
+    </p>
+    <p>
+      Welcome to experience our <a href="https://sp2.open-moss.com/"><strong>Demo</strong></a>.
+    </p>
+
+    <h2>Model Summary</h2>
+    <p>
+      <strong> SpeechGPT 2.0-preview</strong> is an end-to-end spoken dialogue language model. Building on our insights
+      and technological
+      advancements in the field of end-to-end speech dialogue, we have developed an ultra-low bitrate streaming speech
+      Codec that jointly models semantics and acoustics. We have constructed an efficient speech data crawling system, a
+      multifunctional and high-efficiency speech data cleaning pipeline, and a comprehensive multi-granularity speech
+      data annotation system, accumulating millions of hours of real speech data with meticulous annotation. We have
+      developed a conversational dialogue speech synthesis system with strong voice cloning ability, synthesizing
+      hundreds of thousands of hours of multi-role, multi-style speech-to-speech dialogue data based on this. We have
+      proposed a new speech-text mixed-modeling architecture and a multi-stage training process for mixed speech-text
+      modeling to balance textual and speech capabilities, preventing the model from compromising its intelligence while
+      learning speech capabilities, and enabling it to seamlessly replace text models in various frameworks, thus
+      supporting functions such as tool invocation, internet search, and external knowledge base integration. By
+      modeling speech dialogue in an end-to-end manner, SpeechGPT 2.0-preview has achieved a latency of less than 200ms
+      in practical tests, providing users with a smooth real-time interactive experience.
+    </p>
+    <p>
+      Through the experimental process, we also observed many interesting phenomena and conclusions. For example,
+      through extensive pre-training on speech-text alignment, we found that the model could "emerge" with the ability
+      to generalize speech styles. This includes controlling speech rate even without training on dialogue data with
+      explicit speech rate adjustments, and adopting tones and styles of characters that the model had never seen
+      before. Moreover, the quality of the speech data synthesis engine is key to enhancing the capabilities of the
+      end-to-end speech model across various training stages.
+    </p>
+
+    <h3>Semantic-Acoustic Joint Modeling Ultra-Low Bitrate Streaming Speech Codec</h3>
+    <figure id="codec">
+      <img src="images/codec.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+    </figure>
+    <li>24kHz speech input</li>
+    <li>Semantic-acoustic joint modeling</li>
+    <li>Ultra-low bitrate: 750bps (75 tokens per second)
+    </li>
+    <li>Supports streaming input/output</li>
+
+
+    <h3>Codec Patchify Based Speech-Text LLM Architecture</h3>
+    <figure id="lm">
+      <img src="images/lm.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+    </figure>
+    <li>Codec patchify
+      <ul>
+        <li style="list-style-type: circle;">We effectively reduce the modality gap between speech and text sequences
+          through Codec Patchify, alleviating conflicts in cross-modal modeling. Specifically, this method aggregates
+          adjacent T time-step RVQ codec tokens into a single patch, which is then mapped to a unified vector
+          representation by the patch projector module. This representation is subsequently input into the speech-text
+          LLM for joint modeling. In terms of model architecture design, the hidden states of the LLM are used for two
+          decoding tasks simultaneously: one decodes to generate text output, while the other is input into the patch
+          decoder for speech generation. Notably, we designed an autoregressive language model with multiple LM heads as
+          the patch decoder. This module decodes in an autoregressive manner, generating multiple RVQ codec tokens per
+          time step, thus producing speech output.
+        </li>
+      </ul>
+    </li>
+    <li>Speech-Text Joint Modeling, Flexible Cross-Combination
+      <ul>
+        <li style="list-style-type: circle;">The speech-text LLM simultaneously takes in and outputs both speech and
+          text representations.
+        </li>
+      </ul>
+    </li>
+
+
+    <h2>Model Ability</h2>
+    <h3>Real-time Spoken Conversational Ability</h3>
+    <div class="carousel video-group-1">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1GgfrYsEP8&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWExZ&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWEdv&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+    <h3>Rich in emotion, diverse in style</h3>
+    <div class="carousel video-group-2">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1agfrYWE77&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWEfV&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1bjfrYJEPb&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1icfrY8EBb&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+    <h3>Role-playing</h3>
+
+    <div class="carousel video-group-3">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bof6YAE8K&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1fof6YAEAU&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Zof6YAEXW&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+
+    <h3>Vocal Talent</h3>
+
+    <div class="carousel video-group-4">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV11WfrYyEHF&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1sWfrYyEid&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1bjfrYJE7w&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1NWfrY1E8M&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bof6YAE5o&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+
+    <h2>Next Step</h2>
+    <p>SpeechGPT 2.0-preview needs further enhancement in the stability of model and sound quality. We are training and
+      building the system for duplex models, combining RLHF to enhance the expressiveness and stability of the model,
+      further expand the volume of speech data and expand to more languages, please look forward to the next version
+      update.
+    </p>
+
+  </d-article>
+
+  <d-appendix>
+    <h3>Contributors</h3>
+    <p>
+      Hanfu Chen, Ke Chen, Qinyuan Cheng, Mingshu Chen, Ruifan Deng, Liwei Fan, Zhaoye Fei, QingHui Gao, Yitian Gong,
+      Ching Wing Kwok, Kexin Huang, Yaozhou Jiang, Xingyu Lu, Shimin Li, Zhengyuan Lin, Ruixiao Li, Qian Tu, Jin Wang,
+      Yang Wang, Siyin Wang, Zhe Xu, Chenchen Yang, Donghua Yu, Yuqian Yao, Yucheng Yuan, Chufan Yu, Dong Zhang, YiWei
+      Zhao, Yuqian Zhang, Jun Zhan, Xin Zhang, Xingjian Zhao, Chengyang Zhu
+    </p>
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- <d-appendix>
+    <h3>Acknowledgments</h3>
+    <p>
+      Many thanks to Dong Zhang, JiaSheng Ye, RuiBin Yuan and the other co-authors for their help; this project is a
+      result of our collaborative effort.
+    </p>
+
+    <p>
+      Sincere thanks to Junqi Dai and Dr. Yunhua Zhou for their guidance and support, meeting you was a
+      fortunate turn in my journey.
+    </p>
+
+    <p>
+      I am particularly grateful to Dr. Tianxiang Sun for his guidance throughout the entire process of this
+      project.
+      My
+      heartfelt thanks go to my advisor, Prof. Xipeng Qiu, for his unwavering trust and support.
+    </p>
+
+    <p>
+      Special thanks to the Shanghai AI Lab for providing extensive training resources, and to Dr. Hang Yan and Shuo
+      Zhang for their support on resources.
+    </p>
+
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix> -->
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const registerSlides = (c) => {
+        const slides = document.querySelector(`${c} .slides`);
+        const dots = document.querySelectorAll(`${c} .dot`);
+        const slideCount = dots.length;
+        let currentIndex = 0;
+
+        const updateCarousel = () => {
+          slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+          dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+          });
+        };
+
+        // Button navigation
+        document.querySelector(`${c} #prev`).addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+          updateCarousel();
+        });
+
+        document.querySelector(`${c} #next`).addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % slideCount;
+          updateCarousel();
+        });
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+          });
+        });
+      }
+
+      registerSlides('.video-group-1');
+      registerSlides('.video-group-2');
+      registerSlides('.video-group-3');
+      registerSlides('.video-group-4');
+    });
+  </script>
+
+</body>

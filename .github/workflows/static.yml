@@ -3,6 +3,9 @@ name: Deploy static content to Pages
 on:
   push:
     branches: ["main"]
+  schedule:
+    # 每周一 12:00 北京时间 = 04:00 UTC（周一），刷新开源项目的 GitHub star 数据
+    - cron: '0 4 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -20,7 +23,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
+      # 抓取 GitHub star，生成 assets/js/gh-stars-data.js（仅用 Python 标准库，无需额外依赖）
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch GitHub stars
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/fetch_stars.py
+
+      # 给所有静态资源打上统一的缓存版本号（提交短 SHA），避免手动维护 ?v= 导致版本漂移/缓存错乱
+      - name: Stamp asset cache-busting version
+        run: python scripts/bump_version.py "${GITHUB_SHA::12}"
+
       # 这里直接上传整个仓库根目录作为 Pages 内容
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

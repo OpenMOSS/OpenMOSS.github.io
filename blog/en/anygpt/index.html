@@ -1,0 +1,526 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "AnyGPT: Unified Multimodal LLM with Discrete Sequence Modeling",
+    "description": "Based on the original GPT structure and multimodal discrete representation, AnyGPT unifies four modalities: text, voice, image, and music, and realizes the any-to-any multimodal generation.",
+    "authors": [
+        {
+            "author": "Jun Zhan",
+            "authorURL": "https://scholar.google.com/citations?user=GfrhPE8AAAAJ",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2402.12226",
+    "publishedDate": "Mar 02, 2024",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+  }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>AnyGPT: Unified Multimodal LLM with Discrete Sequence Modeling</h1>
+    <p>
+      Based on the original GPT structure and multimodal discrete representation, AnyGPT unifies four modalities: text,
+      voice, image, and music, and realizes the any-to-any multimodal generation.</p>
+  </d-title>
+
+  <d-article>
+    <!-- model -->
+    <h2>Introduction</h2>
+    <p>Large Language Models (LLMs), trained on vast amounts of text data through the Decoder-Only Transformer
+      architecture and Next Token Prediction training obejective, have not only mastered various NLP tasks but have also
+      developed new capabilities such as In-Context Learning and Chain-of-Thought. However, some predict that the
+      high-quality textual data on the internet will be exhausted in the coming years, and existing LLMs have yet to
+      achieve our vision for General Artificial Intelligence (AGI). The internet encompasses not just text but also
+      images, audio, video, and other multimodal data, making the endowment of multimodal capabilities to large language
+      models a hot research direction.
+    </p>
+
+    <p> <d-cite key="Sun2023GenerativePI, Ge2023MakingLS,Zhang2023SpeechGPTEL"></d-cite>
+      has propelled related research, aligning text with another modality to enable LLM to achieve cross-modal
+      understanding and generation.<d-cite key="Tang2023AnytoAnyGV, wu2023next,tang2023codi, lu2023unified"></d-cite>
+      By integrating multimodal encoders and decoders with LLMs, exploring Any-to-Any multimodal generation is pursued.
+      However, the lack of unified representation for multimodal input and output complicates model training and
+      inference, raising the question: How can we train multimodal data efficiently and uniformly?</p>
+    <p>AnyGPT proposes a generative training paradigm that converts data from all modalities into a unified discrete
+      representation, using the Next Token Prediction task for uniform training on LLMs. From the perspective of
+      <b>compression as intelligence</b>: when the quality of the Tokenizer is high enough, and the perplexity (PPL) of
+      the LLM is low enough, it may be possible to compress massive amounts of internet multimodal data into the single
+      model, and emerge abilities not found in pure text LLMs. Based on the original GPT structure and multimodal
+      discrete representations, AnyGPT unifies text, speech, image, and music modalities, achieving interconversion
+      between any combination of modalities.
+    </p>
+
+    <p>Our main contributions are as follows:</p>
+    <li>We introduce AnyGPT, an Any-to-Any multimodal LLM based on discrete representations, capable of understanding
+      and generating various modalities, including speech, text, images, and music. </li>
+    <li>We have constructed the AnyInstruct-108k dataset, based on existing generative models, containing 108k
+      multi-turn conversations, including 503k voice recordings, 205k images, and 113k music tracks.</li>
+    <li>We demonstrate that discrete representations can effectively unify multiple modalities within language models.
+    </li>
+
+    <h2>Model</h2>
+    <p>
+      Our interest lies in using large language models (LLMs) to achieve generation from any modality to any modality.
+      To accomplish this, we propose a unified framework. As shown in <a href="#model_jpg" class="model_jpg">Figure
+        1</a>, the framework consists of three components: (1) multimodal tokenizers, (2) the core multimodal large
+      language model, and (3) multimodal de-tokenizers. The tokenizer converts continuous non-text modalities into
+      discrete tokens, which are then combined into multimodal interleaved sequences. The language model is then trained
+      on these sequences using the Next Token Prediction Loss. During inference, multimodal tokens are decoded back to
+      their original representations through corresponding de-tokenizers. To enhance the quality of generation,
+      multimodal enhancement modules can be employed for post-processing the generated results, such as voice cloning or
+      image super-resolution. In the following sections, we will detail each component.
+    </p>
+
+    <figure id="model_jpg">
+      <img src="images/model1.jpg"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_figure" class="figure-number">Figure 1</a>
+          Overview of the AnyGPT model architecture: All modalities are tokenized into discrete tokens, with the LLM
+          autoregressively performing multimodal understanding and generation. Only data preprocessing and
+          postprocessing are needed, the architecture and training objectives of the model remain unchanged.</center>
+      </figcaption>
+    </figure>
+
+
+
+    <h3>Tokenizer</h3>
+    <p><b>Image Tokenizer</b> We employ SEED <d-cite key="ge2023planting"></d-cite> as the image tokenizer, which is
+      composed of a ViT encoder, causal Q-Former, VQ (Vector Quantization) codebook, multi-layer perception (MLP), and a
+      UNet decoder, with a codebook containing 8192 entries. SEED decomposes 224×224 RGB images into 16×16 patches,
+      encodes them, and converts them into a sequence of quantized codewords. These codewords are aligned with the
+      encoding space of the pre-trained unCLIP Stable Diffusion model and are restored to images through the UNet
+      decoder.</p>
+
+
+    <p><b>Speech Tokenizer</b> We utilize the SpeechTokenizer <d-cite key="zhang2023speechtokenizer"></d-cite>
+      tokenizer as our speech tokenizer. It internally comprises 8 codebooks, each containing 1024 token
+      representations. Based on an encoder-decoder architecture and Residual Vector Quantization (RVQ), SpeechTokenizer
+      compresses single-channel audio sequences into a discrete matrix with a downsampled frame rate of 50. By combining
+      semantic loss and reconstruction loss,
+      SpeechTokenizer disentangle speech information into semantic and paralinguistic information.
+    </p>
+    <p>
+      For instance, a 10-second audio will be converted into a 500×8 matrix, containing 500×1 semantic tokens and 500×8
+      acoustic tokens. In AnyGPT, a large language model (LLM) is used to model the semantic tokens, while a voice
+      cloning model supplements the remaining paralinguistic information. Thus, the size of the speech vocabulary in LLM
+      is equivalent to the size of a codebook, which is 1024.
+    </p>
+
+    <p>
+      <b>Music Tokenizer</b> We use Encodec <d-cite key="Defossez2022HighFN"></d-cite>
+      tokenizer as our music tokenizer. It internally contains 4 codebooks, each with 2048 entries. We utilized a
+      variant pretrained on music data <d-footnote id="d-footnote-1"><a
+          href="https://huggingface.co/facebook/encodec_32khz">https://huggingface.co/facebook/encodec_32khz</a></d-footnote>,
+      accepting 32kHz mono audio as input. The embeddings generated by the encoder are quantized through RVQ (Residual
+      Vector
+      Quatization), consisting of four quantizers, each with 2048 codewords, resulting in a total of 8192 music tokens.
+      We use 5-seconds audio clips, quantized into a 250×4 codeword matrix. We flatten it into a one-dimensional
+      sequence in a frame-by-frame manner, facilitating the language model to predict complete music information.
+    </p>
+
+
+
+    <h3>Multi-modal Large Language Model</h3>
+    <p>
+      To incorporate multimodal discrete representations into pre-trained LLMs, we extend the vocabulary by adding
+      tokens for each modality and expanding the corresponding embeddings and prediction layers, with newly added
+      parameters initialized randomly. The tokens from all modalities form a new vocabulary, the size of which is the
+      sum of tokens from all modalities.
+    </p>
+    <p> With tokenizers specific to each modality, we can compress multimodal data into discrete token sequences. The
+      language model is trained on this sequence using the Next Token Prediction task, enabling the core LLM to
+      naturally unify tasks such as multimodal perception, understanding, reasoning, and generation in an autoregressive
+      manner.
+      We initialize the parameters of the LLM with LLaMA-2 7B<d-cite key="touvron2023llama"></d-cite>, expanding only
+      the embedding matrix and prediction heads while keeping the rest of the language model unchanged.
+
+    <h3>Multimodal De-tokenizer</h3>
+    <p>
+      The generation of high-quality multimodal data,
+      including high-definition images, and high-fidelity
+      audio, presents a substantial challenge. These data
+      typically necessitate a large number of bits for accurate representation, resulting in long sequences
+      which is particularly demanding for language models, as the computational complexity increases exponentially with
+      the length of the sequence. To address this issue, we adopt a two-stage framework for high-quality generation,
+      including semantic information modeling and perceptual information modeling. At the semantic level, an
+      autoregressive language model generates multimodal token sequences, which are then transformed into high-fidelity
+      multimodal content by non-autoregressive models, striking a balance between performance and efficiency.
+    </p>
+
+    <p>
+      Specifically, we employ SEED tokens, aligned with the diffusion latent space, for visual-language modeling.
+      Semantic-level SEED tokens
+      are decoded into high-quality images by a Diffusion Model, which is renowned for its superior generation
+      capabilities. For speech, we utilize the SoundStorm model to generate acoustic tokens, decoded into raw audio
+      data. For music, we filter high-frequency details using Encodec tokens and reconstruct them into high-fidelity
+      audio data through the Encodec decoder.
+      This framework enables AnyGPT to significantly reduce the length of speech sequences while ensuring high-quality
+      generation of multimodal data.
+    </p>
+
+    <h2>Training</h2>
+    <h3>Pretraining Data</h3>
+    <p>
+      Achieving alignment across various modalities requires training data where these modalities are aligned, which is
+      often scarce. To address this, we constructed a multimodal alignment dataset composed of bimodal alignment data
+      centered around text, where text serves as an bridge for aligning various modalities. By aligning different
+      modalities with the text modality, alignment across any modality is established.
+      <a href="#data_mix_table">Table 1</a> shows all the datasets used for pretraining and their sampling rates, while
+      <a href="#data_mix_figure">Figure 2</a> illustrates the specific token proportions. For modalities with smaller
+      amounts of data, oversampling is employed during training to ensure balanced representation of different data
+      types within a batch.
+    </p>
+
+
+    <figure id="data_mix_table">
+      <img src="images/data_table.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_table" class="figure-number">Table 1</a>
+          All datasets used for pretraining and their sampling rates</center>
+      </figcaption>
+    </figure>
+
+    <figure id="data_mix_figure">
+      <img src="images/mix.jpg"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#data_mix_figure" class="figure-number">Figure 2</a>
+          Distribution of pretraining data divided by token counts, with the inner, middle, and outer rings representing
+          modality, data type, and dataset, respectively.</center>
+      </figcaption>
+    </figure>
+
+
+    <h3>Multimodal Instruction Following Data</h3>
+    <p>
+      Natural human-machine interaction should allow users and conversational agents to exchange information using
+      various modalities. However, the increase in the number of modalities also complicates data collection, and there
+      is still a lack of large-scale instruction datasets containing more than two modalities. This imposes significant
+      limitations on the development of models capable of understanding and generating various multimodal interleaved
+      dialogues.
+    </p>
+
+    <p>
+      To address this limitation, we designed a method to construct dialogue data integrated with multiple modalities
+      using generative models, resulting in a dataset called AnyInstruct-108k, which contains 108k multi-turn dialogues.
+      As shown in <a href="#data_construct">Figure 3</a>, the specific data synthesis process consists of two stages. In
+      the first stage, dialogues describing multimodal elements in textual form are synthesized. In the second stage,
+      models such as text-to-image, text-to-speech, and text-to-music are employed to convert the textual descriptions
+      of multimodal elements into corresponding modalities.
+      To ensure sample diversity, the first stage is divided into three specific steps:
+    <ol>
+      <li>Manually selecting meta-topics and refining them into multiple specific topics using models to obtain a pool
+        of topics;</li>
+      <li>Expanding topics into dialogue scenarios that describe the actions of users and robots in the dialogue, where
+        actions are determined by combinations of instructions;</li>
+      <li>Generating complete dialogues based on scenario descriptions, where images and music are represented by text
+        descriptions with specific markers.</li>
+    </ol>
+    </p>
+    <p>
+      In the second stage, we use state-of-the-art multimodal generative models to convert the text descriptions in the
+      dialogue into multimodal content. We employ OpenAI's DALL-E 3<d-cite key="Lin2014MicrosoftCC"></d-cite> for image
+      generation, MusicGen<d-cite key="Copet2023SimpleAC"></d-cite> for music generation, and Microsoft
+      Azure's Text-to-Speech API<d-cite key="Azure_text2speech"></d-cite> to convert textual dialogue content into
+      speech.
+    </p>
+
+    <figure id="data_construct">
+      <img src="images/data.jpeg"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-top: auto; margin-bottom: auto;">
+      <figcaption style="grid-column: kicker; ">
+        <a href="#data_construct" class="figure-number">Figure 3</a>
+        The construction process of the AnyInstruct-108k dataset, containing multimodal interleaved instructions, is
+        divided into two stages: generating text dialogues with multimodal elements (steps 1-3) and text-to-multimodal
+        conversion (step 4). The first stage generates topics, scenarios, and textual dialogues, while the second stage
+        generates the final multimodal dialogues.
+      </figcaption>
+    </figure>
+    <p>
+      After filtering, we obtained a dataset consisting of 108k multimodal interleaved dialogues, including
+      approximately 205k images, 503k voice recordings, and 113k music tracks. Additionally, we enhanced the dataset by
+      extracting content suitable for reading from existing text instruction datasets and obtaining 100k audio dialogues
+      through text-to-speech synthesis.
+    </p>
+
+    <h3>Training</h3>
+    <p>
+      We construct multimodal sequences from multimodal data using various templates. Each non-textual modality content
+      is identified by special markers placed at the beginning and end. Typically, paired data includes a non-textual
+      modality (X) - such as image, audio, or music - along with its corresponding text. We prompt OpenAI GPT-4 to
+      generate hundreds of bidirectional instruction pairs, each being X to text or text to X, for example, "Please
+      generate an image based on the provided text." Given a token sequence (S) and associated text (T), we randomly
+      select a generation direction and an instruction (I) from our pre-established pool to form a triplet (I, S, T).
+      Then, depending on the generation direction, we merge this triplet into a sequence using templates.
+    </p>
+    <p>
+      <b>[Human]: {I}.{S}&lt;eoh&gt;。[AnyGPT]: {T}&lt;eos&gt;</b>.
+    </p>
+    <p>
+      Or its variant <b>[Human]: {I}.This is input:{T}&lt;eoh&gt;。[AnyGPT]: {S}&lt;eos&gt;</b>.
+    </p>
+    For multimodal interleaved data such as web pages with image-text pairs, they naturally form sentences, so we
+    directly replace them with the corresponding non-text content.
+    As most image and music data come from the web, there may be some noise that could affect the quality of multimodal
+    generation. Therefore, after the first-stage pretraining, we selectively use high-quality datasets - JourneyDB and
+    LAION-Aesthetics for text-to-image generation, and LAION-COCO for image-to-text generation. For music data, we
+    integrate music-description pairs from the AnyInstruct-108k dataset. The remaining data remains unchanged, and we
+    continue additional 4000-step pretraining on the model.
+    </p>
+
+    <p><a href="#training">Table 2</a> reports the detailed training settings and hyperparameters of AnyGPT.</p>
+    <figure id="training">
+      <img src="images/training_params.png"
+        style="display: block; margin: auto; width: 600px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#training" class="figure-number">Table 2</a>
+          Pretraining and fine-tuning configurations of AnyGPT.</center>
+      </figcaption>
+    </figure>
+
+    <h2>Evaluation</h2>
+    <h3>Cross-Modal Tasks</h3>
+    <p>To test the alignment between different modalities during pretraining, we evaluate the basic abilities of the
+      pretrained AnyGPT base model on multimodal understanding and generation tasks. Specifically, we test the
+      "text-to-X" and "X-to-text" tasks for each modality, where X is image, music, and speech, respectively.
+      To simulate real-world scenarios, all evaluations are conducted in a zero-shot setting, meaning AnyGPT is not
+      fine-tuned or pretrained on downstream training samples. This requirement demands the model to generalize to
+      unknown testing distributions, showcasing the generalization capabilities of AnyGPT across different modes.
+      Evaluation results demonstrate excellent performance of AnyGPT in various multimodal understanding and generation
+      tasks, as shown in the specific experimental results below.
+    </p>
+
+    <p><b>Image Understanding</b> We evaluate the model's image understanding capability through the image captioning
+      task. Results are presented in <a href="#image_understanding">Table 3</a>. We use MS-COCO 2014 as the evaluation
+      dataset and follow previous work's Karpathy-style test set split.</p>
+
+    <figure id="image_understanding">
+      <img src="images/results1.png"
+        style="display: block; margin: auto; width: 450px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#image_understanding" class="figure-number">Table 3</a>
+          Comparison results for the image captioning task. Gray indicates the model was trained on the corresponding
+          training set.</center>
+      </figcaption>
+    </figure>
+
+    <p><b>Image Generation</b> As shown in <a href="#image_generation">Table 4</a>, we evaluate image generation using
+      the text-to-image task. Consistent with previous work, we randomly sample 30k images from the MS-COCO validation
+      set and use the CLIP Score as the evaluation metric. This metric computes the similarity score between the
+      generated image and its corresponding real image text description using CLIP-ViTL.</p>
+
+    <figure id="image_generation">
+      <img src="images/results2.png"
+        style="display: block; margin: auto; width: 350px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#image_generation" class="figure-number">Table 4</a>
+          Comparison results for the text-to-image task. We use image descriptions from MS-COCO to generate images and
+          calculate the CLIP Score for evaluation.</center>
+      </figcaption>
+    </figure>
+
+    <p><b>Speech Recognition</b> We conduct speech recognition on the LibriSpeech test-clean set and calculate the Word
+      Error Rate (WER) to evaluate the speech recognition capability. Results are shown in <a
+        href="#speech_understanding">Table 5</a>.</p>
+
+    <figure id="speech_understanding">
+      <img src="images/results3.png"
+        style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#speech_understanding" class="figure-number">Table 5</a>
+          Speech recognition results, with the metric being Word Error Rate (WER)</center>
+      </figcaption>
+    </figure>
+
+    <p><b>Zero-shot Speech Synthesis</b> We evaluate the speech generation capability through zero-shot Text-to-Speech
+      (TTS) on the VCTK dataset, calculating the Speaker Similarity and Word Error Rate (WER) as metrics. Results are
+      shown in <a href="#speech_generation">Table 6</a>.</p>
+
+    <figure id="speech_generation">
+      <img src="images/results4.png"
+        style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#speech_generation" class="figure-number">Table 6</a>
+          Zero-shot Speech Synthesis Results</center>
+      </figcaption>
+    </figure>
+    <p><b>Music Understanding and Generation</b> We evaluate the music understanding and generation capability using the
+      MusicCaps benchmark and CLAP Score as the metric, which describes the similarity between the generated music and
+      its corresponding text description. Results are presented in <a href="#music_result">Table 7</a>.</p>
+    <p>For the evaluation of music captioning, we found that existing objective evaluation metrics may have limitations
+      in expressing the performance of the music captioning task due to the diversity and subjectivity of music, as well
+      as the different opinions among individuals. Only specific music types and instruments have recognizable unique
+      features. To ensure objective evaluation, we compare the CLAP Score of &lt;music, real caption&gt; pairs and
+      &lt;music, generated caption&gt; pairs.</p>
+
+    <figure id="music_result">
+      <img src="images/results5.png"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <center><a href="#music_result" class="figure-number">Table 7</a>
+          Results of Music Understanding and Generation, with CLAP Score as the metric. In Music Captioning, we compare
+          the similarity of "Music-Real Caption" pairs (&lt;music, real caption&gt;) and "Music-Generated Caption" pairs
+          (&lt;music, generated caption&gt;).</center>
+      </figcaption>
+    </figure>
+
+    <h3>Any-to-Any Multi-modal Conversations</h3>
+    <p>After fine-tuning on AnyInstruct-108k, AnyGPT demonstrates the ability to engage in conversations across any
+      modality. It can understand instructions composed of text, speech, images, and music, and select appropriate
+      modalities for response. For more examples, please refer to our <a
+        href="https://junzhan2000.github.io/AnyGPT.github.io/">project page</a>.</p>
+    <div class="publication-video">
+      <iframe src="https://www.youtube.com/embed/oW3E3pIsaRg" frameborder="0" allow="autoplay; encrypted-media"
+        allowfullscreen
+        style="display: block; margin: auto; width: 600px; height: 280px; margin-bottom: -0px; margin-top: -0px;"></iframe>
+      <figcaption style="grid-column: kicker">
+        <center><a href="#publication-video" class="figure-number">Video 1</a>
+          Demo
+        </center>
+      </figcaption>
+    </div>
+    <h2>Conclusion</h2>
+    <p>
+      In this work, we introduced AnyGPT, an Any-to-Any multi-modal language model that leverages discrete
+      representations to handle various modalities including speech, text, images, and music. The discrete multi-modal
+      representation facilitates seamless integration of new modalities—akin to adding a new language—without the need
+      to change the existing LLM architecture or training paradigm. To enable the model to handle arbitrary combinations
+      of multi-modal inputs and outputs, we synthesized the first large-scale Any-to-Any multi-modal instruction
+      dataset, AnyInstruct-108k, containing finely interleaved multi-turn conversations spanning various modalities.
+      Experimental results demonstrate promising performance of AnyGPT across various cross-modal tasks and showcase
+      impressive Any-to-Any multi-modal conversation capabilities, validating that discrete representations can
+      effectively and conveniently unify multiple modalities within a unified large-scale language model.
+    </p>
+
+
+    <h2>Limitations and Future Work</h2>
+    <p>
+      <b>Any-to-Any Multi-modal LLM Benchmark:</b> Benchmarking for Any-to-Any multi-modal LLMs is emerging as a
+      research hotspot. However, the lack of dedicated benchmarks evaluating the multi-faceted capabilities of such
+      models underscores the urgent need to develop comprehensive evaluation benchmarks.
+    </p>
+    <p>
+      <b>Stronger LLMs:</b> While training large multi-modal models using discrete representations is relatively stable
+      compared to single-modal ones, there still may be higher training losses, impacting performance. Improvement
+      strategies may include employing larger LLMs and tokenizers, or adopting architectures like Mixture of Experts
+      (MOE).
+    </p>
+    <p>
+      <b>Enhanced Tokenizers:</b> In multi-modal LLMs, the quality of tokenizers directly influences the model's
+      comprehension and generation abilities. Tokenizers can be improved in various ways, including optimizing codebook
+      training and achieving more uniform multi-modal representations.
+    </p>
+    <p>
+      <b>Expanded Context:</b> Multi-modal content such as images and audio often involves long sequences, resulting in
+      greater training difficulty and higher data requirements. For multi-modal conversations, longer contexts can
+      increase the number of dialogue turns, enhancing interaction depth and complexity.
+    </p>
+
+
+
+  </d-article>
+
+  <d-appendix>
+    <h3>Acknowledgments</h3>
+    <p>
+      Many thanks to Dong Zhang, JiaSheng Ye, RuiBin Yuan and the other co-authors for their help; this project is a
+      result of our collaborative effort.
+    </p>
+
+    <p>
+      Sincere thanks to Junqi Dai and Dr. Yunhua Zhou for their guidance and support, meeting you was a
+      fortunate turn in my journey.
+    </p>
+
+    <p>
+      I am particularly grateful to Dr. Tianxiang Sun for his guidance throughout the entire process of this project. My
+      heartfelt thanks go to my advisor, Prof. Xipeng Qiu, for his unwavering trust and support.
+    </p>
+
+    <p>
+      Special thanks to the Shanghai AI Lab for providing extensive training resources, and to Dr. Hang Yan and Shuo
+      Zhang
+      for their support on resources.
+    </p>
+
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+</body>

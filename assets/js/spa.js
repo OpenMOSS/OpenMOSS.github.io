@@ -1,6 +1,7 @@
 (function () {
   const routes = {
     home: renderHome,
+    blog: renderBlog,
     people: renderPeople,
     alumni: renderAlumni,
     resources: renderResources,
@@ -60,7 +61,7 @@
         var parsed = parseHighlights(txt);
         if (parsed.length) {
           SPA_DATA.highlights = parsed;
-          if ((parseHash().route || 'home') === 'home') handleRoute();
+          if ((parseHash().route || 'home') === 'blog') handleRoute();
         }
       })
       .catch(function () {});
@@ -70,8 +71,11 @@
   function parseHighlights(text) {
     if (!text) return [];
     text = text.replace(/<!--[\s\S]*?-->/g, '');
+    function splitTags(s) {
+      return (s || '').split(/[,，、]/).map(function (x) { return x.trim(); }).filter(Boolean);
+    }
     return text.split(/\n\s*-{3,}\s*\n/).map(function (block) {
-      var h = { title: {}, desc: {} };
+      var h = { title: {}, desc: {}, tags: {} };
       block.split('\n').forEach(function (line) {
         var i = line.search(/[:：]/);
         if (i < 0) return;
@@ -83,6 +87,8 @@
         else if (k === 'title' || k === 'title-en') h.title.en = v;
         else if (k === '描述' || k === 'desc-zh') h.desc.zh = v;
         else if (k === 'desc' || k === 'desc-en') h.desc.en = v;
+        else if (k === '标签' || k === 'tags-zh') h.tags.zh = v;
+        else if (k === 'tags' || k === 'tags-en') h.tags.en = v;
         else if (k === '图' || k === '图片' || k === 'image') h.image = v;
         else if (k === '链接' || k === 'url') h.url = v;
       });
@@ -90,6 +96,8 @@
       if (h.title.en && !h.title.zh) h.title.zh = h.title.en;
       if (h.desc.zh && !h.desc.en) h.desc.en = h.desc.zh;
       if (h.desc.en && !h.desc.zh) h.desc.zh = h.desc.en;
+      var tz = splitTags(h.tags.zh), te = splitTags(h.tags.en);
+      h.tags = { zh: tz.length ? tz : te, en: te.length ? te : tz };
       return h;
     }).filter(function (h) { return h.date || h.title.zh || h.title.en; });
   }
@@ -102,7 +110,8 @@
       { id: 'people', key: 'nav.people' },
       { id: 'alumni', key: 'nav.alumni' },
       { id: 'resources', key: 'nav.resources' },
-      { id: 'positions', key: 'nav.positions' }
+      { id: 'positions', key: 'nav.positions' },
+      { id: 'blog', key: 'nav.blog' }
     ];
 
     root.innerHTML = `
@@ -216,6 +225,8 @@
     const view = document.getElementById('spa-view');
     const renderFn = routes[route] || routes.home;
     view.innerHTML = renderFn(params);
+    // 资源页渲染后填充 GitHub star（系列卡子仓库 + 总数）
+    if (route === 'resources') hydrateProjectStars();
     updateNav(route);
 
     // 滚动到页面顶部
@@ -224,11 +235,6 @@
     // 处理特定页面的锚点跳转
     if (route === 'positions' && params.section) {
       setTimeout(() => scrollToId(params.section, 120), 50);
-    }
-
-    // 处理研究方向页面的滚动到最新亮点
-    if (route === 'research' && params.scroll === 'highlights') {
-      setTimeout(() => scrollToId('research-highlights', 100), 50);
     }
   }
 
@@ -273,26 +279,6 @@
     });
   }
 
-  function renderHero() {
-    const paragraphs = [
-      t('hero.p1'),
-      t('hero.p2')
-    ];
-
-    return `
-      <section class="page-hero">
-        <div class="container">
-          <div class="page-hero-content">
-            <div class="page-hero-copy">
-              <h1>${t('hero.title')}</h1>
-              ${paragraphs.map(p => `<p class="lead">${p}</p>`).join('')}
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
   // 渲染研究方向卡片网格；navigate=true 时先跳转到研究页再滚动到对应论文区块
   function renderPillarsGrid() {
     return `
@@ -306,35 +292,91 @@
   }
 
   function renderHome() {
-    const highlights = (SPA_DATA.highlights || []).map(h => ({
-      title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
-      desc: typeof h.desc === 'object' ? (h.desc[currentLang] || h.desc.zh) : h.desc,
-      date: h.date, url: h.url, image: h.image
-    }));
     return `
-      ${renderHero()}
-      <section class="container sec">
-        <h2>${t('research.title')}</h2>
-        ${renderPillarsGrid()}
-      </section>
-      ${highlights.length ? `
-      <section class="container sec" id="home-highlights">
-        <h2>${t('research.highlights.title')}</h2>
-        <div class="highlights-list">
-          ${highlights.map(h => `
-            <article class="highlight-item${h.image ? ' has-img' : ''}" ${h.url ? `onclick="window.open('${h.url}', '_blank')" style="cursor: pointer;"` : ''}>
-              <div class="highlight-content">
-                <div class="highlight-head">
-                  <h3>${h.title}</h3>
-                  <span class="highlight-date">${h.date}</span>
-                </div>
-                <p>${h.desc}</p>
-              </div>
-              ${h.image ? `<img class="highlight-img" src="${h.image}" alt="" loading="lazy">` : ''}
-            </article>
-          `).join('')}
+      <section class="home-hero">
+        <div class="container home-hero-grid">
+          <div class="home-hero-left">
+            <h1 class="home-hero-title">${t('hero.headline')}</h1>
+          </div>
+          <div class="home-hero-lead">
+            <p class="intro">${t('hero.p1')}</p>
+          </div>
         </div>
-      </section>` : ''}
+      </section>
+      <section class="container home-section">
+        <div class="home-section-head">
+          <h2 class="home-section-title">${t('research.title')}</h2>
+          <p class="intro">${t('research.intro')}</p>
+        </div>
+        <div class="home-tiles">
+          ${PILLARS.map(function (p) {
+            return `
+            <article class="home-tile">
+              <h3>${t(p.titleKey)}</h3>
+              <p>${t(p.descKey)}</p>
+            </article>`;
+          }).join('')}
+        </div>
+      </section>
+    `;
+  }
+
+  function dateKey(d) {
+    var p = String(d || '').split('.');
+    return (parseInt(p[0], 10) || 0) * 100 + (parseInt(p[1], 10) || 0);
+  }
+
+  function renderResearchRow(item) {
+    var ext = item.external ? ' target="_blank" rel="noopener"' : '';
+    var tags = (item.tags || []).map(function (tg) {
+      return `<span class="blog-tag">${tg}</span>`;
+    }).join('');
+    return `
+      <a class="blog-row" href="${item.url}"${ext}>
+        <div class="blog-row-main">
+          ${tags ? `<div class="blog-tags">${tags}</div>` : ''}
+          <h3 class="blog-row-title">${item.title}</h3>
+          <p class="blog-row-desc">${item.desc}</p>
+        </div>
+        ${item.image ? `<img class="blog-row-thumb" src="${item.image}" alt="" loading="lazy">` : ''}
+        <span class="blog-row-date">${item.date}</span>
+      </a>`;
+  }
+
+  function renderBlog() {
+    var items = [];
+    (SPA_DATA.highlights || []).forEach(function (h) {
+      var htags = (h.tags && (h.tags[currentLang] || h.tags.zh)) || [];
+      items.push({
+        tags: htags.concat([t('blog.tag.external')]),
+        title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
+        desc: typeof h.desc === 'object' ? (h.desc[currentLang] || h.desc.zh) : h.desc,
+        date: h.date, sort: dateKey(h.date), image: h.image,
+        url: h.url || 'javascript:void(0)', external: !!h.url
+      });
+    });
+    (SPA_DATA.blogPosts || []).forEach(function (p) {
+      var lang = (currentLang === 'zh' && p.cn) ? 'cn' : 'en';
+      var topics = (p.topicKeys || (p.topicKey ? [p.topicKey] : [])).map(t);
+      items.push({
+        tags: topics.concat([t('blog.tag.blog')]),
+        title: p.title[currentLang] || p.title.en,
+        desc: p.desc[currentLang] || p.desc.en,
+        date: p.date, sort: dateKey(p.date), image: p.image,
+        url: '/blog/' + lang + '/' + p.slug + '/', external: false
+      });
+    });
+    items.sort(function (a, b) { return b.sort - a.sort; });
+    return `
+      <section class="container sec" id="blog-main">
+        <div class="page-hero-copy" style="margin-bottom: 36px;">
+          <h1>${t('blog.title')}</h1>
+          <p class="intro">${t('blog.intro')}</p>
+        </div>
+        <div class="blog-list">
+          ${items.map(renderResearchRow).join('')}
+        </div>
+      </section>
     `;
   }
 
@@ -356,7 +398,7 @@
       <section class="container sec" id="people-main">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
           <h1>${t('people.title')}</h1>
-          <p>${t('people.desc')}</p>
+          <p class="intro">${t('people.desc')}</p>
         </div>
 
         <aside class="toc-sidebar">
@@ -428,9 +470,8 @@
 
     return `
       <section class="container sec" id="alumni-main">
-        <div class="page-hero-copy" style="margin-bottom: 40px;">
+        <div class="page-hero-copy" style="min-height: auto; margin-bottom: 24px;">
           <h1>${t('alumni.title')}</h1>
-          <p>${t('alumni.desc')}</p>
         </div>
 
         <aside class="toc-sidebar">
@@ -443,6 +484,7 @@
         </aside>
 
         <div class="alumni-content">
+            <p class="intro">${t('alumni.intro')}</p>
             ${categories.map(cat => `
               <div id="${cat.id}" class="alumni-dir">
                   <h2 class="section-subtitle">${t(cat.titleKey)}</h2>
@@ -472,46 +514,136 @@
     `).join('');
   }
 
-  function renderResearch() {
-    // 从 SPA_DATA 获取最新亮点内容，并处理多语言
-    const highlights = (SPA_DATA.highlights || []).map(h => ({
-      title: typeof h.title === 'object' ? (h.title[currentLang] || h.title.zh) : h.title,
-      desc: typeof h.desc === 'object' ? (h.desc[currentLang] || h.desc.zh) : h.desc,
-      date: h.date,
-      url: h.url
-    }));
+  // ===== GitHub star 工具（移植自个人主页 star-counter.js）=====
+  // 数据优先级：baked window.__GH_STARS__（CI 每日刷新）→ localStorage 缓存（1h）→ 实时 API
+  const STAR_PATH = 'M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.72 4.192a.75.75 0 0 1-1.088.791L8 12.347 4.232 14.327a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z';
+  const STAR_SVG_SM = `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="${STAR_PATH}"/></svg>`;
+  const STAR_SVG_XS = `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="${STAR_PATH}"/></svg>`;
 
-    return `
-      <section class="container sec" id="research-main">
-        <div class="page-hero-copy" style="margin-bottom: 40px;">
-          <h1>${t('research.title')}</h1>
-          <p>${t('research.intro')}</p>
-        </div>
-        ${renderPillarsGrid(false)}
-      </section>
-      
-      <section class="container sec" id="research-highlights">
-        <h2>${t('research.highlights.title')}</h2>
-        <div class="highlights-list">
-          ${highlights.map(h => `
-            <article class="highlight-item${h.image ? ' has-img' : ''}" ${h.url ? `onclick="window.open('${h.url}', '_blank')" style="cursor: pointer;"` : ''}>
-              <div class="highlight-content">
-                <div class="highlight-head">
-                  <h3>${h.title}</h3>
-                  <span class="highlight-date">${h.date}</span>
-                </div>
-                <p>${h.desc}</p>
-              </div>
-              ${h.image ? `<img class="highlight-img" src="${h.image}" alt="" loading="lazy">` : ''}
-            </article>
-          `).join('')}
-        </div>
-      </section>
-    `;
+  // 紧凑显示：12k / 1.3k / 532（用于单仓库 star）
+  function formatStars(n) {
+    if (n == null) return '—';
+    if (n >= 10000) return Math.round(n / 1000) + 'k';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+    return String(n);
+  }
+  // 完整数字带千分位（用于系列总 star）
+  function groupThousands(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  // 从 baked 数据按系列组织求总 star（首屏即用，无需等待 hydrate）
+  function computeTotalStars() {
+    const baked = window.__GH_STARS__;
+    if (!baked) return 0;
+    const series = SPA_DATA.projectSeries || [];
+    let total = 0;
+    series.forEach(p => {
+      if (p.org && baked.orgs && baked.orgs[p.org]) {
+        baked.orgs[p.org].forEach(r => { total += r.stars || 0; });
+      }
+      if (p.repo && baked.repos && baked.repos[p.repo] != null) {
+        total += baked.repos[p.repo];
+      }
+    });
+    return total;
+  }
+
+  // 在「开放资源」页渲染后调用：填充各系列卡的精选子仓库与系列总 star。
+  function hydrateProjectStars() {
+    const grid = document.querySelector('.project-grid');
+    if (!grid) return;
+    const baked = window.__GH_STARS__ || null;
+    const TTL = 60 * 60 * 1000;
+    const series = SPA_DATA.projectSeries || [];
+
+    // 总数基线：先用 baked 填好每个组织，hydrate 时逐个刷新并收敛
+    const orgTotals = {};
+    series.forEach(p => {
+      if (p.org && baked && baked.orgs && baked.orgs[p.org]) {
+        orgTotals[p.org] = baked.orgs[p.org].reduce((s, r) => s + (r.stars || 0), 0);
+      }
+    });
+
+    function readCache(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const v = JSON.parse(raw);
+        if (Date.now() - v.t > TTL) return null;
+        return v.s;
+      } catch (e) { return null; }
+    }
+    function writeCache(key, value) {
+      try { localStorage.setItem(key, JSON.stringify({ s: value, t: Date.now() })); }
+      catch (e) { /* 配额 / 隐私模式 — 忽略 */ }
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function updateTotal() {
+      const el = document.getElementById('projects-total-num');
+      if (!el) return;
+      const total = Object.keys(orgTotals).reduce((s, o) => s + orgTotals[o], 0);
+      if (total > 0) el.textContent = groupThousands(total);
+    }
+    function renderRepos(el, repos) {
+      const limit = parseInt(el.getAttribute('data-limit'), 10) || 4;
+      const featuredAttr = el.getAttribute('data-featured');
+      const featured = featuredAttr
+        ? featuredAttr.split(',').map(s => s.trim()).filter(Boolean)
+        : null;
+      let items;
+      if (!featured) {
+        items = repos.slice(0, limit); // 无白名单：取 star 最高的前 N 个
+      } else {
+        const byName = {};
+        repos.forEach(r => { byName[r.name.toLowerCase()] = r; });
+        items = []; // 白名单：保留配置顺序，找不到的静默跳过
+        featured.forEach(name => {
+          const hit = byName[name.toLowerCase()];
+          if (hit) items.push(hit);
+        });
+      }
+      if (!items.length) { el.innerHTML = ''; return; }
+      el.innerHTML = items.map(r => (
+        '<li class="repo-item" title="' + escapeHtml(r.desc || r.name) + '">' +
+          '<span class="repo-name">' + escapeHtml(r.name) + '</span>' +
+          '<span class="repo-stars">' + STAR_SVG_XS + '<span>' + formatStars(r.stars) + '</span></span>' +
+        '</li>'
+      )).join('');
+    }
+
+    grid.querySelectorAll('.project-card__repos[data-org]').forEach(el => {
+      const org = el.getAttribute('data-org');
+      if (!org) { el.innerHTML = ''; return; }
+      function apply(repos) {
+        orgTotals[org] = repos.reduce((s, r) => s + (r.stars || 0), 0);
+        renderRepos(el, repos);
+        updateTotal();
+      }
+      if (baked && baked.orgs && baked.orgs[org]) { apply(baked.orgs[org]); return; }
+      const cached = readCache('gh-org:' + org);
+      if (cached) { apply(cached); return; }
+      fetch('https://api.github.com/orgs/' + org + '/repos?per_page=100&type=public&sort=updated', {
+        headers: { 'Accept': 'application/vnd.github+json' }
+      })
+        .then(r => { if (!r.ok) throw 0; return r.json(); })
+        .then(list => {
+          const slim = list
+            .filter(r => !r.fork && !r.archived && !r.private)
+            .map(r => ({ name: r.name, stars: r.stargazers_count || 0, url: r.html_url, desc: r.description || '' }))
+            .sort((a, b) => b.stars - a.stars);
+          writeCache('gh-org:' + org, slim);
+          apply(slim);
+        })
+        .catch(() => { el.innerHTML = ''; });
+    });
+
+    updateTotal();
   }
 
   function renderResources() {
-    // 从 SPA_DATA 获取课程和项目数据
+    // 课程数据
     const courses = (SPA_DATA.courses || []).map(c => ({
       title: t(c.titleKey),
       desc: t(c.descKey),
@@ -519,23 +651,29 @@
       label: t(c.labelKey)
     }));
 
-    const projects = (SPA_DATA.projects || []).map(p => ({
+    // 开源项目系列（按 GitHub 组织分组）
+    const series = (SPA_DATA.projectSeries || []).map(p => ({
       name: p.name,
-      desc: t(p.descKey),
-      stars: p.stars,
-      stack: p.stack,
-      url: p.url
+      url: p.url,
+      org: p.org,
+      feature: !!p.feature,
+      featured: p.featured || null,
+      badge: p.badgeKey ? t(p.badgeKey) : '',
+      desc: t(p.descKey)
     }));
+
+    // baked star 总数：首屏即显示正确数字，hydrate 后随实时数据收敛
+    const totalStars = computeTotalStars();
 
     return `
       <section class="container sec">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
           <h1>${t('resources.title')}</h1>
-          <p>${t('resources.desc')}</p>
+          <p class="intro">${t('resources.desc')}</p>
         </div>
 
         <h2 id="courses" class="section-subtitle" style="scroll-margin-top: 100px;">${t('resources.courses.title')}</h2>
-        <p class="lead" style="margin-bottom: 24px;">${t('resources.courses.intro')}</p>
+        <p class="intro">${t('resources.courses.intro')}</p>
         <div class="highlight-grid highlight-grid-3">
           ${courses.map(card => `
             <article class="highlight-card">
@@ -546,18 +684,27 @@
           `).join('')}
         </div>
 
-        <h2 id="projects" class="section-subtitle" style="margin-top: 48px; scroll-margin-top: 100px;">${t('resources.projects.title')}</h2>
-        <div class="resource-grid">
-          ${projects.map(project => `
-            <article class="resource-card">
-              <h3>${project.name}</h3>
-              <p>${project.desc}</p>
-              <div>
-                <span style="display:inline-block;padding:4px 8px;background-color:var(--mist);border-radius:4px;font-size:12px;margin-right:8px;">${project.stars}</span>
-                <span style="display:inline-block;padding:4px 8px;background-color:var(--mist);border-radius:4px;font-size:12px;">${project.stack}</span>
+        <h2 id="projects" class="section-subtitle h2-with-total" style="margin-top: 48px; scroll-margin-top: 100px;">
+          <span>${t('resources.projects.title')}</span>
+          <span class="h2-total" title="${t('resources.projects.total')}">
+            ${STAR_SVG_SM}
+            <span class="h2-total__num" id="projects-total-num">${totalStars ? groupThousands(totalStars) : '—'}</span>
+          </span>
+        </h2>
+        <div class="project-grid">
+          ${series.map(p => `
+            <a class="project-card${p.org ? ' project-card--series' : ''}${p.feature ? ' project-card--feature' : ''}" href="${p.url}" target="_blank" rel="noopener">
+              <div class="project-card__head">
+                <span class="project-card__name">${p.name}</span>
+                ${p.badge ? `<span class="project-card__badge">${p.badge}</span>` : ''}
+                <span class="project-card__link">${p.org ? t('resources.projects.orglink') : t('resources.projects.repolink')}</span>
               </div>
-              <a class="btn btn-inline" href="${project.url}" target="_blank">${t('resources.btn.visit')}</a>
-            </article>
+              <p class="project-card__desc">${p.desc}</p>
+              ${p.org ? `
+              <ul class="project-card__repos" data-org="${p.org}" data-limit="${(p.featured && p.featured.length) || 4}"${p.featured ? ` data-featured="${p.featured.join(',')}"` : ''}>
+                <li class="repos-loading">${t('resources.projects.loading')}</li>
+              </ul>` : ''}
+            </a>
           `).join('')}
         </div>
       </section>
@@ -582,7 +729,7 @@
       <section class="container sec">
         <div class="page-hero-copy" style="margin-bottom: 40px;">
           <h1>${t('positions.title')}</h1>
-          <p>${t('positions.intro')}</p>
+          <p class="intro">${t('positions.intro')}</p>
         </div>
         <div class="resource-grid">
           ${cards.map(card => `
@@ -629,7 +776,7 @@
       <section class="container sec">
         <div class="page-hero-copy">
           <h1>${t('webmaster.title')}</h1>
-          <p>${t('webmaster.intro')}</p>
+          <p class="intro">${t('webmaster.intro')}</p>
         </div>
         <div class="alumni-list">
           ${SPA_DATA.webmaster.members.map(member => `

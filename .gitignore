@@ -1,2 +1,7 @@
 .DS_Store
 .claude/
+# Font build cache (large source TTFs downloaded by scripts/build-fonts.py)
+scripts/.fontcache/
+# Python bytecode cache
+__pycache__/
+*.pyc

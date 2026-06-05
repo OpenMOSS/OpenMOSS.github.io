@@ -1,0 +1,42 @@
+/* OpenMOSS — unify the research blog (Distill) typography with the main site.
+ *
+ *   Chrome / title / byline / section headings / TOC / listing pages
+ *        -> SANS:  Roboto (self-hosted, same as the main site) + 思源黑体 / 系统黑体
+ *   Long-form article body (paragraphs, lists, quotes)
+ *        -> SERIF: Palatino / Georgia (Latin) + 宋体 / 思源宋体 (CJK)   [kept on purpose]
+ *
+ * Loaded via a versioned <link> in each blog page's <head>.
+ * Code blocks and KaTeX math are deliberately NOT targeted, so they keep
+ * their own monospace / math fonts.
+ */
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/assets/fonts/roboto-subset.woff2") format("woff2");
+}
+
+/* ---- SANS: UI, titles, headings, TOC, listing pages ---- */
+body,
+d-title, d-title h1, d-title h2, d-title p,
+d-byline, d-byline *,
+d-article h1, d-article h2, d-article h3,
+d-article h4, d-article h5, d-article h6,
+d-contents, d-contents *,
+d-appendix, d-appendix h2, d-appendix h3,
+figcaption, .figcaption,
+.description, .description h2, .description p, .description *,
+.posts-list, .post-preview, .post-preview h2, .post-preview p,
+h2.post-tag {
+  font-family: "Roboto", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif !important;
+}
+
+/* ---- SERIF: long-form article body (bilingual) ---- */
+d-article,
+d-article p, d-article li, d-article ul, d-article ol,
+d-article blockquote,
+d-abstract, d-abstract p {
+  font-family: Palatino, Georgia, "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif !important;
+}

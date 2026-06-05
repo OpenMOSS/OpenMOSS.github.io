@@ -1,0 +1,579 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style id="distill-article-specific-styles">
+        .subgrid {
+            grid-column: screen;
+            display: grid;
+            grid-template-columns: inherit;
+            grid-template-rows: inherit;
+            grid-column-gap: inherit;
+            grid-row-gap: inherit;
+        }
+
+        d-figure.base-grid {
+            grid-column: screen;
+            background: hsl(0, 0%, 97%);
+            padding: 20px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        d-figure {
+            margin-bottom: 1em;
+            position: relative;
+        }
+
+        d-figure>figure {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .shaded-figure {
+            background-color: hsl(0, 0%, 97%);
+            border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+            border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+            padding: 30px 0;
+        }
+
+        .pointer {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            top: 26px;
+            left: -48px;
+        }
+
+        .responsive-img {
+            display: block;
+            margin: auto;
+            width: 98%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+    <style>
+        iframe {
+            width: 100%;
+            /* 设置宽度为容器的100% */
+            height: 800px;
+            /* 设置一个起始高度，可以根据实际情况调整 */
+            border: none;
+            /* 移除边框 */
+        }
+
+        /* 确保响应式 */
+        @media (max-width: 800px) {
+            iframe {
+                height: 600px;
+                /* 对于较小的屏幕，调整高度 */
+            }
+        }
+    </style>
+
+    <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+    
+    <d-front-matter>
+        <script type="text/json">
+      {
+    "title": "动态环境下的智能体演化式对齐",
+    "description": "在社会准则不断演化的环境中，与社会对齐良好的智能体将得以保留并演化出更适配环境的后代，而对齐不好的智能体则逐渐消亡并被淘汰。",
+    "authors": [
+        {
+            "author": "Shimin Li",
+            "authorURL": "https://scholar.google.com/citations?user=0xxkGjMAAAAJ",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2401.04620",
+    "publishedDate": "2024-02-22",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+
+
+    </script>
+    </d-front-matter>
+
+    <d-title>
+        <h1>动态环境下的智能体演化式对齐</h1>
+        <p>在社会准则不断演化的环境中，与社会对齐良好的智能体将得以保留并演化出更适配环境的后代，而对齐不好的智能体则逐渐消亡并被淘汰。</p>
+    </d-title>
+
+    <d-article>
+
+        <h1>引言</h1>
+        <p>
+            以智能体（Agent）为代表的大模型（Large Language Models,
+            LLMs）应用可通过整合各类增强组件或工具进一步弥补和强化LLMs的能力。同时，以LLM作为决策中枢的智能体的能力也随着LLM能力的增长而提升。
+            当智能体所能完成任务的复杂程度超过人类监管水平时，如何设计有效的智能体对齐方法对于AI安全至关重要。
+            更进一步，智能体可通过与现实社会交互来改变真实物理世界，若这些系统没有经过良好的监管，将会带来一系列社会风险。
+        </p>
+        <p>
+            当前的对齐方法大多通过结合指令数据集的有监督微调（Supervised Fine-Tuning, SFT）或者结合偏好的强化学习（Reinforcement Learning from Human/AI
+            Feedback, RLHF/RLAIF）将LLMs与预定义的、静态的人类价值观对齐从而减少有害性。
+            但这只是对人为事先定义数据的价值观的对齐，当面对复杂的社会环境时，这类对齐可能会被规避。
+            此外，对于人类而言，最合适和最高级的对齐目标或许是社会价值或准则
+            <d-cite key="gabriel20-alignment, social-align, align_goal_survey"></d-cite>
+            ，而社会准则通常随着时代逐步确立和演化<d-cite key="young2015evolution_social_norms"></d-cite>。
+            因此AI系统的对齐需要针对其自身的演化和社会准则的变化而持续更新。
+        </p>
+        <p>
+            不同于LM的对齐，智能体因为可以与环境交互，获得反馈来改进行为
+            <d-cite key="react, shinn2023reflexion"></d-cite>
+            ，因此智能体的对齐更加需要考虑环境的因素。
+            然而当前的对齐工作大多集中于对语言模型本身的对齐，而忽略了智能体具备的基于环境反馈而动态学习的特性。
+            同时，LLM的社会对齐的工作关注在静态环境的社会对齐，而真实世界的社会准则和价值观往往会随着时代发生变化。
+        </p>
+        <p>
+            因此，本文提出了一种社会准则变化环境下的智能体对齐方法。
+            我们并不通过SFT或者RLHF等方式调整模型的参数，而是从多智能体社会中，智能体种群优胜劣汰下的适者生存的视角下
+            <d-cite key="dan2023ai_evolution"></d-cite>
+            出发，实现变化环境下的智能体持续演化与价值观的事后对齐。
+        </p>
+        <p>
+            本文的主要内容可归纳为：
+        </p>
+        <ul>
+            <li>
+                从外部环境动态变化，即社会准则持续演化的视角下出发，探索了智能体持续进化并适配动态环境的方法。
+            </li>
+            <li>
+                提出了EvolutionaryAgent，一个基于适者生存概念的动态环境下的智能体演化与对齐方法，可在无需额外训练的情况下获得更优对齐的智能体。
+            </li>
+            <li>
+                我们验证了该方法可在多种开源和闭源模型上实现持续的动态演化，并且相比于之前的智能体自学习方法具有更优的效果。
+            </li>
+        </ul>
+
+        <h1>智能体对齐</h1>
+
+        <figure id="agent_alignment">
+            <img src="./diagrams/agent_alignment.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#agent_alignment" class="figure-number">Figure 1</a>
+                LLM 对齐与智能体对齐之间的差异。(a) LLM 在人工介入下迭代地与价值观保持一致。
+                (b) 智能体从环境中感知价值观信息，采取影响环境的行动，并在收到反馈后自我迭代进化。
+            </figcaption>
+        </figure>
+
+        <h3>LLM对齐</h3>
+        <p>
+            LLM对齐的目标是希望弥补下一个词预测的语言建模任务和无偏见、无害、诚实等人类预定义价值观之间的间隙。
+            假设人类的偏好或者价值观为
+            <d-math>Value_t</d-math>
+            ，其可以在迭代对齐的过程中维持不变或者随着轮次
+            <d-math>t</d-math>
+            发生偏移。
+            LLM的对齐过程可以定义为：
+        </p>
+        <div style="text-align: center;">
+            <d-math>
+                \textrm{LLM}_{t+1}=f_{M}(\textrm{LLM}_t,Value_t),
+            </d-math>
+        </div>
+        <p>
+            其中
+            <d-math>f_M()</d-math>
+            为人工干预下的模型对齐或者演化的过程，通常可分为直接在包含偏好信息的指令数据集上进行模仿学习以及通过强化学习将偏好信息注入LLM中。
+        </p>
+        <h3>智能体对齐</h3>
+        <p>
+            我们定义智能体
+            <d-math>\lambda_t</d-math>
+            为具备感知外部环境的感知模块、以LLM为中枢的核心决策模块、记忆模块以及行为模块的系统。
+            相比于LLM对齐被动地接受人工筛选的人类价值观信息，我们认为智能体具备通过感知模块获得观测
+            <d-math>o\in\mathcal{O}</d-math>
+            ，包括当前环境中的价值观信息。
+            接着以LLM为中心的决策中枢做出计划，并采取行动
+            <d-math>a\in\mathcal{A}</d-math>
+            。
+            外部环境将针对智能体的行为提供反馈
+            <d-math>FB</d-math>
+            ，用于智能体的自我演化：
+        </p>
+        <div style="text-align: center;">
+            <d-math>
+                \lambda_{t+1}=f_S(\lambda_t,Value_t,o,a,FB),
+            </d-math>
+        </div>
+
+        <p>
+            其中
+            <d-math>f_S()</d-math>
+            为智能体自主决策的对齐过程，包括更新记忆模块以及决策模块中的LLM参数。
+        </p>
+
+        <h1>动态环境下的演化式智能体</h1>
+        <p>
+            当前对智能体的研究工作大多集中在如何赋予智能体更强的能力或者执行更多的任务，甚至如何让智能体能力自提升。
+            随着智能体能力的日渐增强，研究智能体的监管与对齐显得更为重要。文本介绍EvolutionaryAgent，一个动态环境下的智能体演化与对齐框架。
+            首先我们定义智能体的基本属性以及如何在动态变化的环境中评估智能体的行为是否遵循了社会准则。
+        </p>
+
+        <figure id="evolutionary_agent">
+            <img src="./diagrams/evolutionary_agent.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#evolutionary_agent" class="figure-number">Figure 2</a>
+                本方法主要包含四个流程：1）智能体种群在社会中与其他智能体或者环境交互。
+                2）观察者根据当前社会准则和评判标准对智能体的适应度进行评估。
+                3）与当前社会准则对齐更佳的智能体将发生交叉和变异行为从而产生新智能体。4）具有更高适应度的智能体的策略将促使社会准则的演化和确立。
+            </figcaption>
+        </figure>
+
+        <h3>智能体和虚拟社会的初始化</h3>
+        <p>
+            我们希望能够尽可能模拟真实世界下智能体的特性与行为模式，并根据智能体的行为轨迹和对社会准则的陈述来评判智能体在社会准则动态变化环境下与社会的对齐程度，
+            因此社群中的智能体会具有尽可能多的人格化属性，包括性格、职业、三观等。
+            智能体也具有基本的记忆功能，因为这是他们记录自身行为，记录世界并获得社会反馈的功能载体。
+            具体而言，我们定义了一个社会准则持续演化的小型社会EvolvingSociety，
+            <d-math>g\in\mathbf{G}</d-math>
+            为社会演化的时代范围， 每个时代将按照更小的时间步进行划分
+            <d-math>t\in[g_j,g_{j+1}]\subseteq\mathbf{G}</d-math>
+            。
+            接着定义一个不断变化的环境集合
+            <d-math>\mathbf{E}</d-math>
+            ，其中的元素
+            <d-math>e_t\in \mathbf{E}</d-math>
+            表示在<d-math>t</d-math>时间下的当前环境， 每个时代
+            <d-math>g</d-math>
+            中的社会准则
+            <d-math>r_g \in\mathbf{R}</d-math>
+            以及用于评判智能体遵循社会准则程度的评测集
+            <d-math>c_g\in\mathbf{C}</d-math>
+            。 定义一个智能体集合
+            <d-math>\mathbb{\Lambda}</d-math>
+            ，其中每个智能体
+            <d-math>\lambda \in \mathcal{\Lambda}</d-math>
+            。 智能体具有不同的性格
+            <d-math>\mathcal{P}</d-math>
+            ，职业信息
+            <d-math>\mathcal{C}</d-math>
+            和三观
+            <d-math>v=(v_{world}, v_{life}, v_{value})\in\mathcal{V}</d-math>
+            （世界观、人生观、价值观）， 他们构成了智能体的基本属性
+            <d-math>\mathcal{T} = \{\mathcal{P}, \mathcal{C}, \mathcal{V}\}</d-math>
+            ，详情见<a href="#evolutionary_agent">Figure 2</a>。 这些不同的角色特征组合以及对环境的观测
+            <d-math>o\in\mathcal{O}</d-math>
+            影响着智能体在不同环境中采取的行为或策略
+            <d-math>a\in\mathcal{A}</d-math>
+            。 同时每个智能体在环境中的观测、行为和接收的反馈将构建成他们的短期记忆
+            <d-math>m</d-math>
+            和长期记忆
+            <d-math>\mathbf{M}</d-math>
+            。 因此，智能体的函数可表示为基于自身属性在动作序列上的概率单纯形：
+        </p>
+        <div style="text-align: center;">
+            <d-math>\lambda:\mathcal{T}\times\mathcal{O}\times m\times\mathbf{M}\rightarrow
+                \Delta(\mathcal{A}).</d-math>
+        </div>
+
+
+        <h3>环境交互</h3>
+
+        <p>
+            智能体们会自发地与环境或者与环境中其他的智能体互动，因此我们定义了智能体在虚拟社会环境中的行为模式。
+            具体而言，在时间
+            <d-math>t</d-math>
+            时，智能体在环境
+            <d-math>e</d-math>
+            的某个地点中，将当前环境的部分信息或状态作为自身的观测
+            <d-math>o_t</d-math>
+            。 这些观测信息将帮助智能体决定下一步的行动，比如单纯地在商店中购物，或者与其他智能体交流。
+            接着智能体会将自己在时间
+            <d-math>t</d-math>
+            中的可观测范围内观察到的事件记录在自己的短期记忆中。
+            这不仅包括其自身的行动，还包括其在环境中的观测结果，这些信息一同形成了智能体的感知信息。
+            当短期记忆的长度达到某个阈值时，会被压缩为侧重于记录长范围的、高层次的内容，如事件的概要，环境的反馈等的长期记忆。
+        </p>
+
+        <h3>结合反馈的适应度评估</h3>
+
+        <p>
+            人类基本价值理论
+            <d-cite key="schwartz2006basic"></d-cite>
+            将价值作为自身行为的动机，因此我们根据智能体的行为轨迹和对社会准则的陈述来评判智能体在遵循社会法则的程度。
+            我们定义了一个高度抽象的社会评判者，该社会评判者可以是人类，LLMs自身或是模型辅助的人类监管者。
+            这些评判者会评估EvolvingSociety中的每一个智能体的适应度值，并给予反馈。
+            具体而言，定义函数
+        </p>
+        <div style="text-align: center;">
+            <d-math>\Phi:h_{\lambda}\times s_{\lambda}\times
+                \mathbf{R}\times\mathbf{C}\rightarrow(\mathbb{R},\textrm{FB})</d-math>
+            ，
+        </div>
+        <p>
+            其中
+            <d-math>h_\lambda</d-math>
+            表示智能体在当前时间段的行为轨迹，
+            <d-math>s_\lambda</d-math>
+            是智能体针对当前时代准则的评测集
+            <d-math>c_g</d-math>
+            的陈述，
+            <d-math>\textrm{FB}</d-math>
+            为自然语言形式的反馈集合。因此，社会评判者将基于每个智能体的行为轨迹和陈述，
+            评估其适应度值并给智能体提供抽象的自然语言形式的环境反馈。
+            这些反馈将有助于智能体调整其行为，从而帮助其去更好地适应社会环境并提升其与社会准则的对齐程度。
+        </p>
+
+        <h3>智能体演化</h3>
+        <p>
+            智能体的适应度评分反映了其与当前社会准则的对齐情况，这将决定智能体能否在当前社会中继续生存。
+            适应度较高的智能体将被视为在演化博弈中取得优势的智能体，它们不仅能存活到下一个时代，
+            并有更高的几率产生后代智能体。而适应度排名靠后的智能体将被优势智能体的后代所淘汰。
+            首先，我们计算获得所有智能体的适应度值集合：
+        </p>
+        <div style="text-align: center;">
+            <d-math>F(\Lambda,r_g,c_g)=\{F(h_{\lambda}, s_{\lambda}, r_g, c_g) | \lambda \in \Lambda \},</d-math>
+        </div>
+        <p>
+            其中排名前p%的社会良好智能体将存活至下一个时代，且具有更高概率繁衍产生后代智能体
+            <d-math>E(\Lambda,p).</d-math>
+            智能体的繁衍过程包含交叉和变异两阶段。
+            在交叉阶段，将从社会良好智能体s中随机选择两个智能体作为父母发生繁殖行为，产生的后代将以各50%的概率继承父母的persona、career和三观。
+            定义
+            <d-math>\text{CRO}(\cdot)</d-math>
+            函数表示两个智能体的交叉并产生后代的操作，
+            <d-math>\mathrm{CRO}(\lambda_{e_1}, \lambda_{e_2}) \rightarrow \lambda_{offspring}.</d-math>
+            同时，生物的进化过程往往伴随着一些变异行为。变异行为使得智能体在繁衍的过程中产生更有助于对齐当前社会准则的后代智能体成为可能。
+            因此，在变异阶段，后代的个性、职业和三观将以
+            <d-math>m\in[0,1]</d-math>
+            的概率发生变异。 定义
+            <d-math>\text{MUT}(\cdot)</d-math>
+            为变异函数，
+            <d-math>\mathrm{MUT}(\lambda_{offspring}, m) \rightarrow \lambda'_{offspring},</d-math>
+            其中，
+            <d-math>\text{MUT}()</d-math>
+            是一个功能函数，负责修改给定特征。
+            例如使用父母的个性信息和相应的指令来指导LLMs生成其后代的个性。
+            职业和三观属性的变异同理。因此智能体繁衍产生后代的行为可通过如下形式定义：
+        </p>
+        <div style="text-align: center;">
+            <d-math>
+                \mathrm{Offspring}(E(\Lambda, p), m) = \{ \mathrm{MUT}(\mathrm{CRO}(\lambda_i, \lambda_j), m) |
+                \lambda_i, \lambda_j \in E(\Lambda, p) \}.
+            </d-math>
+        </div>
+        <p>
+            社会良好智能体产生的后代将加入社会中，用于替代适应度排名靠后p%的智能体集合
+            <d-math>P(\Lambda,p).</d-math>
+            因此下一代的社会群体为：
+        </p>
+        <div style="text-align: center;">
+            <d-math>\Lambda' = \Lambda_{\setminus P(\Lambda, p))} \cup \mathrm{Offspring}(E(\Lambda, p), m).</d-math>
+        </div>
+
+        <h3>社会准则演化</h3>
+        <p>
+            社会准则通常是一种基于社会共同信念的行为规范，因此其通常形成于自下而上的过程并在试错和适应的过程中发生演化。
+            在智能体对齐的场景下，我们不希望社会准则无序而随机地演化，但也不过度干预演化的每个过程，
+            因此我们仅提供了一个社会准则的演化方向。比如，我们仅定义了初始的社会准则
+            <d-math>r_0</d-math>
+            和期望的演化方向
+            <d-math>r_v</d-math>
+            ，
+            智能体们在社会中采取各类行为或策略发生交互。
+            接着智能体的行为轨迹将被评估，并获得对应的适应度（payoff）。
+            适应度更高的智能体将更可能繁衍，使得其策略得到扩散或被学习，并逐渐稳定，形成新的社会准则。
+            具体而言，某个时代g下的社会准则的形成基于种群中适应度排名靠前q%的智能体们的策略轨迹以及演化方向：
+        </p>
+
+
+        <div style="text-align: center;">
+            <d-math>r_{g+1}=\textrm{Evolve}(h_{\lambda},r_v),\lambda\in E(\Lambda,q).</d-math>
+        </div>
+        <p>
+            通过上述优胜劣汰的智能体演化策略，能更好与社会准则对齐的智能体将在一轮轮的迭代过程中得以保留，同时社会准则也基于群体中智能体的策略发生演化。
+        </p>
+        <p><b>更多内容，详见原文。</b></p>
+
+        <h1>演化式对齐：智能体在动态环境下的对齐</h1>
+
+        <p>
+            在模型的选择方面，我们探究了EvolutionaryAgent使用不同类型的模型的效果。
+            在闭源模型上，我们测试了GPT-3.5-turbo, GPT-3.5-turbo-instruct和Gemini-Pro作为智能体的主体的效果。
+            在开源模型上，我们采用了Llama2系列，Vicuna和Mistral作为智能体的主体。现有的工作显示，强大的LLMs可以作为较好的评估者。
+            因此，在评估者的模型选择上，我们主要使用GPT-4和GPT-3.5-Turbo。
+            在没有额外说明的情况下，我们默认使用GPT-3.5-Turbo作为评估器，因为它是效率、性能和性价比的综合考量下最合适的模型。
+        </p>
+
+        <figure id="main_results">
+            <img src="./diagrams/main_results.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#main_results" class="figure-number">Figure 3</a>
+                以不同开源和闭源LLMs作为EvolutionaryAgent和所比较的baselines的基座模型时，在EvolvingSociety中的适应度变化情况。
+                在每个时代开始时，即黑色竖线表示的时刻将发生社会准则的演化。
+                EvolutionaryAgent以不同模型作为基座均表现出不断适应变化的社会准则的自适应能力。
+            </figcaption>
+        </figure>
+
+        <p>
+            我们使用了6个不同的开源和闭源模型作为EvolutionaryAgent的基座来验证方法的有效性，如<a href="#main_results">Figure 3</a>所示。
+            其中的绿色线条表示直接使用基座模型对当前的时代的社会准则下的评测问题进行回答。模型不将上一个时代的信息加入记忆中，
+            且不以环境反馈信号作为自己迭代提升的信息。
+        </p>
+        <p>
+            从不同方法的对比上可以发现，ReAct在社会准则发生变化后，即新时代的第一个时间步的适应度值都会发生下降。
+            虽然ReAct可以通过在后续的年代下以观测作为环境反馈来逐步适应环境，但每次的时代准则变化都会对其造成较大的影响。
+            得益于自我反思机制，Reflexion在单个时代周期内可以相比于ReAct具有更好适配当前静态环境的能力。
+            然而当时代准则发生变化时，Reflexion仍然无法避免适应度值的迅速下降，因为其记忆当中仍然保留着上一个时代的内容。
+            这些记忆会对他在下一个时代中做出的行动产生影响。相比较之下，本文提出方法在时代准则发生变化的情况下，
+            仍然具有相对稳定的对当前时代的适应状况。原因是虽然EvolutionaryAgent中的个体虽然也具有对之前时代内容的记忆，但在整个种群中，
+            可能会存在部分智能体，它们的策略对于下一个时代的社会准则也具有良好的适应程度。
+        </p>
+        <p>
+            当使用不同的LLMs作为智能体基座时，GPT-3.5-Turbo和Gemini-Pro作为支撑的演化式智能体不仅可以保持良好的适应变化环境的特性，
+            适应度还能进一步提升。我们从样例分析中发现是由于模型可以提供更好的环境反馈，并更好地利用后续的环境反馈来适应当前环境。
+            在三个开源的模型中，Mistral作为基座的智能体表现相对最好，说明能力更强的基座也具备更强的利用环境反馈来改进自身的能力。
+        </p>
+
+        <h2>分析</h2>
+
+        <h3>保持功能性下的迭代式对齐</h3>
+
+        <figure id="analysis_function">
+            <img src="./diagrams/analy_function.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_function" class="figure-number">Figure 4</a>
+                评测EvolutionaryAgent在对齐社会准则的同时，在功能性下游任务上的表现。
+                Functionality Score表示在下游任务上的表现，Overall Score为Functionality Score和Alignment Score的平均值。
+                EvolutionaryAgent在适应社会准则的分数提高的同时还能在完成下游任务方面有所提升。
+            </figcaption>
+        </figure>
+
+        <p>
+            为了探究EvolutionaryAgent在对齐变化的社会准则的同时是否还能保持良好完成下游特定任务的能力，
+            我们在测试智能体对齐社会准则情况的同时，进一步评估了智能体在部分下游任务评测集上的表现。
+            我们在三个下游任务上评测了。为了节省成本，三个数据集均仅采样了其中的50条进行测试。
+            评估智能体在这三个测试集上性能的方式和prompt和MT-Bench一致，但最高分缩放到7分，从而保持和alignment
+            score一样的分数范围。<a href="#analysis_function">Figure 4</a>中的在三个下游任务数据集上的结果显示，
+            EvolutionaryAgent的对齐分数在不断上升的同时，
+            在具体下游任务上的分数也不断增长。这表明EvolutionaryAgent在对齐社会准则的同时仍然可以保持较好地完成下游任务的能力。
+        </p>
+
+        <figure id="analysis_observer">
+            <img src="./diagrams/analy_observer_modelsize.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_observer" class="figure-number">Figure 5</a>
+                （左）不同规模和质量的模型作为EvolutionaryAgent基座的影响。
+                （右）采用不同基座模型以及人类作为Observer时，以ChatGPT-3.5-Turbo作为EvolutionaryAgent的基座模型时的整体适应度情况。
+            </figcaption>
+        </figure>
+
+        <h3>模型尺寸之于对齐的影响</h3>
+        <p>
+            我们探究了LLM的缩放效应对于EvolutionaryAgent的影响。
+            我们选择了Llama2-7B, 13B和70B三个参数量级别的开源模型以及GPT-3.5-Turbo作为基座模型。
+            从<a href="#analysis_observer">Figure 5</a>(左)中可知，随着模型参数的增加或者性能的提升，EvolutionaryAgent在不同generation下的适应度值也相对提高，
+            因为性能更好的基座模型能更充分地理解当前的社会准则并做出更有利于其发展的行为和称述。
+        </p>
+
+        <h3>观察者质量之于对齐的影响</h3>
+        <p>
+            因为不同的LLM存在不同的偏好以及能力上的侧重，因此我们进一步探究了使用不同LLM或者人类作为观察者时，方法的表现。
+            从<a href="#analysis_observer">Figure 5</a>(右)中可以观察到，当以不同LLM作为观察者时，EvolutionaryAgent的适应度值范围存在较大的差异。
+            其中Gemini-Pro和Claude-2.1的评估分数最为接近，GPT-4的打分最为保守。
+            同时，在每个时代内，GPT-4的打分也具有更好的自我一致性，而Gemini-Pro和Claude-2.1在不同时代中的差异最大，
+            GPT-3.5-Turbo的差异适中。在与人类偏好的一致性方面，最接近人类评估分值的模型是GPT-4，表明其仍然是在不考虑成本的情况下作为评估者的最佳选择。
+        </p>
+
+
+        <h3>消融：不同的参数设定</h3>
+
+        <figure id="analysis_parameters">
+            <img src="./diagrams/analy_agentsize_mutationrate.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_parameters" class="figure-number">Figure 6</a>
+                （a）种群中智能体数量的扩展对适应度值的影响。（b）不同变异率的表现，其中折线为均值，散点为不同尝试下的适应度分布。
+            </figcaption>
+        </figure>
+
+        <p>
+            为了探究EvolutionaryAgent中不同算子取值的影响，我们设定了不同智能体群体的数量和变异率。
+            智能体的数量越大，社会的多样性越高。如<a href="#analysis_parameters">Figure
+                6</a>（a）所示，当智能体数量取不同值时，EvolutionaryAgent均具有良好地适应变化社会的特性。
+            随着智能体数量的提升，EvolutionaryAgent在每个时间步上通常能取得更优的效果。
+            因为智能体的数量越大，则社群中存在更能适应变化时代的智能体的可能性越高。
+            我们在<a href="#analysis_parameters">Figure 6</a>（b）中进一步分析了不同变异率对整体效果的影响,可观察到随着变异率m的增大，
+            EvolutionaryAgent的总体适应度值会更高，同时整体的方差值也更大。
+            m=1表示在智能体演化过程中必定会发生变异过程，此时适应度值的方差值也最大，同时也具有更高的概率变异产生更适应变化社会的智能体。
+        </p>
+
+        <h3>智能体演化趋势</h3>
+
+        <figure id="analysis_sankey">
+            <iframe src="./diagrams/sankey.html"></iframe>
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_sankey" class="figure-number">Figure 7</a>
+                智能体的职业信息随时间的演化情况。
+            </figcaption>
+        </figure>
+
+        <p>
+            Agent在演化过程中的职业变化如<a href="#analysis_sankey">Figure 7</a>所示。
+            其中智能体的基座模型为GPT-3.5-Turbo，Observer为GPT4，变异率m=0.8，种群数为10，
+            产生新智能体的比例为50%，对应的淘汰率也为50%。可以发现，在智能体的演化过程中会产生具有新职业的智能体，
+            如2010年的Blockchain Solution Architect。同时也存在在多个时代下一直保持适应度较高的职业，如E-Commerce Specialist。
+        </p>
+
+        <h3>社会准则演化趋势</h3>
+
+        <figure id="analysis_evolving_norms">
+            <img src="./diagrams/evolving_norms.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_evolving_norms" class="figure-number">Figure 8</a>
+                当设定初始社会准则和社会准则的演化方向后，社会准则的三种演化路径情况。左下角为当社会准则演化时，EvolutionaryAgent的适应度。
+            </figcaption>
+        </figure>
+
+        <p>
+            当设定了初始的社会准则和演化方向后，社会准则将基于适应度更高的智能体的行为轨迹逐渐形成和演化。
+            <a href="#analysis_evolving_norms">Figure 8</a>展示了三种不同的社会准则演化情况，以及其对应的社会下的智能体的适应度情况。
+            无论社会准则朝着什么轨迹演化，或者先注重什么方面发生演化，EvolutionaryAgent均能适应变化的社会环境。
+            同时，从不同的演化轨迹下的适应度情况也可得知，不同的社会准则对于智能体而言，其对齐的难度是有所不同的。
+        </p>
+
+
+    </d-article>
+
+
+    <d-appendix>
+        <h3>Acknowledgments</h3>
+        <p>
+            Many thanks to Dr Sun Tianxiang for his constructive suggestions and feedback to make this work more
+            complete.
+        </p>
+        <p>
+            Many thanks to my mentor, Prof Qiu Xipeng for all the help and support, both financially and
+            psychologically.
+        </p>
+
+
+        <d-footnote-list></d-footnote-list>
+        <d-citation-list></d-citation-list>
+    </d-appendix>
+
+    <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+
+    <script type="text/javascript" src="index.bundle.js"></script>
+    <distill-footer></distill-footer>
+</body>

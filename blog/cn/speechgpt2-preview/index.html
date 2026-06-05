@@ -1,0 +1,451 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      overflow: hidden;
+      ;
+    }
+
+    .slides-container {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .slides-container.grabbing {
+      cursor: grabbing;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    .slide {
+      flex: 1 0 100%;
+    }
+
+    .iframe-container {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .arrow {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ddd;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background-color: #007bff;
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "SpeechGPT 2.0-preview",
+    "description": "SpeechGPT 2.0-preview 是我们在迈向情景智能推出的第一个拟人化实时交互系统。基于在百万级高质量语音数据上训练的端到端语音大模型。",
+    "authors": [
+        {
+            "author": "OpenMOSS Team",
+            "affiliation": "Fudan NLP Lab, Shanghai Innovation Institute",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "publishedDate": "Jan 26, 2025",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+
+  <d-title>
+    <h1>SpeechGPT 2.0-preview</h1>
+    <p>SpeechGPT 2.0-preview 是我们在迈向情景智能推出的第一个拟人化实时交互系统，是在百万小时级语音数据上训练的端到端语音大模型。</p>
+  </d-title>
+
+  <d-article>
+    <!-- model -->
+    <h2>系统概述</h2>
+    <p><strong> SpeechGPT 2.0-preview</strong>
+      是我们在迈向情景智能推出的第一个拟人化实时交互系统。作为在百万小时级语音数据上训练的端到端语音大模型，它具有拟人口语化表达与百毫秒级低延迟响应，支持自然流畅的实时打断交互。SpeechGPT
+      2.0-preview
+      较好的对齐了语音和文本两个模态：一方面展现出了一定的风格泛化能力，能够遵循用户指令，实现多情感、多风格、多音色的控制与智能切换；拥有不错的角色扮演能力，能够模拟各类角色的语气和情感状态；它还具备多种语音才艺，能够进行诗歌朗诵、故事讲述、说方言等；另一方面，它在具备语音表现力的同时有不错的智商与文本能力，从而具备支持工具调用、联网搜索、外挂知识库等功能的能力。SpeechGPT
+      2.0-preview 目前只在中文语音数据上做了训练，没有混英文语音数据训练，因此目前模型还没有英文对话能力。
+    </p>
+    <p>
+      我们已开源了SpeechGPT 2.0-preview的推理代码，模型权重以及简要的方法介绍，在 <a
+        href="https://github.com/OpenMOSS/SpeechGPT-2.0-preview">https://github.com/OpenMOSS/SpeechGPT-2.0-preview</a>
+    </p>
+    <p>
+      欢迎在线体验我们的<a href="https://sp2.open-moss.com/"><strong>Demo系统</strong></a>。
+    </p>
+
+    <h2>方法简介</h2>
+    <p>
+      <strong> SpeechGPT 2.0-preview</strong>
+      是端到端语音对话大模型。基于我们在端到端语音对话方向上的认知与技术积累，在开发过程中，我们自研了语义-声学联合建模的超低比特率流式语音Codec；我们构建了高效的语音数据爬取系统，多功能高效率语音数据清洗pipeline和全方面多粒度语音数据标注系统，积累了百万小时级的真实语音数据，并完成了精细标注；我们开发了具有高度口语化和极强音色克隆能力的对话语音合成系统，并基于此合成了数十万小时的多角色多风格语音对话数据；我们提出了一种新的语音文本混合建模模型架构以及多阶段语音文本混合建模训练流程，来兼顾文本能力与语音能力，避免模型在学习语音能力时候降低智商，能够丝滑替代各类框架下的文本模型，从而可以支持工具调用、联网搜索、外挂知识库等功能。通过端到端的方式建模语音对话，SpeechGPT
+      2.0-preview 在实际测试中实现了200ms以内的延迟，能够为用户提供流畅的实时交互体验。
+    </p>
+    <p>
+      在实验过程中，我们也观察到了很多有意思的现象和结论：比如通过充分的语音文本对齐预训练，我们发现模型可以"涌现"出语音风格的泛化性，比如没有用语速调整的对话数据训练就可以做到语速控制，比如可以扮演对话数据中从未见过的角色与风格的语气等；语音数据合成引擎的质量是提升端到端语音模型的各训练阶段能力的关键。
+    </p>
+
+    <h3>语义-声学联合建模的超低比特率流式语音 Codec</h3>
+    <figure id="codec">
+      <img src="images/codec.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+    </figure>
+    <li>24khz语音输入</li>
+    <li>语义-声学联合建模</li>
+    <li>低比特率-750bps (每秒75 token)</li>
+    <li>支持流式输入输出</li>
+
+    <h3>基于Codec Patchify的语音-文本混合建模模型架构</h3>
+
+    <figure id="lm">
+      <img src="images/lm.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+    </figure>
+
+    <li>Codec patchify
+      <ul>
+        <li style="list-style-type: none;">
+          我们通过Codec patchify来有效减小语音和文本序列之间的模态差异，从而缓解跨模态建模中的冲突问题。具体而言，该方法将相邻T个时间步的RVQ codec token聚合为一个patch，通过patch
+          projector模块将其映射为统一的向量表示，随后输入到speech-text LLM中进行联合建模。在模型架构设计上，LLM的隐藏状态会同时用于两个解码任务：一方面解码生成文本输出，另一方面输入到patch
+          decoder中进行语音重建。特别地，我们设计了一个具有多解码头的自回归语言模型作为patch decoder，该模块能够通过自回归方式逐步解码，每次生成一个时间步的多个RVQ codec token，从而输出语音。
+        </li>
+      </ul>
+    </li>
+    <li>语音文本联合建模，灵活交叉自由组合
+      <ul>
+        <li style="list-style-type: none;"> speech-text LLM会同时输入和输出语音和文本表示。</li>
+      </ul>
+    </li>
+
+
+
+    <h2>模型能力</h2>
+    <h3>口语化，低延时灵活打断</h3>
+    <div class="carousel video-group-1">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1GgfrYsEP8&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWExZ&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWEdv&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+    <h3>情感丰富，风格多样</h3>
+    <div class="carousel video-group-2">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1agfrYWE77&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1hgfrYWEfV&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1bjfrYJEPb&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1icfrY8EBb&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+
+    <h3>角色扮演</h3>
+
+    <div class="carousel video-group-3">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bof6YAE8K&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1fof6YAEAU&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Zof6YAEXW&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+    <h3>多才多艺</h3>
+
+    <div class="carousel video-group-4">
+      <div class="slides-container">
+        <div class="slides">
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV11WfrYyEHF&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1sWfrYyEid&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1bjfrYJE7w&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1NWfrY1E8M&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="iframe-container">
+              <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bof6YAE5o&autoplay=0" scrolling="no"
+                frameborder="no" framespacing="0" allowfullscreen="true" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev">&lt;</button>
+        <div class="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="arrow" id="next">&gt;</button>
+      </div>
+    </div>
+
+    <h2>未来计划</h2>
+    <p>SpeechGPT
+      2.0-preview在模型稳定性以及音质稳定性上还需要进一步的加强，我们正在进行双工模型的训练以及系统搭建，结合RLHF来增强模型表现力与稳定性以及进一步扩增语音数据量以及扩展到更多的语言，请期待下一版本的更新。
+    </p>
+
+  </d-article>
+
+  <d-appendix>
+    <h3>Contributors</h3>
+    <p>
+      Hanfu Chen, Ke Chen, Qinyuan Cheng, Mingshu Chen, Ruifan Deng, Liwei Fan, Zhaoye Fei, QingHui Gao, Yitian Gong,
+      Ching Wing Kwok, Kexin Huang, Yaozhou Jiang, Xingyu Lu, Shimin Li, Zhengyuan Lin, Ruixiao Li, Qian Tu, Jin Wang,
+      Yang Wang, Siyin Wang, Zhe Xu, Chenchen Yang, Donghua Yu, Yuqian Yao, Yucheng Yuan, Chufan Yu, Dong Zhang, YiWei
+      Zhao, Yuqian Zhang, Jun Zhan, Xin Zhang, Xingjian Zhao, Chengyang Zhu
+    </p>
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const registerSlides = (c) => {
+        const slides = document.querySelector(`${c} .slides`);
+        const dots = document.querySelectorAll(`${c} .dot`);
+        const slideCount = dots.length;
+        let currentIndex = 0;
+
+        const updateCarousel = () => {
+          slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+          dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+          });
+        };
+
+        // Button navigation
+        document.querySelector(`${c} #prev`).addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+          updateCarousel();
+        });
+
+        document.querySelector(`${c} #next`).addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % slideCount;
+          updateCarousel();
+        });
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+          });
+        });
+      }
+
+      registerSlides('.video-group-1');
+      registerSlides('.video-group-2');
+      registerSlides('.video-group-3');
+      registerSlides('.video-group-4');
+    });
+  </script>
+
+</body>

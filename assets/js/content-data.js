@@ -2,7 +2,7 @@
   window.SPA_DATA = {
     brand: {
       name: 'OpenMOSS',
-      tagline: '开放、可信赖的基础模型研究'
+      tagline: '追求极致的开放 AI 研究'
     },
     highlights: [
       {
@@ -29,13 +29,76 @@
       { titleKey: 'resources.course.exercises', descKey: 'resources.course.exercises.desc', url: 'https://fudan-nlp.feishu.cn/wiki/WFifwXxfQiI3PKkn9FEcy0wKnjh', labelKey: 'resources.btn.exercise' },
       { titleKey: 'resources.course.community', descKey: 'resources.course.community.desc', url: 'https://github.com/WillQvQ/SummerQuest-2025', labelKey: 'resources.btn.summer' }
     ],
-    projects: [
-      { name: 'MOSS', descKey: 'resources.project.moss', stars: '12k+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/MOSS' },
-      { name: 'AnyGPT', descKey: 'resources.project.anygpt', stars: '500+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/AnyGPT' },
-      { name: 'MOSS-TTSD', descKey: 'resources.project.ttsd', stars: '200+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/MOSS-TTSD' },
-      { name: 'SpeechGPT-2.0', descKey: 'resources.project.speechgpt', stars: '360+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/SpeechGPT-2.0-preview' },
-      { name: 'DiRL', descKey: 'resources.project.dirl', stars: '100+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/DiRL' },
-      { name: 'Language-Model-SAEs', descKey: 'resources.project.saes', stars: '164+ ⭐', stack: 'Python', url: 'https://github.com/OpenMOSS/Language-Model-SAEs' }
+    // 开源项目系列（按 GitHub 组织分组）。star 数由 assets/js/gh-stars-data.js
+    // 提供（scripts/fetch_stars.py 生成，CI 每日刷新），spa.js 在「开放资源」页水合。
+    //   org      — GitHub 组织名，JS 据此列出组织下公开仓库
+    //   featured — 精选并定序的子仓库白名单（大小写不敏感；缺失则自动跳过）
+    //   feature  — 渲染为横跨整行的特色大卡
+    // featured 与 scripts/fetch_stars.py 的 ORGS 需保持同步。
+    projectSeries: [
+      {
+        name: 'MOSS', url: 'https://github.com/OpenMOSS', org: 'OpenMOSS',
+        feature: true,
+        featured: ['MOSS', 'MOSS-VL', 'MOSS-Audio', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA'],
+        badgeKey: 'series.moss.badge', descKey: 'series.moss.desc'
+      },
+      {
+        name: 'NNDL', url: 'https://github.com/nndl', org: 'nndl',
+        featured: ['nndl', 'llm-beginner', 'nndl-practice'],
+        badgeKey: 'series.nndl.badge', descKey: 'series.nndl.desc'
+      },
+      {
+        name: 'FudanNLP', url: 'https://github.com/FudanNLP', org: 'FudanNLP',
+        featured: ['fastNLP', 'fnlp', 'fitlog'],
+        badgeKey: 'series.fudannlp.badge', descKey: 'series.fudannlp.desc'
+      },
+      {
+        name: 'NEX', url: 'https://github.com/nex-agi', org: 'nex-agi',
+        featured: ['Nex-N1', 'NexRL', 'NexAU'],
+        badgeKey: 'series.nex.badge', descKey: 'series.nex.desc'
+      }
+    ],
+    blogPosts: [
+      {
+        slug: 'moss-ttsd', date: '2025.6', topicKey: 'blog.topic.speech', cn: true, image: 'assets/img/blog-thumbs/moss-ttsd.jpg',
+        title: { zh: 'MOSS-TTSD：文本到口语对话生成', en: 'MOSS-TTSD: Text to Spoken Dialogue Generation' },
+        desc: { zh: '中英双语高表现力对话语音生成，支持零样本多说话人音色克隆。', en: 'Expressive Chinese–English dialogue speech synthesis with zero-shot multi-speaker voice cloning.' }
+      },
+      {
+        slug: 'speechgpt2-preview', date: '2025.1', topicKey: 'blog.topic.speech', cn: true, image: 'assets/img/blog-thumbs/speechgpt2-preview.jpg',
+        title: { zh: 'SpeechGPT 2.0-preview', en: 'SpeechGPT 2.0-preview' },
+        desc: { zh: '迈向情景智能的拟人化端到端实时语音交互系统。', en: 'A human-like, end-to-end real-time spoken dialogue system toward situational intelligence.' }
+      },
+      {
+        slug: 'data-mixing-laws', date: '2024.4', topicKey: 'blog.topic.pretrain', cn: true, image: 'assets/img/blog-thumbs/data-mixing-laws.jpg',
+        title: { zh: '数据混合定律：通过预测语言模型表现优化数据配比', en: 'Data Mixing Laws: Optimizing Data Mixture by Predicting LM Performance' },
+        desc: { zh: '定量预测数据配比对语言模型表现的影响，指导预训练数据混合。', en: 'Quantitatively predict how data-mixture proportions affect language-modeling performance to optimize pre-training.' }
+      },
+      {
+        slug: 'language-model-SAEs', date: '2024.4', topicKey: 'blog.topic.interp', cn: false, image: 'assets/img/blog-thumbs/language-model-SAEs.jpg',
+        title: { zh: '语言模型上的稀疏字典学习：基础设施、观察与展望', en: 'Sparse Dictionary Learning on Language Models: Infrastructure, Observations and Agenda' },
+        desc: { zh: '用于训练、评测与可视化语言模型稀疏自编码器（SAE）的基础设施与可解释特征。', en: 'An infrastructure for training, evaluating, and visualizing sparse autoencoders on language models.' }
+      },
+      {
+        slug: 'anygpt', date: '2024.3', topicKey: 'blog.topic.multimodal', cn: true, image: 'assets/img/blog-thumbs/anygpt.jpg',
+        title: { zh: 'AnyGPT：基于离散序列建模的统一多模态大模型', en: 'AnyGPT: Unified Multimodal LLM with Discrete Sequence Modeling' },
+        desc: { zh: '以离散序列建模统一文本、语音、图像、音乐四种模态。', en: 'A multimodal LLM unifying text, speech, image, and music via discrete sequence modeling.' }
+      },
+      {
+        slug: 'evolutionary-agent', date: '2024.2', topicKeys: ['blog.topic.agent', 'blog.topic.align'], cn: true, image: '/blog/en/evolutionary-agent/diagrams/evolutionary_agent.svg',
+        title: { zh: '动态环境下的智能体演化式对齐', en: 'Evolutionary Agent in Evolving Social Norms' },
+        desc: { zh: '在不断演化的社会准则下，对齐良好的智能体群体得以存续繁衍。', en: 'In evolving social norms, well-aligned agent groups thrive and propagate while misaligned ones fade.' }
+      },
+      {
+        slug: 'knowledge-boundary', date: '2024.1', topicKey: 'blog.topic.align', cn: true, image: 'assets/img/blog-thumbs/knowledge-boundary.jpg',
+        title: { zh: 'AI 助手能否知道自己不知道？', en: "Can AI Assistants Know What They Don't Know?" },
+        desc: { zh: '通过对齐让 AI 助手意识到并如实表达自己不知道的内容。', en: "Aligning LLM-based assistants to recognize and honestly express what they don't know." }
+      },
+      {
+        slug: 'DictCircuits_Othello', date: '2023.3', topicKey: 'blog.topic.interp', cn: true, image: 'assets/img/blog-thumbs/DictCircuits_Othello.jpg',
+        title: { zh: '寻找符号间的连接：基于稀疏字典学习的回路发现', en: 'Dictionary Learning Improves Patch-Free Circuit Discovery in Mechanistic Interpretability' },
+        desc: { zh: '用稀疏字典学习在小型 Transformer 中发现可理解的内部回路。', en: 'Using dictionary learning to uncover human-understandable circuits inside a small transformer.' }
+      }
     ],
     positionCards: [
       { id: 'graduate', titleKey: 'positions.card.phd', descKey: 'positions.card.phd.desc' },

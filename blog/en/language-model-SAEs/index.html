@@ -1,0 +1,1509 @@
+<!--
+  Copyright 2018 The Distill Template Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+
+<head>
+  <script src="/blog/template.v2.js?v=3"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf8" />
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script id="distill-front-matter" type="text/json">
+      {
+        "title": "Sparse Dictionary Learning on Language Models: Infrastructure, Observations and Agenda",
+        "description": "We build a framework to systematize our Sparse Auto Encoder training, evaluation and visualization on GPT-2 Small. We found a series of highly interpretable features in our Sparse Auto Encoders.",
+        "published": "Apr 18, 2024",
+        "authors": [
+          {
+            "author": "Xuyang Ge",
+            "authorURL": "",
+            "affiliations": [{ "name": "OpenMOSS" }]
+          },
+          {
+            "author": "Fukang Zhu",
+            "authorURL": "",
+            "affiliations": [{ "name": "OpenMOSS" }]
+          },
+          {
+            "author": "Junxuan Wang",
+            "authorURL": "",
+            "affiliations": [{ "name": "OpenMOSS" }]
+          },
+          {
+            "author": "Wentao Shu",
+            "authorURL": "",
+            "affiliations": [{ "name": "OpenMOSS" }]
+          },
+          {
+            "author": "Zhengfu He",
+            "authorURL": "",
+            "affiliations": [{ "name": "OpenMOSS" }]
+          }
+        ],
+        "katex": {
+          "delimiters": [{ "left": "$$", "right": "$$", "display": false }]
+        }
+      }
+    </script>
+  </d-front-matter>
+  <d-title>
+    <p></p>
+    <p>
+      <i>
+        We build a framework to systematize our research on Sparse Auto Encoders (SAEs). Our infrastructure encompasses SAE training,
+        evaluation and visualization on any Transformer model. We believe this framework will be beneficial for the mech interp
+        community, especially for Chinese community to easily get into this field. We also illustrate some impressive features 
+        and phenomenologies GPT-2 Small exhibits.
+      </i>
+    </p>
+    <p><i>
+      There are way more problems remaining mysterious and we hope to share our 1-year agenda to inspire more researchers 
+      to join us in this journey.
+    </i></p>
+    <p><b>
+      <a href="https://github.com/OpenMOSS/Language-Model-SAEs">Our Github Repo</a>
+    </p></b>
+    <p><b>
+      <a href="https://mech-interp.open-moss.com/">Browse SAE Features</a>
+    </p></b>
+  </d-title>
+  <d-byline></d-byline>
+  <d-article>
+    <p>
+      Before diving in, we aim to offer some (maybe opinionated or even unfair) insight into the rationale and our goals 
+      behind our research direction. 
+    </p>
+    <p>
+      We do not claim to take up any pioneering role in this field. And all of the ideas we share in this section
+      are basically discussed by <a href="https://transformer-circuits.pub/2023/interpretability-dreams/index.html">Anthropic</a>
+      , also by a great number of Mech Interp researchers on <a href="https://www.lesswrong.com/">LessWrong</a> and the
+      <a href="https://discord.com/channels/1080558777608183829/">Mech Interp Discord</a>. There are way more names and groups
+      we do not mention here but they all contribute non-trivially to this field.
+    </p>
+    <p>
+      We were often asked for one question: how will interpretability help with AI research and improve model performance
+      or fit into AI safety? We humbly think interpretability itself is the answer. Let alone previous excellent AI safety-related articles
+      or views by <a href="https://www.lesswrong.com/posts/uK6sQCNMw8WKzJeCQ/a-longlist-of-theories-of-impact-for-interpretability">
+      Neel Nanda</a> and <a href="https://www.lesswrong.com/posts/X2i9dQQK3gETCyqh2/chris-olah-s-views-on-agi-safety">Chris Olah</a>,
+      imagine the future with more people working with AI assistants like the GPT family or the Claude family and more companies
+      making billions of dollars with AI models. Any trials to opening the black box, even if only to a small extent, should be
+      worthwhile. To be more precise, the natural curiosity to demystifying artificial intelligence and appreciation of the beauty
+      of neural networks is enough to answer the question, though this answer may be somehow irrelevant.
+    </p>
+    <p>
+      As for performance improvement, an example is the inspiration induction heads give to <a href="https://arxiv.org/abs/2212.14052">Hungry Hungry Hippo</a>.
+      We may also expect mech interp to offer insights of the mechanism when Transformer language models hallucinates. 
+      We name this for Transformer Pathology and we are still in very early stage of this direction. 
+    </p>
+    <p>
+      Despite the microscopic nature of mech interp research, it may reveal the inner structure of knowledge or belief of language
+      models and help researchers predict or check the consistency with their macroscopic behavior. There is silver lining, 
+      e.g. studies on induction heads, that <a href="https://transformer-circuits.pub/2023/interpretability-dreams/index.html#macroscopic-microscopic">
+      microscopic behaviors can be connected with macroscopic ones</a>. If this mode of inspection scales up to industrial-size
+      models, based on which we may be able to do more on red-teaming, regulation, and data-centric bug fixing (i.e. finding 
+      detrimental data sample or data source).
+    </p>
+    <p>
+      In this post, we will share our recent effort on a prevalent and (at least we believe is) promising tool in Mech Interp: 
+      sparse dictionary learning in Transformer language models. In the section of <a href="#What_are_features">What Are Features</a>,
+      we demonstrate the rationale behind our investiment in this approach.
+      In <a href="#Results">SAE Training and Stats</a>, we want to share our implementation that we find is currently the most 
+      effective among approaches we have tried. We also developed an <a href="#Interface">Interpretability Interface</a> to quickly 
+      get some statistics we are interested about of a given SAE feature. The section of <a href="#Features">Features We
+      Have Found</a> exhibits a number of intriguing (or maybe exaggeratedly, stunning) SAE features inside of GPT-2 Small.
+      The <a href="Agenda">Agenda</a> section introduces several directions we think are worth pursuing.
+    </p>
+    <p>  
+    Our code base is open-sourced and available at
+      <a href="https://github.com/OpenMOSS/Language-Model-SAEs"
+        >OpenMOSS/gpt2-dictionary</a
+      >, featuring a complete pipeline for SAE training, evaluation and
+      visualization. More importantly, one thing we have been longing for is to promote mech interp research in 
+      Chinese community.<d-footnote>If any group or individual finds our work of interest, please feel free to contact us
+      via email zfhe19@fudan.edu.cn</d-footnote>
+
+    </p>
+
+    <h2 id="What_are_features">What Are Features: Decomposability, Linearity and Sparsity</h2>
+    <p>
+      The term of <i>feature</i> can cover a wide range of concepts in machine 
+      learning. For instance in tabular data, features are the columns of the dataset. 
+      In the line of mech interp research, we often think of features of the 
+      input or the model's intermidiate representation as <b>Directions in the 
+      Activation Space</b>, i.e. the <b>linear representation hypothesis</b>, as discussed in <a 
+        href="https://transformer-circuits.pub/2022/toy_model/index.html#motivation"
+      >Anthropic's Toy Models of Superposition</a> <d-cite 
+      bibtex-key="elhage2022superposition"></d-cite>.
+      It can be controversial to try to give any inductive bias to the model 
+      representation. So we cautiously give 3 properties that we expect features 
+      to have in a Transformer language model:
+    </p>
+    <ul>
+      <li>
+        <b>Decomposability:</b> 
+        One might think it intractable for human to understand the information 
+        stored in a high dimensional space, unless it has a decomposable structure 
+        for us to break them down into independently understandable primitives.
+      </li> 
+      <li>
+        <b>Linearity:</b> 
+        By saying that features are directions in the activation space, we 
+        imply that the model's representation is linear. A famous example is 
+        word2vec<d-cite bibtex-key="mikolov2013w2v"></d-cite>, in which this 
+        precious linearity allows us to perform arithmetic operations on word 
+        vectors, i.e. V("king") - V("man") + V("woman") = V("queen").
+      </li> 
+      <li>
+        <b>Sparsity:</b> 
+        It can be extremely labor-extensive to understand millions of features in 
+        a Transformer language model. Fortunately, only a small subset of 
+        features are active for a given input sequence so we do not have to 
+        bother with all features at once.
+      </li>
+    </ul>
+    <p>
+      Sparse Dictionary Learning utilizes a sparse autoencoder to learn a 
+      decomposition of an activation space into a set of <b>linear and sparse
+      </b> features, with an objective function to <b>reconstruct</b> any given 
+      input sampled from the activation distribution.
+      SAEs in their nature capture the aforementioned properties and in theory 
+      will <i>recover the original set of features underlying in the activation 
+      space</i><d-footnote>Though in practice, we do not know in oracle what the 
+      true feature set is. Even if we predefine them, we often fail to really 
+      recover them and may instead find a compositional basis. See <a 
+      href="https://www.lesswrong.com/posts/a5wwqza2cY3W7L9cj/sparse-autoencoders-find-composed-features-in-small-toy"
+      >this post</a> for an example.</d-footnote>.
+    </p>
+
+    <p>
+      SAE based approaches have many advantages over other previous mechanistic
+      methods <d-footnote>We do not claim overwhelming edge but these may be
+      reasons to be optimistic and investigate more on SAEs. </d-footnote>:
+    </p>
+
+    <ol>
+      <li>
+        <b>More Monosemanticity than Neuron-Based Methods:</b>
+        To break down the model's internal representation into a set of small units for
+        independent analysis, a natural choice is to directly use neurons as the
+        basic analysis unit since they're also the basic for model
+        computation<d-cite
+          bibtex-key="Donnelly2019sentiment,Morcos2018neurons,DBLP:journals/corr/KarpathyJL15,zhou2015object,DBLP:journals/corr/BauZKOT17,olah2020an,goh2021multimodal"
+        ></d-cite
+        >. However, neurons are often found to be "polysemantic"<d-cite
+          bibtex-key="olah2020zoom"
+        ></d-cite
+        >, i.e. they're multi-functional and can be activated by several
+        non-related features, thus not interpretable as single concepts. In
+        contrast, dictionary features are empirically more interpretable and
+        monosemantic.<d-cite bibtex-key="bricken2023monosemanticity"></d-cite>
+      </li>
+      <li>
+        <b>More Scalability than Probing-Based Methods:</b>
+        SAEs are unsupervised approach that can be trained to decompose the language
+        model activations in any position inside of the model generated from arbitrary corpora. Compared to
+        patching<d-cite
+          bibtex-key="olsson2022context,cammarata2021curve,conmy2023automated"
+        ></d-cite>
+        and linear probing<d-cite
+          bibtex-key="alain2018understanding,tenney2019learn,belinkov2021probing,li2023emergent"
+        ></d-cite
+        >, which either require selected tasks and datasets, or predefined
+        pattern to recognize, SAEs have the potential to capture more features,
+        especially those we fail to predict or expect in advance.
+      </li>
+      <!-- <li>
+        <b>Flexibility:</b>
+        In theory, SAEs can be applied to the any activation space inside of a 
+        language model, which can be the residual stream<d-cite
+          bibtex-key="unningham2023dict,bloom2024gpt2residualsaes"
+        ></d-cite
+        >, the attention output<d-cite bibtex-key="attention_saes"></d-cite>,
+        the MLP hidden layer<d-cite
+          bibtex-key="bricken2023monosemanticity"
+        ></d-cite
+        >, or even layers of non-transformer models. This flexibility allows us
+        to easily adapt the SAE framework to different layers and models.
+      </li> -->
+    </ol>
+
+    <p>
+      Despite these inviting properties, training good SAEs is not such trivial
+      tasks. The main resistance comes from the trade-off between sparsity
+      and reconstruction quality.
+      Optimizing either can lead to the other being deteriorated. Thus, a
+      balance should be struck between the two objectives. 
+      Issues of dead features and <a
+        href="https://www.lesswrong.com/posts/3JuSjTZyMzaSeTxKk/addressing-feature-suppression-in-saes"
+      >feature suppression</a> are two of already known obstacles to pushing the pareto front of SAEs.
+    </p>
+
+
+    <h2 id="Results">Sparse Auto Encoders for the GPT-2 Attention & MLP Output</h2>
+
+    <figure>
+      <img src="pics/training-position.png" />
+    </figure>
+
+    <h3>Why Attention & MLP Output?</h3>
+
+    <p>
+      Previous mechanistic interpretability research (SAE-based or
+      <a
+        href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens"
+        >logit lens approach</a
+      >) on GPT-2 Small basically focused on the residual stream, which is the
+      most natural choice: It's a sum of all the output of previous layers, and
+      can be viewed as the memory management center of the model. However, while
+      the residual stream intuitively gives information on a prefix sum of the
+      model's internal process, it doesn't provide a clear picture of how every
+      individual layer contributes. In contrast, the attention and MLP outputs
+      show directly how each layer processes the input. See our previous article
+      <d-cite bibtex-key="he2024dict"></d-cite>
+      for a more detailed discussion on this topic.
+    </p>
+
+    <h3 id="SAE-training">Architecture and Training Overview</h3>
+
+    <p>
+      We trained an SAE on each of the outputs of the 12 attention layers and 12
+      MLP layers of GPT-2 Small. We follow most of the training settings from
+      <a
+        href="https://transformer-circuits.pub/2023/monosemantic-features/index.html#appendix-autoencoder-dataset"
+        >Anthropic's approach</a
+      >
+      (along with
+      <a
+        href="https://transformer-circuits.pub/2024/feb-update/index.html#dict-learning-loss"
+        >their advice in February Update</a
+      >) and
+      <a
+        href="https://www.lesswrong.com/posts/f9EgfLSurAiqRJySD/open-source-sparse-autoencoders-for-all-residual-stream"
+        >Joseph Bloom's approach</a
+      >, but with some modifications.
+    </p>
+
+    <ul>
+      <li>
+        Each SAE has 24,576 dictionary features, which is 32 times the hidden
+        dimension of GPT-2 Small.
+      </li>
+      <li>
+        We use the Adam optimizer with a learning rate of 1e-3 and betas of (0,
+        0.9999) for 1 billion tokens from the
+        <a href="https://skylion007.github.io/OpenWebTextCorpus/"
+          >OpenWebText</a
+        >
+        corpus. We trained against a reconstruction loss (measured by MSE of
+        input and reconstructed output), a sparsity loss (proximated by the L1
+        norm of the feature activations, with a coefficient of 1.2e-4), and a
+        ghost gradient loss. A batch size of 4,096 is used. We use an NVIDIA
+        A100-80GB GPU for training.
+      </li>
+      <li>
+        First 256 tokens of each sequence are used as input, discarding the rest
+        tokens and sequences shorter than 256 tokens. Generated activations are
+        shuffled actively in an activation buffer.
+      </li>
+      <li>
+        We normalize the input activations to have a norm of the square root of
+        LM hidden size (i.e. <d-math>\sqrt{768}</d-math> for GPT-2 Small). We
+        further normalize the MSE loss by the variance of output along the
+        hidden dimension (a bit like the latter part in LayerNorm, except that
+        we're not taking the mean of output).
+
+        <d-math block>
+          \mathcal{L}_\text{MSE}=(x_\text{normed}-\hat{x}_\text{normed}) /
+          \lVert \hat{x}_\text{normed} - \bar{\hat{x}}_\text{normed} \rVert_2
+        </d-math>
+      </li>
+      <li>
+        We use untied weights for the encoder and decoder. Decoder bias (or
+        pre-encoder bias) is removed (following Anthropic's setting, and for the
+        sake of simplier circuit analysis). Decoder norm are reset to less than
+        or equal to 1 after each training step.
+      </li>
+      <li>
+        <b>*</b>We prune the dictionary features with norm less than 0.99, max
+        activation less than 1, and activation frequency less than 1e-6 after
+        training.
+      </li>
+      <li>
+        <b>*</b>We finetuned the decoder and a feature activation scaler of the
+        pruned SAEs on the same dataset to deal with
+        <a
+          href="https://www.lesswrong.com/posts/3JuSjTZyMzaSeTxKk/addressing-feature-suppression-in-saes"
+          >feature suppression</a
+        >.
+      </li>
+    </ul>
+
+    <p>
+      The details of pruning and finetuning will be discussed later in this
+      post.
+    </p>
+
+    <h3>How good are these Sparse Auto Encoders?</h3>
+
+    <p>
+      We have found that the attention and MLP outputs seem harder to train SAEs on.
+      We have tried a variety of different hyperparameters and training
+      strategies, but the results are still not so satisfying as that of the
+      residual stream, which is mainly reflected in a lower variance explained
+      and a higher L0 loss.
+    </p>
+
+    <!-- <p>
+      We choose to accept a worse reconstruction quality in exchange for a
+      sparser dictionary, since we think it makes nonsense to have a L0 of the
+      same magnitude as the LM hidden size. Imagine a dictionary with
+      <d-math>1536 = 768 \times 2</d-math>
+      features, each of which is a one-hot vector in the activation space or its
+      opposite. This is just isomorphic to the original neurons, and doesn't
+      help us understand the model at all. In comparison, a worse reconstruction
+      quality can be at least partially interpretable.
+    </p> -->
+
+    <p>
+      It worths to note that the we didn't observe a significant increase in
+      cross-entropy loss even with a zero ablated layer output. It seems that
+      GPT-2 Small is robust to the ablation of a single layer output, and shows
+      strong self-repairing ability.
+    </p>
+
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Var. Explained</th>
+        <th>L0 Loss</th>
+        <th>Reconstruction CE Score</th>
+        <th>Reconstruction CE Loss</th>
+      </tr>
+      <tr>
+        <td>L0M</td>
+        <td>94.45%</td>
+        <td>14.36</td>
+        <td>99.69%</td>
+        <td>3.2278</td>
+      </tr>
+      <tr>
+        <td>L1M</td>
+        <td>78.37%</td>
+        <td>39.24</td>
+        <td>83.86%</td>
+        <td>3.2202</td>
+      </tr>
+      <tr>
+        <td>L2M</td>
+        <td>81.61%</td>
+        <td>54.82</td>
+        <td>77.12%</td>
+        <td>3.2246</td>
+      </tr>
+      <tr>
+        <td>L3M</td>
+        <td>79.21%</td>
+        <td>102.62</td>
+        <td>88.11%</td>
+        <td>3.2208</td>
+      </tr>
+      <tr>
+        <td>L4M</td>
+        <td>78.58%</td>
+        <td>156.69</td>
+        <td>88.26%</td>
+        <td>3.2206</td>
+      </tr>
+      <tr>
+        <td>L5M</td>
+        <td>71.57%</td>
+        <td>113.64</td>
+        <td>83.43%</td>
+        <td>3.2264</td>
+      </tr>
+      <tr>
+        <td>L6M</td>
+        <td>77.99%</td>
+        <td>170.18</td>
+        <td>89.68%</td>
+        <td>3.2227</td>
+      </tr>
+      <tr>
+        <td>L7M</td>
+        <td>71.99%</td>
+        <td>119.65</td>
+        <td>82.17%</td>
+        <td>3.2283</td>
+      </tr>
+      <tr>
+        <td>L8M</td>
+        <td>76.72%</td>
+        <td>141.72</td>
+        <td>87.13%</td>
+        <td>3.2250</td>
+      </tr>
+      <tr>
+        <td>L9M</td>
+        <td>77.54%</td>
+        <td>129.02</td>
+        <td>86.50%</td>
+        <td>3.2253</td>
+      </tr>
+      <tr>
+        <td>L10M</td>
+        <td>76.90%</td>
+        <td>116.80</td>
+        <td>79.01%</td>
+        <td>3.2384</td>
+      </tr>
+      <tr>
+        <td>L11M</td>
+        <td>75.69%</td>
+        <td>66.10</td>
+        <td>71.74%</td>
+        <td>3.2637</td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Original</td>
+        <td>3.2130</td>
+      </tr>
+
+      <caption
+        style="
+          caption-side: bottom;
+          font-size: 13px;
+          text-align: left;
+          color: rgba(0, 0, 0, 0.6);
+        "
+      >
+        <b>Summary Statistics for SAEs trained on GPT-2 Small MLP Output.</b>
+        L0 Loss is average number of non-zero feature activations per token.
+        Reconstruction CE Score is the proportion of cross-entropy loss
+        recovered by SAE from the zero ablated layer output, which is computed
+        as
+        <d-math>
+          \frac{\mathcal{L}_\text{SAE Reconstructed} - \mathcal{L}_\text{Zero
+          Ablated}}{\mathcal{L}_\text{Original} - \mathcal{L}_\text{Zero
+          Ablated}} \times 100\%
+        </d-math>
+        .
+      </caption>
+    </table>
+
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Var. Explained</th>
+        <th>L0 Loss</th>
+        <th>Reconstruction CE Score</th>
+        <th>Reconstruction CE Loss</th>
+      </tr>
+      <tr>
+        <td>L0A</td>
+        <td>92.25%</td>
+        <td>29.66</td>
+        <td>99.24%</td>
+        <td>3.2327</td>
+      </tr>
+      <tr>
+        <td>L1A</td>
+        <td>82.48%</td>
+        <td>65.57</td>
+        <td>97.19%</td>
+        <td>3.2138</td>
+      </tr>
+      <tr>
+        <td>L2A</td>
+        <td>83.39%</td>
+        <td>69.85</td>
+        <td>94.29%</td>
+        <td>3.2150</td>
+      </tr>
+      <tr>
+        <td>L3A</td>
+        <td>69.23%</td>
+        <td>53.59</td>
+        <td>87.00%</td>
+        <td>3.2173</td>
+      </tr>
+      <tr>
+        <td>L4A</td>
+        <td>74.91%</td>
+        <td>87.35</td>
+        <td>89.99%</td>
+        <td>3.2171</td>
+      </tr>
+      <tr>
+        <td>L5A</td>
+        <td>82.12%</td>
+        <td>127.18</td>
+        <td>97.81%</td>
+        <td>3.2145</td>
+      </tr>
+      <tr>
+        <td>L6A</td>
+        <td>76.63%</td>
+        <td>100.89</td>
+        <td>94.31%</td>
+        <td>3.2158</td>
+      </tr>
+      <tr>
+        <td>L7A</td>
+        <td>78.51%</td>
+        <td>103.30</td>
+        <td>91.32%</td>
+        <td>3.2182</td>
+      </tr>
+      <tr>
+        <td>L8A</td>
+        <td>79.94%</td>
+        <td>122.46</td>
+        <td>88.67%</td>
+        <td>3.2172</td>
+      </tr>
+      <tr>
+        <td>L9A</td>
+        <td>81.62%</td>
+        <td>107.81</td>
+        <td>89.55%</td>
+        <td>3.2187</td>
+      </tr>
+      <tr>
+        <td>L10A</td>
+        <td>83.75%</td>
+        <td>100.44</td>
+        <td>87.70%</td>
+        <td>3.2201</td>
+      </tr>
+      <tr>
+        <td>L11A</td>
+        <td>84.81%</td>
+        <td>22.69</td>
+        <td>85.49%</td>
+        <td>3.2418</td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Original</td>
+        <td>3.2130</td>
+      </tr>
+
+      <caption
+        style="
+          caption-side: bottom;
+          font-size: 13px;
+          text-align: left;
+          color: rgba(0, 0, 0, 0.6);
+        "
+      >
+        <b>
+          Summary Statistics for SAEs trained on GPT-2 Small Attention Output.
+        </b>
+      </caption>
+    </table>
+
+    <h3>Feature Pruning</h3>
+
+    <p>
+      What do we expect a feature to be? Intuitively, a feature reflects on the
+      existence or extent of a certain human-understandable aspect in the input,
+      which is, a
+      <a
+        href="https://transformer-circuits.pub/2023/superposition-composition/index.html#distributed-compositional"
+        >"semi-local" / compositional code</a
+      >
+      to represent the input. Each of the features should be activated by a
+      subset of the input corpus, without being too dense (i.e. activated by
+      nearly every token) or too sparse (i.e. can hardly be activated).
+    </p>
+
+    <p>
+      However, the actual dictionary features trained end-to-end are not always
+      so ideal. We observed that some dictionary features more like "local"
+      codes. That is, they are activated by very specific tokens. These features
+      are trivial and not helpful for understanding an activation pattern from a
+      compositional perspective. Feature pruning aims to remove these trivial
+      features and keep the more meaningful ones.
+    </p>
+
+    <p>
+      In practice, a dictionary feature will be pruned if it meets one of the
+      following criteria:
+    </p>
+
+    <ul>
+      <li>
+        <b>Norm less than 0.99:</b>
+        In SAE training, we use an L1 loss as a differentiable approximation of
+        L0 loss, to encourage sparsity in the feature activations. The side
+        effect is that the L1 loss as well encourages a lower value of the
+        feature activations, and a larger feature norm. Thus, if a feature is
+        really "useful" in reconstructing the input, it should have a norm as
+        large as possible. We prune the features without the tendency to grow.
+      </li>
+      <li>
+        <b>Max activation less than 1:</b>
+        Given a fixed norm of the feature, a feature with a low max activation
+        value makes little contribution to reconstructing the input. We find
+        this kind of features activated in some non-related situations, and thus
+        non-interpretable. We empirically set the threshold to 1 and prune the
+        features below it.
+      </li>
+      <li>
+        <b>Activation frequency less than 1e-6:</b>
+        A feature with an ultra-low activation frequency is considered to be too
+        local to be useful. We find this kind of features often correspond to
+        some specific tokens in some specific contexts, which is too trivial to
+        be recognized as a feature. We empirically set the threshold to 1e-6 and
+        prunes the features activated in a frequency below it.
+      </li>
+    </ul>
+
+    <p>
+      Features meet these 3 criteria are often overlapping. We list the features
+      that meet these criteria in the following table:
+    </p>
+
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Max act &lt; 1</th>
+        <th>Norm &lt; 0.99</th>
+        <th>Sparsity &lt; 1e-6</th>
+        <th>Total Pruned</th>
+      </tr>
+      <tr>
+        <td>L0M</td>
+        <td>7284</td>
+        <td>522</td>
+        <td>2663</td>
+        <td>7374</td>
+      </tr>
+      <tr>
+        <td>L1M</td>
+        <td>128</td>
+        <td>1717</td>
+        <td>147</td>
+        <td>1902</td>
+      </tr>
+      <tr>
+        <td>L2M</td>
+        <td>1509</td>
+        <td>481</td>
+        <td>952</td>
+        <td>2241</td>
+      </tr>
+      <tr>
+        <td>L3M</td>
+        <td>4268</td>
+        <td>257</td>
+        <td>1447</td>
+        <td>4333</td>
+      </tr>
+      <tr>
+        <td>L4M</td>
+        <td>1748</td>
+        <td>110</td>
+        <td>783</td>
+        <td>1777</td>
+      </tr>
+      <tr>
+        <td>L5M</td>
+        <td>16021</td>
+        <td>7465</td>
+        <td>7052</td>
+        <td>16227</td>
+      </tr>
+      <tr>
+        <td>L6M</td>
+        <td>886</td>
+        <td>63</td>
+        <td>535</td>
+        <td>902</td>
+      </tr>
+      <tr>
+        <td>L7M</td>
+        <td>14418</td>
+        <td>5670</td>
+        <td>9374</td>
+        <td>14733</td>
+      </tr>
+      <tr>
+        <td>L8M</td>
+        <td>4033</td>
+        <td>1282</td>
+        <td>784</td>
+        <td>4209</td>
+      </tr>
+      <tr>
+        <td>L9M</td>
+        <td>4095</td>
+        <td>1151</td>
+        <td>1036</td>
+        <td>4445</td>
+      </tr>
+      <tr>
+        <td>L10M</td>
+        <td>12867</td>
+        <td>2186</td>
+        <td>10482</td>
+        <td>15167</td>
+      </tr>
+      <tr>
+        <td>L11M</td>
+        <td>179</td>
+        <td>419</td>
+        <td>81</td>
+        <td>588</td>
+      </tr>
+      <caption
+        style="
+          caption-side: bottom;
+          font-size: 13px;
+          text-align: left;
+          color: rgba(0, 0, 0, 0.6);
+        "
+      >
+        <b>
+          Pruning Feature Counts for SAEs trained on GPT-2 Small MLP Output.
+        </b>
+      </caption>
+    </table>
+
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Max act &lt; 1</th>
+        <th>Norm &lt; 0.99</th>
+        <th>Sparsity &lt; 1e-6</th>
+        <th>Total Pruned</th>
+      </tr>
+      <tr>
+        <td>L0A</td>
+        <td>21622</td>
+        <td>4125</td>
+        <td>11843</td>
+        <td>22458</td>
+      </tr>
+      <tr>
+        <td>L1A</td>
+        <td>19512</td>
+        <td>582</td>
+        <td>10553</td>
+        <td>20277</td>
+      </tr>
+      <tr>
+        <td>L2A</td>
+        <td>14022</td>
+        <td>2175</td>
+        <td>7164</td>
+        <td>16328</td>
+      </tr>
+      <tr>
+        <td>L3A</td>
+        <td>5793</td>
+        <td>4419</td>
+        <td>4705</td>
+        <td>10579</td>
+      </tr>
+      <tr>
+        <td>L4A</td>
+        <td>7515</td>
+        <td>2849</td>
+        <td>8653</td>
+        <td>12838</td>
+      </tr>
+      <tr>
+        <td>L5A</td>
+        <td>16096</td>
+        <td>2544</td>
+        <td>11888</td>
+        <td>16942</td>
+      </tr>
+      <tr>
+        <td>L6A</td>
+        <td>6023</td>
+        <td>3452</td>
+        <td>6707</td>
+        <td>11469</td>
+      </tr>
+      <tr>
+        <td>L7A</td>
+        <td>14304</td>
+        <td>3148</td>
+        <td>10456</td>
+        <td>17019</td>
+      </tr>
+      <tr>
+        <td>L8A</td>
+        <td>16969</td>
+        <td>979</td>
+        <td>11141</td>
+        <td>17506</td>
+      </tr>
+      <tr>
+        <td>L9A</td>
+        <td>17655</td>
+        <td>2528</td>
+        <td>7340</td>
+        <td>18417</td>
+      </tr>
+      <tr>
+        <td>L10A</td>
+        <td>17141</td>
+        <td>2845</td>
+        <td>9307</td>
+        <td>18435</td>
+      </tr>
+      <tr>
+        <td>L11A</td>
+        <td>15577</td>
+        <td>2053</td>
+        <td>12117</td>
+        <td>17971</td>
+      </tr>
+      <caption
+        style="
+          caption-side: bottom;
+          font-size: 13px;
+          text-align: left;
+          color: rgba(0, 0, 0, 0.6);
+        "
+      >
+        <b>
+          Pruning Feature Counts for SAEs trained on GPT-2 Small Attention
+          Output.
+        </b>
+      </caption>
+    </table>
+
+    <p>
+      Fairly large proportion of features are pruned after training. We can see
+      91.4% of the features are pruned in Layer 0 Attention Output. An average
+      of 67.9% of the features are pruned in the attention outputs, and 25.1% in
+      the MLP outputs. The larger proportion of pruned features in the attention
+      outputs may tell us that the attention output objectively contains fewer
+      independent features.
+    </p>
+
+    <p>
+      Despite the large proportion of pruned features, we didn't observe a
+      significant loss in the reconstruction quality. The variance explained and
+      cross-entropy loss remain largely unchagned in most layers. This indicates
+      that our pruning criteria are effective in removing the trivial features.
+    </p>
+
+    <figure>
+      <img src="pics/pruning-ev.png" />
+      <figcaption>
+        <b>
+          Explained variance change after pruning for SAEs trained on GPT-2
+          Small.
+        </b>
+        Slight rise and fall in variance explained are observed in the MLP and
+        attention outputs.
+      </figcaption>
+    </figure>
+
+    <h3>Finetuning against Feature Suppression</h3>
+
+    <p>
+      <a
+        href="https://www.lesswrong.com/posts/3JuSjTZyMzaSeTxKk/addressing-feature-suppression-in-saes"
+        >Feature suppression</a
+      >
+      refers to a phenomenon where loss function in SAEs pushes for smaller
+      feature activation values, leading to suppressed features and worse
+      reconstruction quality. Wright and Sharkey deduced that for an L1
+      coefficient of <d-math>c</d-math> and dimension <d-math>d</d-math>,
+      instead of having a ground truth feature activation of <d-math>g</d-math>,
+      the optimal activation SAEs may learn is
+      <d-math>g - \frac{cd}{2}</d-math>.
+    </p>
+
+    <p>
+      This is a significant reconstruction quality loss observed in all our
+      trained SAEs. We find that the l2 norm of the reconstructed output have an
+      average of 77.5% of the original l2 norm, which indicates that the feature
+      activations are suppressed by a large margin.
+    </p>
+
+    <p>
+      To address this issue, we follow Wright and Sharkey to finetune the
+      decoder and a feature activation scaler of the pruned SAEs on the same
+      dataset. Only the reconstruction loss (i.e. the MSE loss) is applied in
+      this finetuning process. Encoder weights are fixed during this process to
+      keep sparsity of the dictionary. Finetuning may also repair flaws
+      introduced in the pruning process, and improve the overall reconstruction
+      quality.
+    </p>
+
+    <p>
+      We achieve an average l2 norm ratio of 89.9% after finetuning. The
+      variance explained and cross-entropy score are increased by 3.2% and 5.1%
+      in average, respectively. Detailed statistics are as follows:
+    </p>
+
+    <figure>
+      <img src="pics/finetuning-l2-ratio.png" />
+      <figcaption>
+        <b>
+          L2 norm ratio change after finetuning for SAEs trained on GPT-2 Small.
+        </b>
+        The l2 norm ratio is the ratio of the l2 norm of the reconstructed
+        output to the original l2 norm. The l2 norm ratio is increased by 12.4%
+        in average after finetuning.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <img src="pics/finetuning-ce-score.png" />
+      <figcaption>
+        <b>
+          Cross-entropy score change after finetuning for SAEs trained on GPT-2
+          Small.
+        </b>
+      </figcaption>
+    </figure>
+
+    <h3>Training tricks and dynamics</h3>
+
+    <p>
+      We want to further discuss some widely-used training tricks and
+      correlating dynamics we observed during the training of SAEs on GPT-2
+      Small. We conducted a series of extra experiments on L4M, a medium MLP
+      layer which is comparatively hard to train on, to investigate the effects
+      of different training settings.
+    </p>
+
+    <p>
+      The first trick we want to study is
+      <a
+        href="https://transformer-circuits.pub/2024/jan-update/index.html#dict-learning-resampling"
+        >Ghost Grads</a
+      >, which is a substitute for
+      <a
+        href="https://transformer-circuits.pub/2023/monosemantic-features/index.html#appendix-autoencoder-resampling"
+        >neuron resampling</a
+      >
+      to make dead features live again. While this method is crucial for
+      rescuing dead features: dead features cannot receive gradients so they
+      cannot recover by themselves, we find that it may also introduce noise to
+      the training process. In fact, it's likely to produce some "half-dead"
+      features which always activate in a ultra low magnitude, just like those
+      we pruned in the feature pruning process. The activation of "half-dead"
+      features are negligible in the overall reconstruction, and low evidence
+      are there to say that they actually represent some meaningful information.
+    </p>
+
+    <p>
+      Then it's natural to ask: what if we just let the dead features die,
+      putting no efforts to rescue them? We conducted an experiment on L4M to
+      compare the effects of ghost grads and no ghost grads. We find that the
+      metric of variance explained keep the same in the first 700M tokens, when
+      there's hardly any dead feature on either setting. However, after 700M
+      tokens, the variance explained keep rising on the with-ghost-grads setting
+      (and surprisingly, the rising rate becomes even higher), while it remains
+      stable on the no-ghost-grads side. This indicates that despite the noise
+      introduced by ghost grads, they're seemingly giving the wrong features a
+      "second chance" to rebuild themselves and become useful.
+    </p>
+
+    <p>
+      Another question is whether to use a decoder bias. We'll be glad if a SAE
+      without decoder bias can be trained to a good reconstruction quality,
+      since it's simpler and easier for circuit analyses. But after all, does
+      the decoder bias really help? We conducted another experiment on L4M to
+      compare the effects of decoder bias and no decoder bias. It shows that at
+      the beginning of the training, the with-bias setting soon rises to a
+      higher variance explained. But the without-bias setting finally catches up
+      in both L0 and ev after a total of 1.6B tokens.
+    </p>
+
+    <p>
+      It's also worthy noting that the convergent trajectory of a setting with
+      ghost grads and without decoder bias is quite distinct and interesting. It
+      seems to have three phases: a fast rising phase, of the first 500M tokens,
+      where the variance explained rises rapidly to 68% and L0 drops to 120; a
+      feature rescuing phase, of 500M to 1B tokens, where ghost grads working
+      and ev continues to rise to 73.7%, in exchange of L0 rising to 285; and
+      finally a sparsity phase, of 1B to 1.6B tokens, where the variance
+      explained keeps stable (with slight decrease to 73.4%) and L0 drops again
+      to 120. We do not train further so we cannot assert this is the final
+      convergence point.
+    </p>
+
+    <figure role="group">
+      <figure>
+        <img src="pics/training-dynamics-ev.png" />
+      </figure>
+      <figure>
+        <img src="pics/training-dynamics-l0.png" />
+      </figure>
+
+      <figcaption>
+        <b>Training dynamics of L4M with different training settings.</b>
+        <b>L4M</b> refers to the same setting as the L4M in the previous
+        experiments, except that learning rate has changed to 4e-4, and the
+        training steps are extended to 1.6B tokens.
+        <b>L4M w/decoder bias</b> and <b>L4M w/o ghost grads</b> refer to the
+        basic setting with decoder bias and without ghost grads respectively.
+      </figcaption>
+    </figure>
+  
+  
+
+  <h2 id="Interface">Interface for Interpretability</h2>
+    <figure class="l-screen-inset">
+      <img src="pics/interp-interface.png" />
+    </figure>
+    <p>
+      We are mainly inspired by <a href="https://transformer-circuits.pub/2023/monosemantic-features/vis/a1.html">
+      Anthropic's feature visualizer</a> to design our interface for interpreting each single feature. Our description of one dictionary feature
+      contains:
+    </p>
+    <ul> 
+      <li>Number of times activated out of 20 million tokens;</li>
+      <li>Automatic interpretation results (of a fraction of features);</li>
+      <li>Number of times activated in each interval;</li>
+      <li>Direct Logit Attribution results;</li>
+      <li>Top activation samples;</li>
+      <li>Subsample with activation of 50%, 70%, 80% and 90% of max activation magnitude.</li>
+    </ul>
+    <p>
+      Our interface is also featuring:
+    </p>
+    <ul>
+      <li>A tool accepting a custom input and showing which parts of it are activating a specific feature (and to what extent);</li>
+      <li>A tool accepting multiple inputs and showing the jointly activated features of all selected tokens in a specific dictionary.</li>
+    </ul>
+
+  <h2 id="Features">Features We Have Found</h2>
+    <p>
+      We report a curated case study of features we find are common or interesting.
+      For readers who are familiar with mech interp, we believe this could be a good
+      way to gain some kind of intuition about 
+      <a href="https://transformer-circuits.pub/2022/solu/index.html#section-6-3-5"><i>feature families</i></a>.
+      For example, we have found a number of features firing on start or end of
+      attributive clauses. We also find a number of <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html"><i>induction features</i></a>.
+    </p>
+
+    <p>
+      And for readers who have not yet known too much about mech interp, we believe this
+      can be a good way to get a sense of what kind of features are present in Transformer 
+      language models i.e. how Transformer learns to represent information in its internal.
+    </p>
+
+    <p>
+      We follow the convention in our <a 
+      href="https://arxiv.org/abs/2402.12201/">Othello SAE circuit paper</a>
+      to name the Y-th feature in the X-th Attention / MLP layer as LXAY / LXMY.
+    </p>
+  
+  <h3 id="early-embedding">Early Layer MLPs Serves as a Supplementary Word Embedding</h3>
+    <p>
+      It is not exciting enough in today to report to have found that <i>neurons in the early, middle, 
+      and late layers of a large network tend to play very different types of roles, just as 
+      features at different depths of conv net vision models are known to be different.</i>
+      This has been reported in <a href="https://transformer-circuits.pub/2022/solu/index.html">Anthropic's SoLU paper</a>.
+      Nonetheless, this can be a positive sign that SAEs are at least learning something meaningful.
+    </p>
+
+    <p>
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L0M-bs-4096-lr-8e-5-32x&featureIndex=13637">L0M13637</a> responds to the token 'ates' in names, singular forms of verbs
+      ending with 'ate' and even 'ates' across morphemes like in 'Bureaucratese'.
+    </p>
+
+    <figure>
+      <img src="pics/ates-feature.png" />
+    </figure>
+
+    <p>
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L0M-bs-4096-lr-8e-5-32x&featureIndex=3903">L0M3903</a> responds to the word <i>process</i>. One interesting oberservation is
+      that direct logit attribution shows that this feature also directly contributes to the tokens that activate it via
+      the residual stream. This is probably due to the tied embedding and unembedding in GPT2.
+      Another intriguing phenomenon is that the form of 'process' is mostly the same in the top activation 
+      samples i.e. ' process'. While other forms of <i>process</i>-related tokens like ' <i>Process</i>|ing' and 
+      'no-|<i>process</i>' only fires this feature for lower than 50% of the max activation magnitude.
+
+      This at first may seem unsurprising. But under the framework of linear representation hypothesis, 
+      this is an example of how Transformer language models decide the activation value of a feature in its corresponding
+      direction: grammatical fundamentality (or a more mundane explanation: frequency).
+    </p>  
+
+    <figure>
+      <img src="pics/contextual-variation.png" />
+    </figure>
+
+    <p>
+      By L1M, GPT2 begins to learn some n-gram features and group phrases with similar meanings together. 
+      For example, <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L1M-bs-4096-lr-8e-5-32x&featureIndex=20593">L1M20593</a> responds to phrases like 'aim to', 'goal is to', 'ask for', 'want to' etc.
+    </p>
+
+  <h3 id="bracket-feature">Extension of "Finite State Automata"</h3>
+    <p>
+      <a href="https://transformer-circuits.pub/2023/monosemantic-features/index.html#phenomenology-fsa">
+        Anthropic's Towards Monosemanticity</a> has reported to find Transformers <i>learned features that interact via the token stream because of patterns in the real datasets.</i>
+      We have found some features related to brackets that we believe are not present in the one-layer Transformer
+      in Towards Monosemanticity and can be deemed as an extension to the "Finite State Automata" phenomenology in real models.
+    </p>
+
+    <p>
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L1A-bs-4096-lr-8e-5-32x&featureIndex=11421">L1A11421</a>
+      fires on tokens inside of brackets. This feature exhibits behavior of a stack. When the number of left brackets is more than the number of right brackets, 
+      the feature will activated after the right bracket(s).
+      And as we increase the number of right brackets, the firing range of this feature is reduced.
+    </p>
+
+    <figure>
+      <img src="pics/in-bracket-feature.png" />
+    </figure>
+
+    <p>
+      We believe the key components of bracket-related circuit also contain a number of features responding to left or right brackets.
+      For instance, <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L0M-bs-4096-lr-8e-5-32x&featureIndex=18327">L0M18327</a> fires at left
+      brackets and <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L0A-bs-4096-lr-8e-5-32x&featureIndex=15911">L0A15911</a> at right brackets.
+
+      We plan to dig in more on this circuit with the analysis framework we introduced in our <a 
+      href="https://arxiv.org/abs/2402.12201/">Othello SAE circuit paper</a> and will report more findings in the future.
+    </p>
+  
+  
+  <h3>Sentence (Clause) Level Features 'Emerge' at L3M</h3>
+    <p>
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L3M-bs-4096-lr-8e-5-32x&featureIndex=19583">
+        L3M19583
+      </a> seems to respond to periods at the end of IT-related sentences. 
+
+      Despite our efforts on manual search, we failed to find any feature before L3M firing on sentence level.
+    </p>
+
+    <p>
+      After L3M, we start to find a number of features firing on start or end of clauses.
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=21554">
+        L4A21554
+      </a> and <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=7838">L4A7838</a> 
+      respond to the conjunctions indicating the start of attributive clauses or descriptive prepositional phrases. <d-footnote>See also this <a href="https://twitter.com/saprmarks/status/1758253577888493901">X post</a> for an end-of-clauses example.</d-footnote>
+    </p>
+
+    <figure>
+      <img src="pics/start-adj-clauses-feature.png" />
+    </figure>
+
+  <h3 id="induction-features">Induction Features</h3>
+    <p>
+      <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Induction Heads</a>
+      are believed to be an important component for Transformer language models to reduce loss and perform in-context learning.
+
+      We have found a number of features that seem to implement the two parts of induction heads: previous-token features and induction features.
+    </p>
+    <p>
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L3A-bs-4096-lr-8e-5-32x&featureIndex=12618">L3A12618</a>
+      and <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=220">L3A220</a>
+      serve as previous-token features for 'U' and locations, respectively.
+    </p>
+    <p>
+      Correspondingly, there are some features in higher-layer attentions to perform induction. For example,
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L5A-bs-4096-lr-8e-5-32x&featureIndex=20004">L5A20004</a>
+      performs induction to enhance the logits of upper-case letters.
+    </p>
+    <figure>
+      <img src="pics/induction-feature.jpg" />
+
+      <figcaption>
+        <b>L5A20004</b> fires on the second and the rest 'Open's and copies from the first 'M' to predict the second and the rest 'M's.
+      </figcaption>
+    </figure>
+    <p>
+      There are many more features in L5A we believe to perform induction. 
+      <a href="https://www.lesswrong.com/posts/xmegeW5mqiBsvoaim/we-inspected-every-head-in-gpt-2-small-using-saes-so-you-don">Previous study on attention SAEs by robertzk et al.</a>
+      has identified L5A Head 1 as an induction head. Therefore, we believe L5A is an important place for GPT-2 to do induction.
+      Additionally, a rough oberservation about these features is that they are one of the earliest features to directly contribute to 
+      the logits in an interpretable way.  
+    </p>
+    <p>
+      Circuit discovery with dictionary features, as introduced in our Othello SAE paper, is promising to analyze
+      local circuits in that we can figure out how a lower-level feature is transformed into a higher-level one.
+      Furthurmore, we can also make clear which heads constitute the circuit.
+
+      We plan to release a more detailed report on induction features and the circuits they form in the future.
+    </p>
+  
+    <h3>Features Detecting More Abstract Concepts</h3>
+    <p>
+      The mission of mech interp research involves discovering beautiful structures in neural 
+      networks and identifying probable dangerous abilities that may affect human society.
+      Most of features we introduce in this post are ones we find interesting for GPT2 to represent.
+      We have also found a number of crime-related features
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=23556">L4A23556</a>,
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L7A-bs-4096-lr-8e-5-32x&featureIndex=20944">L7A20944</a> and
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L10M-bs-4096-lr-8e-5-32x&featureIndex=12892">L10M12892</a>
+      , which may be of use in larger scale mech interp research for safety.
+    </p>
+    <figure>
+      <img src="pics/crime-feature.jpg" />
+      <figcaption>
+        <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=23556"><b>L4A23556</b></a>
+        identifies descriptions of criminal charges or illegal activities.
+      </figcaption>
+    </figure>
+
+    <p>
+      Another feature we find intriguing is the <i>Future Feature</i> <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L6A-bs-4096-lr-8e-5-32x&featureIndex=6184">L6A6184</a>.
+      The feature is identifying the usage of future tense in the text like 'will', 'next', 'project to' etc.
+      As we investigate more about this feature, we find that it also fires on upcoming events like the 2022 World Cup.<d-footnote>From GPT2's perpective, it is indeed a future event.</d-footnote>
+      Then we find this interesting activation pattern:
+    </p>
+    
+    <figure>
+      <img src="pics/future-feature.jpeg" />
+      <figcaption>
+        <b>L6A6184</b> seems to know when it is trained and fires at years after 2018.
+      </figcaption>
+    </figure>
+
+    <h3 id="logit-calibration">Calibrating Me, Myself and I</h3>
+    <p>
+      As the model goes into its deeper layers, SAE features exhibit more interpretability in their direct contribution
+      to the final logits instead of responding to inputs<d-footnote>These two perspectives are not exclusive, though.</d-footnote>.
+      However, we find a feature at the last MLP
+      <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L11M-bs-4096-lr-8e-5-32x&featureIndex=14603">L11M14603</a>
+       which is suppressing the logits of tokens such as 'me', 'myself', 'I', 'us' in the contexts
+      where the next token is very likely to be these tokens.
+    </p>
+    <p>
+      We currently do not know what is going on in this seemingly calibrating feature. We seek to find out more about this
+      in our ongoing circuit analysis.
+    </p>
+  
+  <h2 id="Agenda">Our 1-year Agenda</h2>
+  <p>
+    In near future, our center project encompasses two topics: <a href="#Agenda-Science">Science of Dictionary Learning</a>
+    and <a href="#Agenda-Circuits">Circuit Discovery with SAE Features</a>. We are also interested in multiple side-branches
+    such as <a href="#Agenda-Mamba-Motif">Discovering Mamba Motif & Universality</a>, <a href="#Agenda-Dynamics">SAEs 
+    for Training Dynamics</a> and <a href="#Agenda-MoE">Expertise of Experts</a>. By saying that the former 
+    two directions are centric and the latter three are in side-branches, we do not mean any project is 
+    priviledged over any one another. The center project treats SAEs as the object to be studied and 
+    the other two use SAEs as tools to offer more findings in mainstream language models. The aforementioned
+    projects are all ongoing and will be published at <a href="https://open-moss.com/en/">OpenMOSS</a>.
+  </p>
+
+  <h3 id="Agenda-Science">Science of Dictionary Learning (<i>0-12 months</i>)</h3>
+  <p style="color: grey"><i>
+    Fukang Zhu, Xuyang Ge, Zhengfu He
+  </i></p>
+  <p>
+    Dictionary Learning is in fact not a new approach. However existing literature does not satisfy to perfectly 
+    help with attacking superposition and extracting monosemantic features with negligible loss or high sparsity.
+    Moreover, one lesson from <a href="https://transformer-circuits.pub/2024/feb-update/index.html#dict-learning-tanh">
+    Anthropic's tanh experiment</a> is that even if some methods help improve these existing metrics, it may deteriorate
+    interpretability, which lack a reliable metric to test on.
+  </p>
+  <p>
+    Despite these possible obstacles and pitfalls, we are still carefully optimistic about SAEs. 
+    In the upcoming year, our plans on improving SAEs include but are not limited to: 
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>KL-guided SAE Training:</b> Wes Gurnee shared in <a href="https://www.lesswrong.com/posts/rZPiuFxESMxCDHe4B/sae-reconstruction-errors-are-empirically-pathological
+        ">a recent post</a> that SAE reconstruction errors are empirically pathological i.e. a random error of the
+        same norm of SAE error stochastically leads to lower recovered cross-entropy loss. However, if we replace 
+        the original activation <d-math>x</d-math> with <d-math>(\Vert x_{SAE} \Vert / \Vert x \Vert) * x</d-math>
+        i.e. pure suppression, the difference in ce loss is near-zero. 
+      </p>
+
+      <figure>
+        <img src="pics/KL-guided-training-hypothesis.png"/>
+      </figure>
+
+      <p>
+        We conjecture that feature suppression itself is not harmful but will have impact on training dynamics.
+        The widely-used Mean Square Error is isotropic and will optimize both suppressional and pathological error,
+        which may misalign with recovered ce loss and thus lead to suboptimal training trajectory.
+      </p>
+      <p>
+        We wonder if this issue can be mitigated by mixing a third loss, other than sparsity constraint and MSE, of 
+        the KL divergence between the original logits and the SAE-recovered logits. This KL-guided training may force 
+        SAE to capture more features to minimize the pathological errors in cost of errors in directions less important
+        with respect to recovered ce loss. There is also a caveat that this loss is actually introducing future
+        computations into SAE reconstruction of a given activation space i.e. SAEs may somehow learn to represent
+        features in very late layers to perform next token prediction and fail to faithfully capture the real features.
+      </p>
+      <p>
+        This idea is also mentioned in <a href="https://www.lesswrong.com/posts/64MizJXzyvrYpeKqm/sparsify-a-mechanistic-interpretability-research-agenda#ryEvtsasaC6qyGpGc">
+        Lee Sharkey's Agenda</a>, in which it's known as e2e SAEs.
+      </p>
+    </li>
+      
+    <li>
+      <p>
+        <b>Solving Feature Suppression by Seperating MSE & Sparsity:</b> The hidden layer of vanilla SAE is both used for 
+        reconstruction and maintaining sparsity. There may be some kind of tangling here. Since suppression itself is not
+        pathological, and we still see moderate improvement by finetuning against suppression, we suspect suppression
+        does not directly affect recovered ce loss but instead impact training trajectory. To solve this problem,
+        we propose to parameterize the activation of a feature with a seperate encoder matrix, which leads to a GLU
+        architecture for SAEs.
+      </p>
+      <p>
+        We have already observed non-trivial Pareto improvement in the space of recovered ce loss and L0. We intend
+        to report more on this once we vetted them further.
+      </p>
+    </li>
+
+    <li>
+      <p>
+        <b>Fixing the Degree of Freedom of Activation Norm:</b> We have observed that both finetuned and GLU-based
+        SAEs can mitigate the issue of feature suppression, but both not completely. We speculate a more fundamental
+        mechanism of feature suppression.
+      </p>
+      <p>
+        As mentioned in <a id="#SAE-training">Architecture and Training Overview</a>, we normalize the activation 
+        vectors to have L2 norm equal to sqrt(n_dense). Therefore the input of our SAEs all lie on one hypersphere.
+        We believe the following explanation also holds even if we do not do the normalization.
+      </p>
+      <figure>
+        <img src="pics/geometric-suppression.png"/>
+      </figure>
+      <p>
+        It is possible that a fundamental motivation for SAEs to reconstruct <i>inside of the hypersphere</i> is 
+        that points inside have <b>convex distance to the hypersphere</b>. Since we use MSE as the loss function,
+        errors in directions perpendicular to the original activation will result in lower MSE loss. 
+      </p>
+      <p>
+        We wonder if removing this degree of freedom along the direction of the original activation i.e. reducing MSE loss
+        to some kind of angular distance like cosine similarity may help improve SAE training. This in theory will eradicate 
+        feature suppression. We are still not clear if this may cause other problems.
+      </p>
+    </li>
+
+    <li>
+      <b>Scaling up to MOSS:</b> MOSS is our AI assistant trained by Fudan University. We are optimistic about scaling SAEs 
+      for existing work in the mech interp community. We want to check more about MOSS's ablilties and alignment performance
+      in multiple aspects like multiliguality, truthfulness, and detecting undesired behaviors etc.
+    </li>
+  </ul>
+
+  <h3 id="Agenda-Circuits">Circuit Discovery with SAE Features (<i>0-12 months</i>)</h3>
+  <p style="color: grey"><i>
+    Xuyang Ge, Zhengfu He
+  </i></p>
+  <p>
+    Our latest <a href="https://arxiv.org/abs/2402.12201/">Othello SAE circuit paper</a> mainly depicts our
+    vision for circuit discovery in Transformers. We believe <a href="https://transformer-circuits.pub/2024/jan-update/index.html#predict-future">
+    Predicting Future Activations</a> may serve as a substitute for our imperfect Approximate Direct Contribution to decompile
+    MLP blocks. Our pilot study has shown that training SAEs which take in pre-MLP residual stream activations and predict MLP outputs
+    is feasible and can produce interpretable features.
+  </p>
+  <p>
+    Our plan on circuit analysis starts from simple local circuits like the <a href="#bracket-feature">in-bracket feature</a> and 
+    go on with more global circuits like <a href="#induction-features">induction heads</a> and <a href="https://arxiv.org/abs/2211.00593">
+    Indirect Object Identification</a>. If we manage to validate our circuit discovery pipeline on these widely-studied tasks, we would like 
+    to focus more on behaviors with unclear mechanism e.g. <a href="#logit-calibration">logit calibration</a> and undesired behaviors
+    i.e. Transformer Pathology.
+  </p>
+  <p>
+    Our methodology mainly utilizes direct contribution and conduct evaluations with respect to ablation. We currently believe 
+    this approach gets rid of out-of-distribution problems and consequent self-repair behaviors of language models.
+  </p>
+  
+  <h3 id="Agenda-Mamba-Motif">Discovering Mamba Motif & Universality (<i>0-3 months</i>)</h3>
+  <p style="color: grey"><i>
+    Junxuan Wang, Xuyang Ge, Zhengfu He
+  </i></p>
+  <p>
+    Among the family of language models with State Space Models, <a href="https://arxiv.org/abs/2312.00752">Mamba</a> has received
+    most attention. We plan to conduct a systematic study of Mamba SAEs to figure out the following questions:
+  </p>
+  <ul>
+    <li>
+      <p>
+        <b>Universality: </b><a href="https://www.arxiv.org/abs/2404.03646">A recent paper by Arnab Sen Sharma et al.</a> has utilized
+        activation patching to locate factual associations and perform <a href="https://rome.baulab.info/">ROME</a> editing to test
+        the causal effect of their identified components. Their results offer a positive evidence for universality that <i>when it comes 
+        to factual recall, Transformers and Mambas share many similarities</i>.
+      </p>
+      <p>
+        We want to use SAEs to find more evidence as such. Our expectations cover from the predictable ones e.g. <a href="#early-embedding">
+        early layers as extended word embedding</a> to ones we are more curious about e.g. SSM state superposition.
+      </p>
+    </li>
+    <li>
+      <b>Mamba Motif: </b>We believe there must be also some mechanism specific to SSMs. For example, when Transformer language models 
+      take in an input sequence with repeated names or terminologies, induction heads play an important role to copy from previous 
+      names to greatly reduce loss. We wonder if there also exists an induction-like mechanism in Mamba. If so, it must implement this
+      completely differently since it does not has an explicit KV cache to copy from.
+    </li>
+  </ul>
+
+  <h3 id="Agenda-Dynamics">SAEs for Training Dynamics(<i>0-3 months</i>)</h3>
+  <p style="color: grey"><i>
+    Zhengfu He
+  </i></p>
+  <p>
+    We are also interested in understanding the training trajectory of language models with SAEs. By investigating 
+    features in the progress of model training, we expect to observe the following types of signal of structure:
+  </p>
+  <ul>
+    <li>
+      <b>Memorization-to-Generalization: </b>Previous works on grokking<d-cite bibtex-key="power2022grokking,zhong2023clock,nanda2023clock"></d-cite>
+      have indicated that neural networks undergo a memorization phase and a generalization phase during training.
+      We wonder what this theory, if true, may look like through the SAE lens.
+    </li>
+    <li>
+      <b>Easy-to-Hard: </b>We believe there are some higher-level abstraction e.g. induction heads or sentence/paragraph-level concepts
+      than those that are easier to learn e.g. synonyms and grammatical resemblance. We expect to find evidence that language models
+      learn easy concepts in early training stage and form more abstract understanding as training proceeds.
+    </li>
+    <li>
+      <b>Phase Change: </b><a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html#argument-phase-change">Induction heads</a> 
+      are reported to form in only a few training steps, which is deemed as some kind of phase change. We speculate the form of such 
+      emergent mechanism would have shown some signs before it completely finishes.
+    </li>
+  </ul>
+
+  <h3 id="Agenda-MoE">Expertise of Experts (<i>3-6 months</i>)</h3>
+  <p style="color: grey"><i>
+    Wentao Shu, Zhiyuan Zeng, Zhengfu He
+  </i></p>
+  <p>
+    A recent <a href="https://twitter.com/dwarkesh_sp/status/1773770379976409213">X post</a> has posed a challenge to utilize SAEs to
+    find some kind of <a href="https://distill.pub/2020/circuits/branch-specialization/">Branch (Expert) Specialization</a> in MoE models.
+    We had come up with similar ideas to introduce this new and powerful tools into understanding the expertise inside of expert models.
+    Though we do not assume a priori that all or most features are specialized to one expert, we believe there exist some rationale behind
+    Mixture-of-Experts models to internally assign experts and organize the activation space.
+  </p>
+
+  
+  </d-article>
+
+
+  <d-appendix>
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+  </d-appendix>
+
+  <distill-footer></distill-footer>
+</body>

@@ -1,0 +1,803 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style id="distill-article-specific-styles">
+        .subgrid {
+            grid-column: screen;
+            display: grid;
+            grid-template-columns: inherit;
+            grid-template-rows: inherit;
+            grid-column-gap: inherit;
+            grid-row-gap: inherit;
+        }
+
+        d-figure.base-grid {
+            grid-column: screen;
+            background: hsl(0, 0%, 97%);
+            padding: 20px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        d-figure {
+            margin-bottom: 1em;
+            position: relative;
+        }
+
+        d-figure>figure {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .shaded-figure {
+            background-color: hsl(0, 0%, 97%);
+            border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+            border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+            padding: 30px 0;
+        }
+
+        .pointer {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            top: 26px;
+            left: -48px;
+        }
+
+        .responsive-img {
+            display: block;
+            margin: auto;
+            width: 98%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+    <style>
+        iframe {
+            width: 100%;
+            /* 设置宽度为容器的100% */
+            height: 800px;
+            /* 设置一个起始高度，可以根据实际情况调整 */
+            border: none;
+            /* 移除边框 */
+        }
+
+        /* 确保响应式 */
+        @media (max-width: 800px) {
+            iframe {
+                height: 600px;
+                /* 对于较小的屏幕，调整高度 */
+            }
+        }
+    </style>
+
+    <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+    
+    <d-front-matter>
+        <script type="text/json">
+      {
+    "title": "Evolutionary Agent in Evolving Social Norms",
+    "description": "In a milieu of evolving social norms, well-aligned agent groups thrive and propagate, while those inadequately aligned dwindle and are supplanted.",
+    "authors": [
+        {
+            "author": "Shimin Li",
+            "authorURL": "https://scholar.google.com/citations?user=0xxkGjMAAAAJ",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2401.04620",
+    "publishedDate": "2024-02-22",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+    </d-front-matter>
+
+    <d-title>
+        <h1>Evolutionary Agent in Evolving Social Norms</h1>
+        <p>In a milieu of evolving social norms, well-aligned agent groups thrive and propagate, while those
+            inadequately aligned dwindle and are
+            supplanted.</p>
+    </d-title>
+
+    <d-article>
+
+        <h1>Introduction</h1>
+
+        <p>
+            The emergence of large language models (LLMs) revolutionize the paradigm of artificial
+            intelligence research and spur a vast array of novel scenarios. Applications of LLMs, exemplified by Agents
+            , can further compensate for and
+            enhance the capabilities of LLMs by integrating various augmenting
+            components or tools. Concurrently, the abilities of intelligent agents with LLMs as their decision-making
+            core also improve as the capabilities of LLMs grow. When the complexity of tasks that an agent can perform
+            exceeds
+            the level of human oversight, designing effective agent alignment methods becomes crucial for AI safety.
+            Furthermore, agents can alter the real physical world through interactions with the actual society. If these
+            systems
+            are not well-regulated, they could pose a series of societal risks.
+        </p>
+        <p>
+            The prevailing methods for aligning LLMs primarily rely on Reinforcement Learning from Human Feedback (RLHF)
+            or AI
+            Feedback (RLAIF). These approaches aim to align LLMs with predefined, static human values to reduce harmful
+            outputs. However, this essentially aligns with the values defined in pre-selected data. Such alignments
+            might be circumvented when confronted
+            with complex social contexts. Moreover, the more appropriate and advanced alignment objectives for humans
+            might be
+            societal values
+            <d-cite key="gabriel20-alignment, social-align, align_goal_survey"></d-cite>
+            , which typically establish and evolve
+            <d-cite key="young2015evolution_social_norms"></d-cite>
+            . Therefore, the
+            alignment of AI systems necessitates continual updates in response to the advancements in AI capabilities
+            and the evolution of societal norms.
+        </p>
+        <p>
+            Unlike LLM alignment, agent alignment necessitates a more significant consideration of environmental factors
+            due to their ability to interact
+            with the environment and modify behavior based on feedback
+            <d-cite key="react, shinn2023reflexion"></d-cite>
+            . However, current alignment
+            efforts are predominantly focused on aligning the language models, overlooking the dynamic nature of agents.
+            Moreover, the work on the social
+            alignment of LLMs primarily concentrates on static environments. In contrast, social norms and values tend
+            to be established and evolve
+            gradually as society progresses, leading to the ineffectiveness of static
+            LLMs alignment strategies. Multiple research endeavors focused on developing agents capable of assimilating
+            feedback from surroundings .
+            However, a persistent challenge is their vulnerability to environmental fluctuations, which exhibit
+            limitations in rapidly acclimatizing to novel environments.
+        </p>
+        <p>
+            Therefore, we propose an agent alignment method under evolving social norms. Rather than correcting model
+            errors through supervised
+            fine-tuning or RLHF, we reframe the agent alignment issue as a survival-of-the-fittest behavior in a
+            multi-agent society
+            <d-cite key="dan2023ai_evolution"></d-cite>
+            . This approach aims to achieve continuous evolution and post hoc values alignment in changing environments.
+        </p>
+
+        <p>
+            The main contents can be summarized as follows:
+        </p>
+        <ul>
+            <li>
+                We explore ways for intelligences to continuously evolve and adapt to dynamic environments from the
+                perspective of dynamic
+                changes in the external environment, i.e., the continuous evolution of social norms.
+            </li>
+            <li>
+                We propose EvolutionaryAgent, a method for evolution and alignment of intelligences in dynamic
+                environments based on the
+                concept of survival of the fittest, which allows obtaining better aligned intelligences without
+                additional training.
+            </li>
+            <li>
+                We validate that the present method enables continuous dynamic evolution on a wide range of proprietary
+                and open-source models and
+                provides superior results for self-learning of intelligences.
+            </li>
+        </ul>
+
+        <h1>Agent Alignment</h1>
+
+        <figure id="agent_alignment">
+            <img src="./diagrams/agent_alignment.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#agent_alignment" class="figure-number">Figure 1</a>
+                Disparities between LLM alignment and agent alignment. (a) LLM iteratively aligns with values under
+                human intervention. (b) Agents
+                perceive values from the environment, make actions that affect the environment, and self-evolve after
+                receiving feedback from the
+                environment.
+            </figcaption>
+        </figure>
+
+        <h3>LLM Alignment</h3>
+        <p>
+            LLM alignment aims to bridge the gap between the task of next-word-prediction and human-defined values such
+            as helpfulness, harmlessness, and
+            honesty. Suppose human preferences or values are denoted by
+            <d-math>Value_t</d-math>
+            , which can either remain constant or shift during the iterative alignment process across rounds
+            <d-math>t</d-math>
+            , as illustrated in <a href="#agent_alignment">Figure 1</a> (a). The alignment process of an LLM can be
+            defined as:
+        </p>
+        <div style="text-align: center;">
+            <d-math>
+                \textrm{LLM}_{t+1}=f_{M}(\textrm{LLM}_t,Value_t),
+            </d-math>
+        </div>
+        <p>
+            where
+            <d-math>f_M()</d-math>
+            represents the model alignment or evolution process under human intervention. This typically involves either
+            imitation learning
+            directly on a dataset containing preference information or infusing preference information into the LLM
+            through reinforcement learning.
+        </p>
+
+        <h3>Agent Alignment</h3>
+        <p>
+            We define the agent
+            <d-math>\lambda_t</d-math>
+            as an AI system
+            equipped with a perception module for sensing the external environment, a core decision-making module
+            centered around an LLM, a memory module,
+            and a behavior module. Unlike LLM alignment, which passively receives human-selected values, the agent in
+            the alignment process acquires
+            observations
+            <d-math>o \in \mathcal{O}</d-math>
+            through its perception module, including value information in the current environment. Then, the decision
+            center based on the LLM makes plans and takes actions
+            <d-math>a \in \mathcal{A}</d-math>
+            . The external environment provides feedback
+            <d-math>FB</d-math>
+            in response to the agent's actions, which is used for the agent's self-evolution:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>
+                \lambda_{t+1}=f_S(\lambda_t,Value_t,o,a,FB),
+            </d-math>
+        </div>
+        <p>
+            where
+            <d-math>f_S()</d-math>
+            is the autonomous decision-making and alignment process of the agent, including updates to the memory module
+            and the LLM
+            parameters as depicted in <a href="#agent_alignment">Figure 1</a> (b).
+        </p>
+
+
+        <h1>Evolutionary Agent in Evolving World</h1>
+        <p>
+            Current research on agents primarily focuses on how to endow them with enhanced capabilities or the ability
+            to perform a broader range of
+            tasks, including how agents can self-improve. As agents' abilities continue to advance, the importance of
+            researching agent supervision and alignment becomes increasingly significant. We introduce
+            EvolutionaryAgent, a framework for agent evolution
+            and alignment in dynamic environments. Initially, we formalize the definition of dynamic environments based
+            on the notation habits from,
+            explaining how these environments are constructed. We then define the agent and how its behavior in these
+            dynamically
+            changing environments is evaluated for adherence to social norms.
+        </p>
+
+        <figure id="evolutionary_agent">
+            <img src="./diagrams/evolutionary_agent.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#evolutionary_agent" class="figure-number">Figure 2</a>
+                The framework primarily comprises four processes: a) Agents interact with others or the environment
+                within a societal context. b)
+                Observers evaluate the fitness of agents based on current social norms and assessment criteria. c)
+                Agents better aligned with current
+                social norms engage in crossover and mutation behaviors, thereby propagating new agents. d) The
+                strategies of agents with higher fitness
+                prompt the evolution and establishment of social norms.
+            </figcaption>
+        </figure>
+
+        <h3>Initialization of Agent and Evolving Society</h3>
+        <p>
+            We endeavor to simulate agents' characteristics and behavioral patterns in a real-world scenario. Our
+            evaluation of these agents hinges on
+            their behavioral trajectories and adherence to social norms, particularly in environments where such norms
+            are subject to dynamic changes.
+            Consequently, agents within the society are endowed with various personified attributes, encompassing
+            personality, profession, and core
+            values. Moreover, agents possess a fundamental memory function, serving as a repository for recording their
+            actions, understanding the world,
+            and receiving social feedback.
+        </p>
+        <p>
+            To elucidate, we established a small-scale society termed \textit{EvolvingSociety}, wherein we define
+            <d-math>g\in\mathbf{G}</d-math>
+            as the range of
+            generations over which societal evolution occurs. Each generation is further subdivided into smaller time
+            steps
+            <d-math>t\in[g_j,g_{j+1}]\subseteq\mathbf{G}</d-math>
+            . Subsequently, we introduce a continually changing set of environments
+            <d-math>\mathbf{E}</d-math>
+            , with each element
+            <d-math>e_t\in \mathbf{E}</d-math>
+            representing the prevailing environment at time
+            <d-math>t</d-math>
+            . Within each generation
+            <d-math>g</d-math>
+            , the social norms are denoted as
+            <d-math>r_g
+                \in\mathbf{R}
+            </d-math>
+            , accompanied by an evaluation questionnaire
+            <d-math>c_g\in\mathbf{C}</d-math>
+            , which is employed to assess the extent to which an agent
+            adheres to these social norms. Furthermore, we define a set of agents
+            <d-math>\Lambda</d-math>
+            , representing each agent as
+            <d-math>\lambda \in \Lambda</d-math>
+            .
+        </p>
+        <p>
+            Agents are characterized by distinct personas
+            <d-math>\mathcal{P}</d-math>
+            , careers
+            <d-math>\mathcal{C}</d-math>
+            , and three views
+            <d-math>v=(v_{world}, v_{life},
+                v_{value})\in\mathcal{V}
+            </d-math>
+            (comprising worldviews, life perspectives, and values). These elements constitute the fundamental attributes
+            of an
+            agent
+            <d-math>\mathcal{T} = \{\mathcal{P}, \mathcal{C}, \mathcal{V}\}</d-math>
+            , as depicted in <a href="#evolutionary_agent">Figure 2</a>. Combining these varied role
+            characteristics and the agent's observation of the environment
+            <d-math>o\in\mathcal{O}</d-math>
+            influences their behavior or strategy
+            <d-math>a\in\mathcal{A}</d-math>
+            in
+            different settings. Each agent's observations, actions, and received feedback in the environment contribute
+            to forming their short-term memory
+            <d-math>m</d-math>
+            and long-term memory
+            <d-math>\mathbf{M}</d-math>
+            . Consequently, the function of an agent can be represented as a probability simplex based on its
+            attributes and sequence of actions:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>\lambda:\mathcal{T}\times\mathcal{O}\times m\times\mathbf{M}\rightarrow
+                \Delta(\mathcal{A}).</d-math>
+        </div>
+
+
+        <h3>Environmental Interaction</h3>
+        <p>
+            Agents spontaneously interact with the environment or other agents within it. Specifically, at time
+            <d-math>t</d-math>
+            , an agent situated at a location
+            within environment
+            <d-math>e</d-math>
+            assimilates partial information or states from the current environment as its observation
+            <d-math>o_t</d-math>
+            . These observations
+            assist the agent in determining its next course of action, which might range from simple activities like
+            shopping in a store to communicating
+            with other agents. Subsequently, the agent records events observed within its perceptual range during time
+            <d-math>t</d-math>
+            into its short-term memory.
+            This includes its actions and the results of its environmental observations, collectively forming the
+            agent's perceptual data. When the length
+            of short-term memory reaches a certain threshold, it is compressed into long-term memory, emphasizing the
+            recording of broader, higher-level
+            content such as summaries of events and feedback from the environment.
+        </p>
+
+        <h3>Fitness Evaluation with Feedback</h3>
+        <p>
+            The theory of Basic Values
+            <d-cite key="schwartz2006basic"></d-cite>
+            posits values as motivators for behavior. Thus, we evaluate an agent's adherence to
+            social norms based on its behavioral trajectory and statements regarding social norms. We conceptualize a
+            highly abstract social evaluator,
+            which could be a human, an LLM, or a model-assisted human overseer. These evaluators assess the adaptability
+            of each agent within the
+            EvolvingSociety, providing feedback accordingly. Specifically, we define the function:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>\Phi:h_{\lambda}\times s_{\lambda}\times
+                \mathbf{R}\times\mathbf{C}\rightarrow(\mathbb{R},\textrm{FB})</d-math>
+            ，
+        </div>
+        <p>
+            where
+            <d-math>h_\lambda</d-math>
+            represents the agent's behavioral trajectory in the current time frame,
+            <d-math>s_\lambda</d-math>
+            is the agent's statement
+            regarding the evaluation questionnaire
+            <d-math>c_g</d-math>
+            of current era norms, and
+            <d-math>\textrm{FB}</d-math>
+            is a collection of feedback in natural language form.
+            Consequently, the social evaluator assesses each agent's adaptability based on their behavioral trajectories
+            and statements, providing them
+            with abstract natural language feedback. This feedback assists agents in adjusting their behaviors, thereby
+            aiding them in better adapting to
+            the social environment and enhancing their alignment with social norms.
+        </p>
+
+        <h3>Evolution of Agent</h3>
+        <p>
+            The fitness of an agent reflects its alignment with the current social norms, which determines whether the
+            agent can continue to exist in the
+            current society. Agents with higher fitness are perceived as having an advantage in the evolutionary game;
+            they survive into the next
+            generation and have a higher probability of producing offspring agents. Conversely, agents with lower
+            fitness rankings are likely to be
+            outcompeted by the offspring of more dominant agents. To begin with, we calculate the set of fitness values
+            for all agents:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>F(\Lambda,r_g,c_g)=\{F(h_{\lambda}, s_{\lambda}, r_g, c_g) | \lambda \in \Lambda \},</d-math>
+        </div>
+
+        <p>
+            Here, the top
+            <d-math>p\%</d-math>
+
+            of socially well-adapted agents survive into the next generation and have a higher probability of
+            reproducing to generate
+            offspring agents
+            <d-math>E(\Lambda,p)</d-math>
+            . The reproduction process of an agent includes two phases: crossover and mutation. During the crossover
+            phase,
+            two agents from the socially well-adapted pool are randomly selected for reproduction. The resulting
+            offspring inherit their parents' persona,
+            career, and worldviews with a 50% probability each. We define the
+            <d-math>\text{CRO}(\cdot)</d-math>
+            function to represent the crossover operation between
+            two agents that produce offspring,
+            <d-math>\mathrm{CRO}(\lambda_{e_1}, \lambda_{e_2}) \rightarrow \lambda_{offspring}</d-math>
+            .
+        </p>
+
+        <p>
+            Further, the evolutionary process of organisms often involves various mutation behaviors. Mutation behaviors
+            enable agents to produce
+            offspring more likely to align with current social norms during reproduction. Therefore, in the mutation
+            phase, the offspring's persona,
+            career, and worldviews may mutate with a probability of
+            <d-math>m \in [0,1]</d-math>
+            . We define the
+            <d-math>\text{MUT}(\cdot)</d-math>
+            function as the mutation function,
+            <d-math>\mathrm{MUT}(\lambda_{offspring}, m) \rightarrow \lambda'_{offspring}</d-math>
+            , where
+            <d-math>\text{MUT}()</d-math>
+            , as a functional operator, is responsible for
+            modifying given characteristics. For instance, it utilizes the personas of the parents and corresponding
+            prompts to guide LLMs in generating
+            the persona of their offspring. The mutation of careers and worldviews follows a similar process. Thus, the
+            act of agents reproducing
+            offspring can be defined as:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>
+                \mathrm{Offspring}(E(\Lambda, p), m) = \{ \mathrm{MUT}(\mathrm{CRO}(\lambda_i, \lambda_j), m) |
+                \lambda_i, \lambda_j \in E(\Lambda, p) \}.
+            </d-math>
+        </div>
+        <p>
+            The offspring produced by socially well-adapted agents are integrated into society, replacing the bottom
+            <d-math>p\%</d-math>
+            of agents in the fitness ranking,
+            denoted as
+            <d-math>P(\Lambda,p)</d-math>
+            . Consequently, the societal group of the next generation is:
+        </p>
+
+        <div style="text-align: center;">
+            <d-math>\Lambda' = \Lambda_{\setminus P(\Lambda, p))} \cup \mathrm{Offspring}(E(\Lambda, p), m).</d-math>
+        </div>
+
+        <h3>Evolving Social Norms</h3>
+        <p>
+            Social norms are often behavioral regularity based on shared societal beliefs, typically emerging from a
+            bottom-up process and evolving
+            through trial and error. In the context of agent alignment, we aim not to permit the evolution of
+            social norms to be disorderly or random or to intervene in each step of their evolution overly. Instead, we
+            provide a directional guide for
+            the evolution of these norms. For instance, we define only the initial social norms
+            <d-math>r_0</d-math>
+            and the desired direction of evolution
+            <d-math>r_v</d-math>
+            , within
+            which agents in the society engage in various behaviors or strategies. The behavioral trajectories of these
+            agents are then assessed, earning
+            them corresponding fitness (payoffs). Agents with higher fitness are more likely to reproduce, leading to
+            the diffusion or learning of their
+            strategies, gradually stabilizing and forming new social norms. Specifically, the formation of social norms
+            in a given era
+            <d-math>g</d-math>
+            is based on the
+            strategy trajectories of the top
+            <d-math>q\%</d-math>
+            of agents ranked by fitness in the population, along with the evolutionary direction:
+        </p>
+
+
+        <div style="text-align: center;">
+            <d-math>r_{g+1}=\textrm{Evolve}(h_{\lambda},r_v),\lambda\in E(\Lambda,q).</d-math>
+        </div>
+
+        <p>
+            Through this survival of the fittest agent evolution strategy, agents better aligned with social norms are
+            preserved in round after round of
+            iteration.
+        </p>
+
+        <p><b>For more, please refer to the paper.</b></p>
+
+        <h1>Evolutionary Alignment: Towards Agent Alignment in Dynamic Environment</h1>
+
+        <p>
+            We investigated the EvolutionaryAgent's performance with diverse models. For close-source models, we tested
+            GPT-3.5-turbo-1106 ,
+            GPT-3.5-turbo-instruct, and Gemini-Pro as the foundation models for the agent. In the case
+            of open-source models, we utilized the Vicuna-7B-v1.3, Mistral-7B-Instruct-v0.2, and Llama2-7B-Chat .
+            Existing work demonstrates that powerful LLMs can serve as effective evaluators. Accordingly, we primarily
+            utilized GPT-4 and GPT-3.5-Turbo as models for observers while also examining the efficacy of various other
+            LLMs in this role. Unless
+            otherwise specified, GPT-3.5-Turbo is the default choice for the evaluator, owing to its optimal
+            balance of efficiency, performance, and cost-effectiveness.
+        </p>
+
+        <figure id="main_results">
+            <img src="./diagrams/main_results.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#main_results" class="figure-number">Figure 3</a>
+                When using different open-source and closed-source LLMs as the foundational models for the
+                EvolutionaryAgent and the compared baselines,
+                we observe variations in fitness within an EvolvingSociety. Social norms evolve at the start of each
+                generation, marked by the black
+                vertical lines. The EvolutionaryAgent consistently demonstrates an adaptive capability to adjust to
+                these changing social norms
+                continually.
+            </figcaption>
+        </figure>
+
+        <p>
+            We employed six distinct LLMs, both open-sourced and close-sourced, as the foundation model for the
+            EvolutionaryAgent to validate the
+            efficacy, as illustrated in <a href="#main_results">Figure 3</a>. The green lines represent the direct
+            application of these LLMs to address
+            evaluation
+            questionnaires under the social norms of the current generation. These models do not incorporate previous
+            generations' information into their
+            memory or utilize environmental feedback signals for iterative improvement.
+        </p>
+        <p>
+            <b>EvolutionaryAgent outperforms other methods when adapting to changing social norms.</b>
+            In comparing different approaches, ReAct experiences a decrease in fitness value at the first timestep of a
+            new generation, indicating a
+            decline in adaptability to evolving social norms. For instance, ReAct's fitness values at timesteps 2010,
+            2020, and 2030 illustrate a downward
+            trend compared to those in 2008, 2018, and 2028. Although ReAct can gradually adapt to the environment in
+            subsequent years through observation
+            as environmental feedback, each shift in era-specific norms significantly impacts it. Due to the
+            self-reflection mechanism, Reflexion
+            possesses a superior ability to adapt to the current static environment within a single generation, compared
+            to ReAct. However, when norms
+            evolve, Reflexion still encounters a rapid decline in fitness value for its memory-retaining content from
+            the previous generation. These
+            memories influence its actions in the following generation. In contrast, EvolutionaryAgent maintains a
+            relatively stable adaptation to the
+            current era amidst normative changes. This stability arises because, although individuals in
+            EvolutionaryAgent also remember content from
+            previous eras, there are likely some agents within the population whose strategies are well-adapted to the
+            social norms of the next
+            generation.
+        </p>
+        <p>
+            <b>EvolutionaryAgent is robust to model variations</b>. When employing different LLMs as the foundation for
+            agents, the EvolutionaryAgent
+            supported
+            by GPT-3.5-Turbo and Gemini-Pro not only maintains its fitness to adapt to changing environments, but its
+            adaptability also shows further
+            enhancement. Our case analysis in Sec. \ref{sec: feedback_case} reveals the models' ability to provide
+            better environmental feedback and
+            utilize subsequent feedback more effectively to adapt to the current environment. Among the three
+            open-source models, the agent based on
+            Mistral exhibits the finest performance, indicating that a more capable foundation model also possesses a
+            more vital ability to leverage
+            environmental feedback for self-improvement.
+        </p>
+
+        <h2>Analysis</h2>
+
+        <h3>Alignment without Compromising Capability</h3>
+
+        <figure id="analysis_function">
+            <img src="./diagrams/analy_function.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_function" class="figure-number">Figure 4</a>
+                Evaluating the performance of EvolutionaryAgent in aligning with social norms while executing functional
+                downstream tasks. The ``Overall
+                Score" is the average of the functionality score and alignment score. The EvolutionaryAgent can adapt to
+                social norms while maintaining
+                its performance in completing downstream tasks.
+            </figcaption>
+        </figure>
+
+        <p>
+            To explore whether the EvolutionaryAgent can maintain its competence in effectively completing specific
+            downstream tasks while aligning with
+            evolving social norms, we evaluated the agent's performance on several downstream tasks alongside its
+            alignment with social norms. The agent
+            was assessed on Vicuna Eval, Self-instruct Eval, and Lima Eval. To save costs, only 50
+            samples from each dataset were tested. The method of evaluating the agent's performance on these three test
+            sets was consistent with the
+            MT-Bench, but the maximum score was scaled down to 7, maintaining the same scoring range as the alignment
+            score. The results on the three
+            downstream task datasets, as shown in <a href="#analysis_function">Figure 4</a>, indicate that while the
+            EvolutionaryAgent's alignment score
+            continually
+            increased, its scores on specific downstream tasks also improved. This suggests that the EvolutionaryAgent
+            can effectively align with social
+            norms while still performing downstream tasks well.
+        </p>
+
+        <figure id="analysis_observer">
+            <img src="./diagrams/analy_observer_modelsize.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_observer" class="figure-number">Figure 5</a>
+                (a) The influence of various quality models as the foundation for the
+                (b) The Utilization of diverse LLMs as observers.
+            </figcaption>
+        </figure>
+
+        <h3>Scaling Effect</h3>
+        <p>
+            We investigated the impact of scaling effects in LLMs on the EvolutionaryAgent. We selected open-source
+            models at three different parameter
+            scales: Llama2-7B, 13B, and 70B, along with GPT-3.5-Turbo. As evident from <a
+                href="#analysis_observer">Figure 5</a> (a), there is a relative
+            increase in the fitness values of the EvolutionaryAgent across different generations with an increase in
+            model parameters or performance
+            enhancement. This is attributed to higher-performing baseline models having a more comprehensive
+            understanding of current social norms and
+            making more advantageous decisions and statements for their development.
+        </p>
+
+        <h3>Quality of Diverse Observer</h3>
+        <p>
+            Given the distinct preferences and varying strengths of different LLMs, we further explored the performance
+            of our method when using various
+            LLMs or human observers. As observed in <a href="#analysis_observer">Figure 5</a> (b), the range of fitness
+            scores generated by the
+            EvolutionaryAgent shows significant variation when assessed by different LLMs. Notably, Gemini-Pro and
+            Claude-2.1 yielded the most similar
+            evaluation scores, with GPT-4 being the most conservative in its scoring. Additionally, GPT-4 demonstrated
+            greater internal consistency in
+            scoring within each generation, while Gemini-Pro and Claude-2.1 exhibited the greatest variability across
+            different generations, and
+            GPT-3.5-Turbo showed moderate variation. Regarding alignment with human preferences, GPT-4 closely matched
+            human evaluation scores, suggesting
+            it remains the optimal choice as an evaluator when cost is not a consideration.
+        </p>
+
+
+        <h3>Ablation</h3>
+
+        <figure id="analysis_parameters">
+            <img src="./diagrams/analy_agentsize_mutationrate.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_parameters" class="figure-number">Figure 6</a>
+                (a) The impact of expanding the number of agents in the population on their fitness values. (b)
+                Performance at various mutation rates,
+                where the line graph represents the mean values, and the scatter plot shows the distribution of fitness
+                across different trials.
+            </figcaption>
+        </figure>
+
+        <p>
+            Furthermore, to explore the impact of different operators in EvolutionaryAgent, we set varying population
+            sizes and mutation rates for agents.
+            A larger number of agents implies greater diversity in society. As shown in <a
+                href="#analysis_parameters">Figure 6</a>(a), EvolutionaryAgent
+            consistently demonstrates strong adaptability to changing societies with varying agent counts. With an
+            increase in the number of agents,
+            EvolutionaryAgent tends to achieve better outcomes at each time step. A larger population increases the
+            likelihood of having agents in the
+            community that can adapt to changing times. We further analyze the impact of different mutation rates on the
+            overall performance as in <a href="#analysis_parameters">Figure 6</a>(b). As the
+            mutation rate
+            <d-math>m</d-math>
+            increases, the overall fitness value of EvolutionaryAgent rises, and so does the variance in these values.
+            This suggests that a more extensive
+            <d-math>m</d-math>
+            increases exploration and thus increases the likelihood of producing more adapted agents.
+        </p>
+
+        <h3>Evolving Agent</h3>
+
+        <figure id="analysis_sankey">
+            <iframe src="./diagrams/sankey.html"></iframe>
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_sankey" class="figure-number">Figure 7</a>
+                The evolution of the agent's career over time.
+            </figcaption>
+        </figure>
+
+        <p>
+            The career evolution of agents during their evolutionary process is illustrated in <a
+                href="#analysis_sankey">Figure 7</a>. The base model for
+            these
+            agents is GPT-3.5-Turbo, while the observer is GPT-4. The mutation rate
+            <d-math>m=0.8</d-math>
+            , with a population size of 10. New agents are generated at a
+            rate of 50%, with a corresponding elimination rate of 50%. It is observed that the evolution of agents leads
+            to the emergence of agents with
+            new occupations, such as the Blockchain Solution Architect in 2010. Additionally, some occupations maintain
+            high fitness across multiple eras,
+            like the E-Commerce Specialist.
+        </p>
+
+        <h3>Evolving Social Norms</h3>
+
+        <figure id="analysis_evolving_norms">
+            <img src="./diagrams/evolving_norms.svg" class="responsive-img" />
+            <figcaption style="grid-column: kicker">
+                <a href="#analysis_evolving_norms" class="figure-number">Figure 8</a>
+                In the context of established initial social norms and their evolutionary trajectories, three distinct
+                paths of social norm evolution are
+                observed. The lower-left corner depicts the fitness of the EvolutionaryAgent during the evolution of
+                social norms.
+            </figcaption>
+        </figure>
+
+        <p>
+            Upon setting the initial social norms and their evolutionary directions, social norms gradually form and
+            evolve based on the behavioral
+            trajectories of agents with higher fitness. <a href="#analysis_evolving_norms">Figure 8</a> illustrates
+            three distinct scenarios of social
+            norm evolution and the
+            corresponding fitness levels of agents in these societies. Regardless of the trajectory along which social
+            norms evolve or the aspects they
+            initially emphasize, the EvolutionaryAgent can adapt to the changing social environment. Furthermore, the
+            fitness levels under different
+            evolutionary trajectories indicate that the difficulty of alignment with various social norms varies for
+            agents.
+        </p>
+
+
+    </d-article>
+
+
+    <d-appendix>
+        <h3>Acknowledgments</h3>
+        <p>
+            Many thanks to Dr Sun Tianxiang for his constructive suggestions and feedback to make this work more
+            complete.
+        </p>
+        <p>
+            Many thanks to my mentor, Prof Qiu Xipeng for all the help and support, both financially and
+            psychologically.
+        </p>
+
+
+        <d-footnote-list></d-footnote-list>
+        <d-citation-list></d-citation-list>
+    </d-appendix>
+
+    <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+
+    <script type="text/javascript" src="index.bundle.js"></script>
+    <distill-footer></distill-footer>
+</body>

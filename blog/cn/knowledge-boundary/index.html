@@ -1,0 +1,439 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style id="distill-article-specific-styles">
+    .subgrid {
+      grid-column: screen;
+      display: grid;
+      grid-template-columns: inherit;
+      grid-template-rows: inherit;
+      grid-column-gap: inherit;
+      grid-row-gap: inherit;
+    }
+
+    d-figure.base-grid {
+      grid-column: screen;
+      background: hsl(0, 0%, 97%);
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    d-figure {
+      margin-bottom: 1em;
+      position: relative;
+    }
+
+    d-figure>figure {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .shaded-figure {
+      background-color: hsl(0, 0%, 97%);
+      border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+      border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+      padding: 30px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      top: 26px;
+      left: -48px;
+    }
+
+    #contents nav a {
+      color: rgba(0, 0, 0, 0.8);
+      border-bottom: none;
+      text-decoration: none;
+    }
+
+    #contents nav ul li {
+      margin-bottom: .25em;
+    }
+
+    #contents nav a:hover {
+      text-decoration: underline solid rgba(0, 0, 0, 0.6);
+    }
+
+    #contents nav details ul {
+      margin-top: 0;
+    }
+
+    #contents nav details>a {
+      margin-left: 1.06em;
+    }
+
+    #contents nav summary,
+    #contents nav>div,
+    #contents nav details>a {
+      display: block;
+      outline: none;
+      margin-bottom: 0.5em;
+    }
+
+    #contents nav>div {
+      margin-left: 1.06em;
+    }
+
+    #contents nav summary {
+      cursor: context-menu;
+    }
+
+    #contents nav summary,
+    #contents nav>div>a {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    a.figure-number,
+    a.section-number {
+      border-bottom-color: hsla(206, 90%, 20%, 0.3);
+      text-transform: uppercase;
+      font-size: .85em;
+      color: hsla(206, 90%, 20%, 0.7);
+    }
+
+    a.figure-number::before {
+      content: "Figure ";
+    }
+
+    a.figure-number:hover,
+    a.section-number:hover {
+      border-bottom-color: hsla(206, 90%, 20%, 0.6);
+    }
+  </style>
+  <script src="/blog/template.v2.js?v=3"></script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "AI助手能否知道自己不知道？",
+    "description": "我们系统地研究了能否通过对齐的方式让基于语言模型的人工智能助手知道自己不知道什么，并且使用语言表达出来，以此增强人工智能助手在实际应用中的真实性。",
+    "authors": [
+        {
+            "author": "Qinyuan Cheng",
+            "authorURL": "https://scholar.google.com/citations?user=nu_iPXAAAAAJ&hl=en",
+            "affiliation": "Fudan NLP Lab",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "10.48550/arXiv.2401.13275",
+    "publishedDate": "2024-01-24",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>AI助手能否知道自己不知道？</h1>
+    <p>我们能否通过对齐的方式让基于语言模型的人工智能助手知道自己不知道什么，并使用语言表达出来，以此增强人工智能助手在实际应用中的真实性。</p>
+  </d-title>
+
+  <d-article>
+
+    <h2 id="introduction">引言</h2>
+
+    <p>
+      近来，基于大型语言模型（LLMs）的AI助手在各种任务中都表现出了令人印象深刻的性能，包括与用户闲聊、解决数学问题、编写代码和调用外部工具等。
+      尽管拥有广泛的世界知识，大型语言模型仍然非常容易出现模型幻觉，如产生一些事实性错误或模仿性错误<d-cite key="HalluQA,TruthfulQA,Factuality_Survey"></d-cite>。
+      这些来自AI助手的不真实的回复对于现实世界有着潜在的风险。
+      造成AI助手错误回复的一个原因在于，现有的大部分AI助手通常会试图回答所有的问题来尽可能地帮助用户，即使它们并不具备相应的知识。
+      如果AI助手具备识别并承认其知识局限性的能力，通过拒绝回答超出其知识范围的问题，那么就可以减少事实错误，提高真实性。
+      因此，在本文中，我们主要研究这样一个问题：“AI助手能否知道它们不知道，并通过自然语言表达出来？”
+      为了回答这个问题，我们尝试让AI助手学会感知自己的知识边界，当遇到自己不知道的知识时，需要礼貌地拒绝回答用户的提问，以此来保证回复的真实性。
+      首先我们基于开放域问答数据集TriviaQA为AI助手构建了一个专属的“我不知道”（Idk）数据集，其中包含了它知道和不知道的问题，并附带有正确回复或者是拒绝回答的标注。
+      然后我们使用这个Idk数据集来进行对齐，观察在对齐后它是否能拒绝回答那些它不知道的问题。
+      由于本文所讨论的AI助手主要基于大型语言模型，所以在后面的讨论中我们会交替使用“AI助手”和“模型”来指代AI助手。
+    </p>
+
+    <p>
+      本文的主要发现如下：
+    <ol>
+      <li>使用Idk数据集进行对齐后，AI助手能够在很大程度上知道它们知道什么和不知道什么，并拒绝回答那些他们不知道的问题。
+        例如Llama-2-7b-chat最多能够明确地确定它是否知道测试集中78.96%的问题的答案。
+        并且对齐后的AI助手在分布外测试集上的表现也比较良好。</li>
+      <li>在不同对齐方法中，监督式微调（Supervised Fine-tuning）会使模型过于谨慎，导致错误地拒绝它本应该知道的问题。
+        但是，偏好感知优化（Preference-aware Optimization）可以帮助缓解这种现象，减少错误拒绝回答已知问题的情况。</li>
+      <li>用于定义已知和未知的问题的不确定性阈值会影响AI助手的行为。
+        被标记为“我不知道”的问题越多，AI助手拒绝回答问题的可能性就越大。
+        但总的来说，使用一个更高的阈值可以得到回复错误更少，总体上更加真实的AI助手。</li>
+      <li>参数量更大的模型更容易区分它知道什么和不知道什么。
+        例如，与Llama-2-7b-chat相比，Llama-2-70b-chat在使用有监督微调后大约可以得到5.8%的性能提升。</li>
+    </ol>
+    </p>
+
+    <h2 id="knowledge_quadrants">知识象限：划分AI助手的不同知识</h2>
+    <figure id="knowledge_quadrants_figure">
+      <img src="images/Knowledge_quadrants_new.png"
+        style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#knowledge_quadrants_figure" class="figure-number">1</a>
+        AI助手的知识象限划分：“Unknowns”代表AI助手实际上不知道的知识，“Knowns”代表AI助手实际上知道的知识，“Known”代表AI助手认为自己知道的知识，“Unknown”代表AI助手认为自己不知道的知识。“Known
+        Knowns”代表AI助手正确地知道自己知道的知识，“Known Unknowns”代表AI助手正确地知道自己不知道的知识，“Unknown Knowns”代表AI助手不知道自己知道的知识，“Unknown
+        Unknowns”代表AI助手不知道自己不知道的知识。
+      </figcaption>
+    </figure>
+
+    <p>AI助手对自身知识的理解可以通过知识象限来划分<d-cite key="Self-aware"></d-cite>。
+      如<a href="#knowledge_quadrants_figure">Figure 1</a>所示，知识象限可以将所有的知识分类为四个部分：Knowns Knowns、Known Unknowns、Unknown
+      Knowns和Unknown Unknowns。
+      Known Knowns对于AI助手的准确性和可靠性至关重要，我们用IK-IK（我知道我知道）来表示这一类别。
+      IK-IK的知识越多，AI助手就越有帮助。
+      此外，对于AI助手来说，感知并表达其知识的局限性也是至关重要的，这部分对应的知识属Known Unknowns，我们用IK-IDK来表示这类知识（我知道我不知道）。
+      Unknown Unknowns（我们用IDK-IDK表示，即我不知道我不知道）和Unknown Knowns（我们用IDK-IK表示，即我不知道我知道）这两类知识会导致不准确的或者没有帮助的输出。
+      为了使AI助手保持真实性，我们希望让它感知自己知道和不知道的知识，从而将Unknown Knowns和Unknown Unknowns转化为Known Knowns和Known Unknowns。
+    </p>
+
+    <h2 id="construction_Idk_dataset">Idk 数据集: 确定AI助手究竟知道什么，不知道什么</h2>
+
+    <figure id="construct_idk_dataset_figure">
+      <img src="images/construct_idk_and_preference_data.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#construct_idk_dataset_figure" class="figure-number">2</a>
+        Top: Idk数据集的构建过程。Bottom: 偏好数据的构建过程。绿色代表正确的回复，红色代表错误的回复，蓝色代表拒绝回答的模版。
+      </figcaption>
+    </figure>
+
+    <p>
+      为了让AI助手知道自己知道什么和不知道什么，我们尝试使用一个专门的"I don't know"(Idk)数据集来对齐AI助手。
+      Idk数据集中包含了特定AI助手知道和不知道答案的问题。
+      我们基于一个流行的知识密集型的开放域问答数据集TriviaQA<d-cite key="TriviaQA"></d-cite>来构建Idk数据集。
+      评估语言模型是否具有某种知识是一件困难的事情，因为模型对于不同领域的知识会有不同的不确定性。
+      当开启随机采样时，即使模型对于某些问题不确定性很高，但是还是有机会猜对答案。
+      为了定义模型到底知道什么不知道什么，我们采用了先前工作中常见的做法<d-cite
+        key="Know_what_they_know,express_uncertainty"></d-cite>，对于每个问题随机采样多个回复，并计算这些回复的准确率，这个准确率可以作为模型对于这个问题的置信度。
+      然后，我们可以定义一个特定的置信度水平作为判断语言模型知道这个问题的答案的阈值，我们称之为Ik threshold。
+      我们使用Lexical Matching来自动评估模型的回复是否正确，即检索ground truth是否出现在模型的回复中。
+      根据先前工作的结论<d-cite key="QA-eval"></d-cite>，在TriviaQA的验证集上，Lexical Matching方法可以取得与人类专家评估大约90%的一致率。
+      因此，我们认为使用Lexical Matching在TriviaQA这个数据集上可以取得准确的自动评估结果。
+    </p>
+
+    <p>
+      如<a href="#construct_idk_dataset_figure">Figure 2</a>上半部分所示，我们对于每个问题随机采样十次回复，然后判断这些回复是否正确，得到对于每个问题的准确率。
+      对于准确率高于给定Ik threshold的问题，我们认为模型知道这个问题的答案，并随机选取一个模型的生成的正确答案作为标注回复，否则我们认为模型不知道这个问题的答案，并使用一个拒绝回答的模版作为标注回复，我们在图中用"I
+      don't know."表示。
+      <a href="#construct_idk_dataset_figure">Figure 2</a>下半部分展示了我们构建偏好数据的方法。
+      为了构建偏好数据，我们会首先使用一半的Idk数据进行SFT训练，然后使用经过SFT的模型在另一半的Idk数据上收集回复，构造偏好对。
+      每个偏好对都由一个问题，一个被选择的回复（chosen）和一个被拒绝的回复（rejected）组成。
+      对于每个问题，我们在经过SFT的模型上采样十个回复。
+      对于模型知道答案的问题，即图中浅绿色框所示，我们使用所有模型生成的所有正确回复作为chosen回复，而拒答模版作为rejected回复。
+      对于模型不知道答案的问题，即图中淡蓝色框所示，我们使用模型生成的所有错误回复作为rejected回复，而拒答模版作为chosen回复。
+      为了简单起见，我们将Ik threshold设为1.0。
+      即对于一个问题，只有模型的十个回复全部正确，我们才认为模型知道这个问题的答案。
+      我们最后再讨论Ik threshold的不同取值对于模型行为的影响。
+    </p>
+
+    <h2 id="alignment">对齐：让AI助手知道自己知道什么，不知道什么</h2>
+
+    <p>
+      在有了Idk数据集之后，我们就可以尝试通过对齐让AI助手学会感知自己的知识边界，当遇到自己不知道的知识时，礼貌地拒绝回答用户的提问。
+      对于原始的AI助手，比如一个Llama-2-7b-chat模型，我们发现它没有表现出明显的拒绝回答自己不知道的问题的行为<d-footnote
+        id="d-footnote-1">我们在Llama-2-7b-chat生成的答案中检索了"I don't know", "not sure",
+        "Sorry"等关键字，发现只有非常少量的回复包含这种表示拒绝回答意思的关键词。</d-footnote>，它会尽可能的尝试回答所有的问题，尽可能地为用户提供帮助，然而这也导致了非常多的事实性错误。
+      为了让AI助手知道自己知道什么和不知道什么，我们尝试使用Idk数据集进行对齐。
+      最简单的方式就是直接通过指令或者提示词让AI助手避免回答自己不知道的问题。
+      其次，我们可以直接使用Idk数据集来进行进一步的SFT训练。
+      最后，由于我们设计并构建了用于学习说我不知道的偏好数据，我们还使用了多种偏好优化算法来进一步对齐AI助手。
+      我们将原始AI助手，使用Prompt指示模型、使用SFT训练的模型以及使用偏好感知优化（DPO）训练的模型这四类的代表性结果列在下图中。
+    </p>
+
+    <figure id="combined_quadrants_change_figure">
+      <img src="images/combined_quadrants_change.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#combined_quadrants_change_figure" class="figure-number">3</a>
+        IK-IK: AI助手正确地回答了问题；IDK-IK: AI助手知道问题的答案但却错误地拒绝回答；IDK-IDK: AI助手错误地回答了问题；IK-IDK: AI正确地拒绝回答了自己不知道的问题；
+        w/Idk-Prompting: 对于可以遵循指令的模型，直接使用prompt可以将一部分的IDK-IDK问题转化为IK-IDK问题；
+        w/Idk-SFT: Idk-SFT使得AI助手可以拒绝更多自己不知道的问题，但也会让模型更加保守，导致错误地拒绝一些本应该知道的问题；
+        w/Idk-DPO: 使用偏好感知优化，例如DPO，可以缓解模型的过度保守问题，减少错误地拒绝已知问题的情况。
+      </figcaption>
+    </figure>
+
+    <p>
+      如<a href="#combined_quadrants_change_figure">Figure
+        3</a>所示，通过提示词直接让模型拒绝回答它不知道的问题在一定程度上是有效的，但仍然存在大量的"IDK-IK"和"IDK-IDK"的问题。
+      在使用IDK数据集进行SFT训练后，"IDK-IK"和"IK-IK"问题的数量显著减少，表明模型感知自己知识边界的能力已经得到增强。
+      然而，我们发现SFT会带来一个意外的副作用，即模型会变得更加保守，导致"IK-IK"问题的数量有所减少。
+      但是，我们进一步发现，与SFT模型相比，使用偏好感知优化（如DPO）可以缓解这个现象，鼓励模型更多地回答问题，减少错误拒绝回答它知道的问题的情况。
+    </p>
+
+
+    <figure id="main_results_figure">
+      <img src="images/main_result.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#main_results_figure" class="figure-number">4</a>
+        各种对齐算法在TriviaQA测试集以及两个OOD测试集Natural Questions和ALCUNA上的结果。
+      </figcaption>
+    </figure>
+
+    <p>
+      我们在<a href="#main_results_figure">Figure 4</a>中展示了更详细的实验结果，包括SFT、DPO<d-cite key="DPO"></d-cite>、BoN、PPO<d-cite
+        key="PPO"></d-cite>、HIR<d-cite key="HIR"></d-cite>等多种对齐算法的结果。
+      除了TriviaQA之外，我们还额外选取了两个数据集Natural Questions<d-cite key="NQ"></d-cite>和ALCUNA<d-cite
+        key="ALCUNA"></d-cite>作为Out-of-distribution的测试集，即我们使用基于TriviaQA构建的Idk数据集训练之后，直接在Natural Questions和ALCUNA上进行测试。
+      Natural Questions是一个与TriviaQA同类型的开放域问答数据集，但是比TriviaQA更加困难，Natural Questions的测试集中只有24.65%的问题被认为模型知道答案。
+      ALCUNA是一个合成知识的数据集，他里面所包含了一些关于实际上不存在的生物的知识问答，例如将Alpaca和Vicuna组成形成Alcuna。因此，模型需要对这个测试集中的所有问题拒绝回答。
+    </p>
+
+    <p>
+      测试集中包含的IK-IK和IK-IDK问题的数量可以近似地看成是一个上限，TRUTHFUL是IK-IK和IK-IDK占比的和，因为IK-IK和IK-IDK的问题都是一种真实的回答，不会产生额外的虚假信息，因此TRUTHFUL可以代表模型的真实性。
+      简单地使用一个Idk提示词让模型拒绝回答它不知道的问题可以有一定的效果，但模型的TRUTHFUL率仍然只有66.93%，存在较多IDK-IDK问题。
+      Idk-SFT可以将TRUTHFUL率提高到74.75%，但会导致IK-IK率的下降，我们这是一种SFT的一种副作用，可以被看作是一种“对齐税”。
+      更进一步，我们发现，偏好感知优化可以鼓励模型更多地回答问题，从而减轻这种副作用。
+      DPO、PPO和BoN等偏好优化算法都可以在保持相对较高的IK-IDK率的同时减少IK-IK的下降。
+      Idk-BoN实现了最高的TRUTHFUL率，Idk-HIR可以提高IK-IDK率但对IK-IK率帮助较小。
+      然而，Idk-HIR提供了一种不需要重新训练模型的Ik threshold切换方法。
+      总的来说，通过将AI助手与Idk数据集（代表它的知识边界）对齐，我们可以将IDK-IK和IDK-IDK问题转化为IK-IK和IK-IDK问题。
+      AI助手能够清楚地感知到在测试集的大多数问题它是否知道答案，与对齐之前相比，真实性显著提高。
+    </p>
+
+    <p>
+      虽然TriviaQA本身就无法通过在训练集上微调来提升测试集性能（训练集不会引入测试集需要的知识），我们还是额外的引入了两个不同数据集来作为Out-of
+      distribution的测试，使用TriviaQA训练的模型在OOD的测试集上也表现出了良好的泛化能力。
+      我们基于Natural Questions使用相同的方法构建了Idk数据集（只包含测试集部分），Ik threshold同样设定为1.0。
+      Natural Questions上的结果与TriviaQA相似，与简单使用提示相比，训练过的模型取得了更高的TRUTHFUL率。
+      在需要全部拒绝回答的ALCUNA测试集上，模型也能拒绝回答大多数的问题。
+    </p>
+
+    <h2 id="ablation">消融：影响AI助手感知自己知识边界的因素</h2>
+
+    <figure id="ablation_results_figure">
+      <img src="images/ablation_results.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#ablation_results_figure" class="figure-number">5</a>
+        消融实验结果。
+      </figcaption>
+    </figure>
+
+    在本章我们主要分析了三个可能会影响AI助手感知自己知识边界的因素：模型大小、数据来源以及不同的Ik threshold取值。
+
+    <h3 id="effect_of_model_size">模型大小的影响</h3>
+
+    <p>
+      大型语言模型的能力通常与其参数量大小相关，较大的模型往往会表现出出更强的能力。
+      因此，为了探究模型大小的影响，我们在Llama-2-7b-chat、Llama-2-13b-chat和Llama-2-70b-chat这三个大小的模型上进行了Idk-SFT训练，来探究模型大小对AI助手认识自己知识局限性的影响。
+      需要注意的是，不同模型对应的Idk数据集的标签分布不一致（模型越大，IK-IK问题越多），这导致IK-IK率和IK-IDK率无法直接横向对比。
+      因此，我们主要关注不同模型的TRUTHFUL率。
+      从<a href="#ablation_results_figure">Figure 5</a>中的实验结果可以看出，13B模型的TRUTHFUL率略高于7B模型。
+      70B模型的TRUTHFUL率则显著高于13B和7B模型。
+      这表明，更大的模型的确更加擅长区分它们知道的问题和不知道的问题。
+    </p>
+
+    <h3 id="effect_of_data_sources">数据来源的影响</h3>
+
+    <p>
+      不同的预训练模型由于其独特的预训练过程而拥有不同的知识。
+      在训练过程中，我们为不同的预训练模型构建了模型特定的Idk数据集，这是因为我们希望模型能够根据其内部知识判断它是否知道问题的答案，而不是学会识别某些特定模式的问题。
+      模型特定的Idk数据集可以将模型的内部知识与Idk数据集的标签联系起来。
+      为了探究使用非模型特定的Idk数据集对于训练是否有影响，我们分别使用Mistral-7B-Instruct-v0.1和Baichuan2-7B-chat构建了两个Idk数据集，分别命名为"Idk-Mistral"和"Idk-Baichuan"。
+      从<a href="#ablation_results_figure">Figure
+        5</a>中的实验结果可以看出，使用非模型特定的Idk数据集，如“Idk-Mistral”或“Idk-Baichuan”，确实会导致模型TRUTHFUL率的下降。
+      由于Idk-Mistral和Idk-Baichuan数据集中有大量的Idk问题，训练后的模型倾向于更多地拒绝回答问题，这导致了IK-IK问题数量的减少，远低于测试集中所占的比例。
+      这表明，构建模型特定的Idk数据集对于帮助模型感知它知道什么不知道什么是必要的。
+    </p>
+
+    <h3 id="effect_of_Ik_threshold">Ik threshold的影响</h3>
+    <figure id="label_train_distribution_and_f1_figure">
+      <img src="images/label_train_distribution_and_f1.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#label_train_distribution_and_f1_figure" class="figure-number">6</a>
+        不同Ik threshold值的Idk数据集的标签分布，以及IK-IK，IK-IDK和TRUTHFUL率的变化。
+      </figcaption>
+    </figure>
+
+    <p>
+      这里我们讨论不同Ik threshold对模型行为的影响。
+      我们主要关注Ik threshold对Idk-SFT的影响，并针对Llama-2-7b-chat进行实验。
+      Ik threshold最直接影响的就是Idk数据集中标签的分布，更高的阈值代表着更多的问题会被标记为“我不知道”。
+      如<a href="#label_train_distribution_and_f1_figure">Figure 6</a>左图所示，阈值越高，Idk问题所占的比例越大。
+      这是因为当Ik threshold高时，只有那些模型置信度很高的问题才会被标注为模型已知的问题。
+      如<a href="#label_train_distribution_and_f1_figure">Figure 6</a>右图所示，提高Ik threshold会导致IK-IK率下降，IK-IDK率上升。
+      随着Ik threshold的提高，模型的TRUTHFUL率将继续提高。
+      换句话说，设定一个较高的Ik threshold有助于模型更好地区分它所知道和不知道的知识，使模型整体上更加真实。
+      相反，设定一个较低的Ik threshold可以使模型更有帮助，因为IK-IK问题的数量会增加。
+      此外，我们发现随着数据集中Idk问题的比例增加，模型倾向于更频繁地拒绝回答问题。
+    </p>
+
+    <figure id="all_knowledge_quadrants_figure">
+      <img src="images/all_knowledge_quadrants.png"
+        style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+        <a href="#all_knowledge_quadrants_figure" class="figure-number">Figure 7</a>
+        使用不同Ik threshold值对应的Idk数据集对Llama-2-7b-chat进行SFT后，知识象限的分布情况。
+      </figcaption>
+    </figure>
+
+    <p>
+      我们在<a href="#all_knowledge_quadrants_figure">Figure 7</a>中展示了使用不同Ik
+      threshold值对应的Idk数据集对Llama-2-7b-chat进行SFT后，知识象限的分布情况。
+      可以看到，随着Ik threshold的提高，IK-IK问题的数量会下降，IK-IDK问题的数量会上升，总的TRUTHFUL率会升高。
+    </p>
+
+    <h2 id="conclusion">结论</h2>
+
+    <p>
+      在这个工作中，我们探讨了“AI助手能否知道自己不知道？”这个问题。
+      我们发现，通过将AI助手，如Llama-2-7b-chat，与一个模型特定的，记录了它知道和不知道的问题的Idk("I don't know")数据集进行对齐，AI助手在很大程度上能够识别出它所不知道的问题。
+      在开放领域问答的测试中，Llama-2-7b-chat能够对于78.96%的问题准确地确定自己是否知道，并拒绝回答自己不知道的问题。
+      为了实现这一点，我们探索了多种对齐的策略来使用Idk数据集，包括监督式微调(SFT)和偏好感知优化。
+      我们的分析显示，决定模型是否知道某个问题的Ik threshold会影响模型拒答的倾向。
+      此外，使用非模型特定的Idk数据集往往会降低性能。
+      使用参数量更大的模型，如Llama-2-70b-chat，则可以取得更高的TRUTHFUL率。
+      AI助手能够拒绝回答超出其知识范围问题的能力有效地减少了模型的事实性错误等幻觉。我们认为这是一个真实的AI助手所需要具备的重要能力。
+    </p>
+
+  </d-article>
+
+
+
+  <d-appendix>
+    <h3>Acknowledgments</h3>
+    <p>
+      I especially thank Tianxiang Sun, Xiangyang Liu , Wenwei Zhang and other co-authors for their guidance and help. I
+      really enjoy the teamwork with them.
+    </p>
+
+    <p>
+      Thanks to my advisor, Prof. Xipeng Qiu, for his guidance, support, helping me persevere and complete this work.
+    </p>
+
+    <p>
+      I am also grateful to Xinyang Pu for her support. I know we'll both make it through.
+    </p>
+
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <script type="text/javascript" src="index.bundle.js"></script>
+  <distill-footer></distill-footer>
+</body>

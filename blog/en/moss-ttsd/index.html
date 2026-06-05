@@ -1,0 +1,1034 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <style id="distill-article-specific-styles">
+    .subgrid {
+  grid-column: screen; 
+  display: grid; 
+  grid-template-columns: inherit;
+  grid-template-rows: inherit;
+  grid-column-gap: inherit;
+  grid-row-gap: inherit;
+}
+
+d-figure.base-grid {
+  grid-column: screen;
+  background: hsl(0, 0%, 97%);
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+d-figure {
+  margin-bottom: 1em;
+  position: relative;
+}
+
+d-figure > figure {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.shaded-figure {
+  background-color: hsl(0, 0%, 97%);
+  border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+  border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+  padding: 30px 0;
+}
+
+.pointer {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 26px;
+  left: -48px;
+}
+
+#contents nav a {
+  color: rgba(0, 0, 0, 0.8);
+  border-bottom: none;
+  text-decoration: none;
+}
+
+#contents nav ul li {
+  margin-bottom: .25em;
+}
+
+#contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6);
+}
+
+#contents nav details ul {
+  margin-top: 0;
+}
+
+#contents nav details > a {
+  margin-left: 1.06em;
+}
+
+#contents nav summary,
+#contents nav > div,
+#contents nav details > a {
+  display: block;
+  outline: none;
+  margin-bottom: 0.5em;
+}
+
+#contents nav > div {
+  margin-left: 1.06em;
+}
+
+#contents nav summary {
+  cursor: context-menu;
+}
+
+#contents nav summary,
+#contents nav > div > a {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+a.figure-number,
+a.section-number {
+  border-bottom-color: hsla(206, 90%, 20%, 0.3);
+  text-transform: uppercase;
+  font-size: .85em;
+  color: hsla(206, 90%, 20%, 0.7);
+}
+a.figure-number::before {
+  content: "Figure ";
+}
+a.figure-number:hover,
+a.section-number:hover {
+  border-bottom-color: hsla(206, 90%, 20%, 0.6);
+}
+
+/* 更美观的高亮行样式 */
+.highlight-row {
+  background: linear-gradient(90deg, #fceabb 0%, #e8d9f1 50%, #a3cef1 100%);
+  /* color: #5a3e85; */
+  /* color: #000000; */
+  font-weight: normal;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Add styles for the full-width container */
+d-figure.full-width {
+  grid-column: screen;
+  /* background-color: hsl(0, 0%, 97%);  */
+}
+
+.table-container {
+  overflow-x: auto;
+  text-align: center;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+
+.demo-table {
+  display: inline-block;
+  /* min-width: 900px; */
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  text-align: left;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: auto;
+  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); */
+}
+
+.demo-table th,
+.demo-table td {
+  padding: 0.5rem 0.5rem 0.5rem 0.1rem !important;
+  /* padding-top: 0.5rem; 
+  padding-bottom: 0.2rem; */
+  /* padding: 0.5rem; */
+  border-bottom: 1px solid #e9ecef;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.demo-table th {
+  font-weight: 600;
+  color: #343a40;
+  text-align: center; /* Center the header text */
+}
+
+.demo-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.demo-table .topic-cell {
+  font-weight: 500;
+  position: relative;
+  text-align: left;
+}
+
+
+.topic-trigger {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: #209cee;
+}
+
+.tooltip-content {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 320px;
+  text-align: left;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 12px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #2c3e50 transparent transparent transparent;
+}
+
+.topic-cell:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-content p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.tooltip-content p:last-child {
+  margin-bottom: 0;
+}
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modal = document.getElementById('script-modal');
+      var modalText = document.getElementById('script-modal-text');
+      var closeBtn = document.getElementById('script-modal-close');
+      var triggers = document.querySelectorAll('.topic-trigger');
+      triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          var scriptContent = trigger.getAttribute('data-script');
+          modalText.innerHTML = scriptContent;
+          modal.style.display = 'flex';
+        });
+      });
+      closeBtn.onclick = function() {
+        modal.style.display = 'none';
+      };
+      modal.onclick = function(e) {
+        if (e.target === modal) modal.style.display = 'none';
+      };
+    });
+    </script>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=3"><link rel="stylesheet" href="/blog/blog-chrome.css?v=4"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+
+<body>
+  
+  <d-front-matter>
+    <script type="text/json">
+      {
+    "title": "MOSS-TTSD: Text to Spoken Dialogue Generation",
+    "description": "MOSS-TTSD is a spoken dialogue generation model that enables expressive dialogue speech synthesis in both Chinese and English, supporting zero-shot multi-speaker voice cloning, voice event control, and long-form speech generation",
+    "authors": [
+        {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+        }
+    ],
+    "doi": "",
+    "publishedDate": "2025-06-20",
+    "katex": {
+        "delimiters": [
+            {
+                "left": "$",
+                "right": "$",
+                "display": false
+            },
+            {
+                "left": "$$",
+                "right": "$$",
+                "display": true
+            }
+        ]
+    }
+}
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>MOSS-TTSD: Text to Spoken Dialogue Generation</h1>
+    <p>MOSS-TTSD is a spoken dialogue generation model that enables expressive dialogue speech synthesis in both Chinese and English, supporting zero-shot multi-speaker voice cloning, voice event control, and long-form speech generation.</p>
+  </d-title>
+
+  <d-article>
+
+    <p>
+      Speech serves as a crucial interface for both human-to-human and human-machine interactions. Natural prosody, high expressiveness, and human-like speech are essential capabilities for strong artificial intelligence.
+      However, in real-world scenarios, complex contexts impose different requirements on speech characteristics.
+      Typically, speech properties such as prosody and style vary across different contexts.
+      Conversational speech represents one of the most common scenarios in the real world, with many familiar audio contents existing in dialogue form, such as podcasts, interviews, sports commentary, news reports, and e-commerce live streaming.
+      In conversations, the acoustic characteristics of individual speaker voices need to reference the entire dialogue history and specific conversational context, which poses new requirements for the modeling capabilities of generative models.
+      While current TTS models have achieved significant progress in single-sentence speech generation, they still cannot synthesize high-quality conversational speech due to the lack of overall dialogue context.
+    </p>
+
+    <p>
+      To address this problem, we build a conversational speech synthesis model called <strong>MOSS-TTSD (Text to Spoken Dialogue)</strong>, which can directly generate high-quality conversational speech from multi-speaker dialogue text input, accurately modeling characteristics such as prosody and intonation in conversations.
+      MOSS-TTSD is based on the Qwen3-1.7B-base model, employing discrete speech sequence modeling methods. It trains on approximately one million hours of single-speaker speech data and 400,000 hours of conversational speech data, supporting bilingual speech synthesis in both Chinese and English.
+      Benefiting from low bitrate codec and efficient data processing pipelines, MOSS-TTSD trains on massive real-world data, achieving industry-leading levels in speech naturalness and expressiveness. It supports dual-speaker voice cloning and long-form speech generation.
+    </p>
+
+    <p>
+      The model weights, inference code, and API interfaces for MOSS-TTSD-V0 are all open source and support commercial use: <a href="https://github.com/OpenMOSS/MOSS-TTSD">https://github.com/OpenMOSS/MOSS-TTSD</a>
+    </p>
+
+    <p>
+      Welcome to try it out!
+    </p>
+    
+    <h2 id="overview">Model Overview</h2>
+
+    <figure id="model_overview_figure">
+      <img src="images/model_overview.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+          <a href="#model_overview_figure" class="figure-number">1</a>
+          Model overview: The model is trained based on Qwen3-1.7B-base, uses an 8-layer RVQ codebook for speech discretization, employs autoregressive modeling with Delay Pattern for speech token generation, and finally uses the Tokenizer's decoder to reconstruct speech from speech tokens.
+      </figcaption>
+      </figure>
+
+    <p>
+    MOSS-TTSD uses fully discrete speech generation. We train an 8-layer RVQ audio codec: XY-Tokenizer, to quantize the original audio.
+    XY-Tokenizer can simultaneously encode the semantic and acoustic information of speech and has a low bitrate (1kbps), which allows large language models (LLMs) to effectively learn audio sequences and model detailed acoustic features.
+    In sequence modeling, inspired by MusicGen<d-cite key="MusicGen"></d-cite> and VOICECRAFT<d-cite key="VOICECRAFT"></d-cite>, we use autoregressive modeling with multi-head Delay Pattern for speech token generation.
+    </p>
+
+    <h2 id="xy_tokenizer">Speech Discretization: XY-Tokenizer</h2>
+
+    <p>
+       To unify the modeling of speech semantic and acoustic information and achieve low bitrate, we construct XY-Tokenizer, which uses two-path Whisper Encoder to encode speech, 8-layer RVQ for quantization, and two-stage multi-task learning. 
+       It achieves 1kbps bitrate and 12.5Hz frame rate.
+    </p>
+
+    <figure id="xy_tokenizer_figure">
+      <img src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+          <a href="#xy_tokenizer_figure" class="figure-number">2</a>
+          XY-Tokenizer uses two-stage multi-task learning to train. The first stage (upper part) is trained with an ASR task and a reconstruction task, allowing the encoder to retain coarse acoustic information while encoding semantic information.
+          The second stage (lower part) fixes the encoder and quantization layer, only training the decoder part.
+          Through reconstruction loss and GAN loss, the second stage supplements fine acoustic information with generative model capabilities.
+      </figcaption>
+      </figure>
+    
+    <p>
+       We expand the codec training data, using 100,000 hours of speech data with transcription text for training.
+       The table below compares the performance of different codecs in semantic and acoustic performance on LibriSpeech dataset.
+       WER is the word error rate in the ASR probing task <d-cite key="SpeechTokenizer"></d-cite>, and the lower WER indicates better alignment with the original text.
+       The bold represents SOTA or Sub SOTA performance in low-bitrate codec group.
+    </p>
+    <table  class="table is-bordered is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th rowspan="2">Model</th>
+          <th rowspan="2">BPS</th>
+          <th rowspan="2">Frame Rate</th>
+          <th colspan="2" style="text-align: center;">Semantic</th>
+          <th colspan="4" style="text-align: center;">Acoustic</th>
+        </tr>
+        <tr>
+          <th>Model Semantic</th>
+          <th>WER ↓</th>
+          <th>SIM ↑</th>
+          <th>STOI ↑</th>
+          <th>PESQ-NB ↑</th>
+          <th>PESQ-WB ↑</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DAC-8</td><td>6k</td><td>75</td><td>No</td><td>0.74</td><td>0.88</td><td>0.95</td><td>3.79</td><td>3.46</td>
+        </tr>
+        <tr>
+          <td>SpeechTokenizer</td><td>4k</td><td>50</td><td>Yes</td><td>0.20</td><td>0.84</td><td>0.92</td><td>3.05</td><td>2.60</td>
+        </tr>
+        <tr>
+          <td>Mimi-32</td><td>4.4k</td><td>12.5</td><td>Yes</td><td>0.28</td><td>0.93</td><td>0.96</td><td>3.79</td><td>3.42</td>
+        </tr>
+        <tr>
+          <td colspan="9" style="border-bottom: 1px solid black;"></td>
+        </tr>
+        <tr>
+          <td>DAC-2</td><td>1.5k</td><td>75</td><td>No</td><td>0.98</td><td>0.49</td><td>0.83</td><td>1.91</td><td>1.51</td>
+        </tr>
+        <tr>
+          <td>BigCodec</td><td>1.04k</td><td>80</td><td>No</td><td>0.49</td><td><b>0.84</b></td><td><b>0.93</b></td><td><b>3.26</b></td><td><b>2.68</b></td>
+        </tr>
+        <tr>
+          <td>Mimi-8</td><td>1.1k</td><td>12.5</td><td>Yes</td><td>0.28</td><td>0.73</td><td>0.90</td><td>2.79</td><td>2.24</td>
+        </tr>
+        <tr>
+          <td>Baichuan</td><td>1.075k</td><td>12.5</td><td>Yes</td><td><b>0.10</b></td><td>0.70</td><td>0.88</td><td>2.45</td><td>1.93</td>
+        </tr>
+        <tr>
+          <td>XCodec2.0</td><td>0.8k</td><td>50</td><td>Yes</td><td>0.30</td><td>0.82</td><td><b>0.91</b></td><td><b>3.03</b></td><td><b>2.43</b></td>
+        </tr>
+        <tr class="highlight-row" style="background-color: #209cee; color: #000000;">
+          <td><b>XY-Tokenizer</b></td><td>1k</td><td>12.5</td><td>Yes</td><td><b>0.13</b></td><td><b>0.83</b></td><td><b>0.91</b></td><td>3.00</td><td>2.41</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <figcaption style="text-align: center; margin-top: -5px;">
+      XY-Tokenizer is the best unified codec in terms of performance in both semantic and acoustic metrics among codecs with 1kbps and 12.5Hz frame rate.
+    </figcaption>
+
+    <p>
+    </p>
+
+    <p>
+       To better encode and reconstruct complex dialogue audio, we expand 500,000 hours of untranscribed audio data for enhanced training, expanding the codec's ability to handle complex audio and scenarios.
+    </p>
+
+    <p>
+       Thanks to the super low bitrate of the codec, the training length of our model reached up to 960s of audio, allowing our model to generate super long speech in one go, avoiding unnatural transitions between speech segments.
+    </p>
+
+    <h2 id="data_pipeline">Data Engineering</h2>
+
+    <p>
+      The performance of TTS models is closely related to the quality and quantity of training data.
+      To scale up high-quality TTS data and TTSD data, we design an efficient data processing pipeline that can accurately screen single-person speech and multi-person dialogue speech from massive original audio.
+    </p>
+
+    <figure id="data_pipeline_figure">
+      <img src="images/data_pipeline.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <figcaption style="grid-column: kicker">
+          <a href="#data_pipeline_figure" class="figure-number">3</a>
+          Data pipeline overview: We split single-person speech and multi-person dialogue speech from massive original audio and use internal tool models for annotation.
+      </figcaption>
+    </figure>
+
+    <p>
+       For the original audio, we first use an internal speaker diarization model to segment and annotate speech and speakers.
+       Based on the pre-trained base model, the performance of our speaker diarization model is better than the open source speaker diarization model pyannote-speaker-diarization-3.1 and its commercial version pyannoteAI.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">Model</th>
+          <th >AISHELL-4</th>
+          <th >AliMeeting(channel 1)</th>
+          <th >AMI(IHM)</th>
+          <th >AMI(SDM)</th>
+        </tr>
+        <tr>
+          <th class="center" colspan="4"  style="text-align: center;">DER ↓</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>pyannote-speaker-diarization-3.1</td>
+          <td>11.7</td>
+          <td>24.7</td>
+          <td>20.5</td>
+          <td>24.3</td>
+        </tr>
+        <tr>
+          <td>pyannoteAI</td>
+          <td>11.1</td>
+          <td>18.3</td>
+          <td>17.5</td>
+          <td>20.0</td>
+        </tr>
+        <tr class="highlight-row" style="background-color: #209cee; color: #000000;">
+          <td>Ours Diarization Model</td>
+          <td><b>9.7</b></td>
+          <td><b>14.1</b></td>
+          <td><b>14.5</b></td>
+          <td><b>17.2</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <figcaption style="text-align: center; margin-top: -5px;">
+       Speaker Diarization model DER (Diarization Error Rate) results on different datasets (lower is better), our model achieved the best performance on four test sets.
+    </figcaption>
+
+    <p>
+    </p>
+
+    <p>
+       We use DNSMOS score as the standard for evaluating speech quality. We assumed that speech with high DNSMOS score was likely not included background noise.
+      To ensure speech quality and reduce noise, we only retain audio segments with DNSMOS>=2.8.
+      For high-quality audio segments, we directly transcribe the speech to serve as TTS training data.
+      Additionally, we design a set of rules to combine speaker-separated audio segments from diarization into two-speaker dialogue segments for TTSD training, which we refer to as coarse-grained dialogue segments.
+      Although the speaker diarization model can accurately separate speakers, we find that it is not particularly sensitive to shorter backchannels, resulting in missed separations.
+      Furthermore, current ASR models cannot accurately transcribe overlapping speech in conversations.
+      Therefore, inspired by Parakeet<d-cite key="parakeet"></d-cite>, we train a Chinese version of the Whisper-d model for fine-grained speaker annotation and text transcription of Chinese data. For English data, we directly use the open-source Whisper-d from Parakeet.
+      Finally, we use the coarse-grained labels from the speaker diarization model and the fine-grained labels from the Whisper-d model to compose short dialogue segments into longer dialogue segments.
+    </p>
+
+    <h2 id="tts_pretrain">TTS Pre-training</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>WER ↓</th>
+          <th>CER ↓</th>
+          <th>WER(Norm) ↓</th>
+          <th>CER(Norm) ↓</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Seed-TTS</td>
+          <td>2.25</td>
+          <td><b>1.12</b></td>
+          <td>N/A</td>
+          <td>N/A</td>
+        </tr>
+        <tr>
+          <td>Cosyvoice2</td>
+          <td>2.80</td>
+          <td>1.59</td>
+          <td>2.52</td>
+          <td><b>0.80</b></td>
+        </tr>
+        <tr>
+          <td>SparkTTS</td>
+          <td><b>1.99</b></td>
+          <td>2.12</td>
+          <td><b>1.69</b></td>
+          <td>1.44</td>
+        </tr>
+        <tr class="highlight-row" style="background-color: #209cee; color: #000000;">
+          <td>MOSS TTS-base</td>
+          <td><b>1.90</b></td>
+          <td><b>1.56</b></td>
+          <td><b>1.54</b></td>
+          <td><b>0.82</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <figcaption style="text-align: center; margin-top: -5px;">
+      Comparison of Word Error Rate (WER) on the Seed-tts-eval test set for TTS pre-training models (lower is better).
+      Boldfaced results indicate the best and second-best performance.
+      WER(Norm) signifies that we applied rule-based corrections to the ASR outputs targeting synonym recognition errors, reducing misjudgments caused by ASR model inaccuracies.
+      CER(Norm) indicates that we converted Chinese text to Pinyin before calculating the character error rate, effectively representing the Phonetic Error Rate (PER) metric, which we consider a more reasonable approach.
+      The results for SparkTTS and Cosyvoice2 are from our local re-evaluation using the official inference code.
+    </figcaption>
+
+    <p>
+    </p>
+
+    <p>
+      We pre-train the model using 1.1 million hours of Chinese and English TTS data.
+      This large-scale TTS pre-training significantly enhances the prosody and expressiveness of the TTS model while enhancing its generalization capabilities.
+      We evaluate the performance of the pre-trained TTS model using Seed-tts-eval<d-cite key="seedtts"></d-cite>, achieving results comparable to the current top-tier closed-source model, Seed-TTS.
+      The model after TTS pre-training has developed strong speech generation capabilities and zero-shot voice cloning abilities.
+    </p>
+
+    <h2 id="ttsd_posttrain">TTSD Post-training</h2>
+
+    <p>
+      Ultimately, we collect 100,000 hours of Chinese conversational data and 270,000 hours of English conversational data.
+      Additionally, to improve the model's accuracy in speaker switching, we synthesize 40,000 hours of Chinese conversational data and 40,000 hours of English conversational data.
+      To enhance the model's awareness of Chinese punctuation, we refine the transcribed texts in a portion of the data (approximately 70,000 hours) using Gemini.
+    </p>
+
+    <p>
+      During the training phase, we use the WSD scheduler for training based on a pre-trained TTS checkpoint, and we do not implement specific data scheduling for the decay stage.
+      Additionally, we find it challenging to select the best-performing checkpoint using the validation set, so we instead choose the checkpoint demonstrating the best subjective performance through manual evaluation.
+    </p>
+    
+    <h2 id="demo">Demo</h2>
+
+    <p>
+      We test the Chinese and English dialogue generation capabilities of MOSS-TTSD.
+      For Chinese dialogue generation, we compare it with the open-source MoonCast<d-cite key="MoonCast"></d-cite> and the closed-source model Doubao Podcast TTS.
+      Compared to MoonCast, MOSS-TTSD demonstrates more natural prosody, stronger expressiveness, and more stable generation performance.
+      Furthermore, MOSS-TTSD supports multiple voice cloning methods, including uploading an entire dialogue segment or uploading audio from a single speaker.
+      Compared to Douyin Podcast TTS, MOSS-TTSD offers zero-shot voice cloning while achieving comparable prosody and expressiveness, and provides greater customization flexibility for text input.
+    </p>
+
+    <h3>Dialogue Generation</h3>
+
+    <d-figure class="full-width">
+      <div class="table-container">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Prompt1</th>
+              <th>Prompt2</th>
+              <th>MoonCast</th>
+              <th>MOSS-TTSD-v0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]周一到周五，每天早晨七点半到九点半的直播片段。言下之意呢，就是废话有点多，大家也别嫌弃，因为这都是直播间最真实的状态了。<br>Prompt2 Text:<br>[S2]如果大家想听到更丰富更及时的直播内容，记得在周一到周五准时进入直播间，和大家一起畅聊新消费新科技新趋势。<br>Generation Transcription:<br>[S1]诶，我最近看了一篇讲人工智能的文章，还挺有意思的，想跟你聊聊。[S2]哦？是吗，关于啥的啊？又是哪个公司发了什么逆天的新模型吗？[S1]那倒不是，是一个咱们国内的教授，复旦大学的邱锡鹏教授，他提了一个新概念，叫什么，呃，叫情境扩展，Context Scaling。[S2]Context Scaling？情境扩展？听起来有点，呃，有点玄乎啊，这是个啥意思？[S1]对，我一开始也觉得有点抽象，但你看完就觉得，诶，特别有道理。他大概意思就是说啊，咱们现在对人工智能的追求，不能光是把它做得更大，你知道吧，就是不能光堆参数，喂数据。[S2]嗯，是，这个我懂。就好像之前大家都在比谁的模型参数多，几千亿，上万亿的。[S1]对对对，就是那个意思。他说那个时代，算是第一幕，就是模型规模化的胜利，靠堆料，堆出了像这个ChatGPT这样厉害的通用模型。[S2]嗯，是的。[S1]然后呢，现在差不多是第二幕，就是大家发现光堆料好像不行了，收益越来越小，就开始搞一些，呃，后训练的优化。[S2]哦，后训练优化？比如呢？[S1]比如让AI学会用工具，或者搞那个什么思维链，让它像人一样一步一步思考问题，还有就是强化学习，让它自己在游戏里或者写代码的时候自己跟自己玩，然后越变越强。[S2]哦，明白了。就是让它不光是知识多，还得会用，变得更聪明，是这个意思吧。[S1]没错，就是这个理儿。但是呢，这两步走完了，就遇到了新的瓶颈。邱教授就觉得，关键问题出在了这个情境，也就是Context上。[S2]嗯？情境？[S1]是。很多时候AI做不出正确的决定，不是因为它笨，而是因为它没搞明白现在到底是个什么情况，就是我们给它的任务或者情境描述得不够清楚。[S2]哦，原来是这样。[S1]对。所以他觉得下一幕，也就是第三幕，就应该是这个情境扩展，Context Scaling。核心就是要让AI能真正理解那种特别复杂、多变，甚至有点模糊的真实世界的情境。[S2]嗯，这个听起来就高级了。那他说的这个情境，到底指什么啊？不就是我们输进去的那段话吗？[S1]诶，不是那么简单的。他说的情境啊，是个特别立体的东西。它不光包括你说了什么，还包括，呃，时间，地点，谁在说话，目的是什么，甚至还包括咱们文化里那种只可意会不可言传的规则，还有人与人之间的那种默契。[S2]哇，那这个范围可太广了。[S1]是吧。他举了个例子，就比如说，当一个人说不要的时候。[S2]嗯。[S1]你想想，在不同的情况下，这个不要的意思完全不一样。有可能是真的拒绝，也可能是在开玩笑，甚至可能是一种反向的请求，就是我们说的口是心非，嘴上说不要，身体很诚实那种。[S2]哈哈，确实确实，这个AI可怎么判断啊。[S1]对啊，所以就需要理解整个情境。他说这个里面最关键的，就是要捕获一种叫暗知识的东西。[S2]暗知识？听着像武林秘籍一样。[S1]有点那个意思。就是指我们人类会，但是很难用语言清楚地讲出来的那些能力。[S2]哦？比如说？[S1]比如说社交的智慧啊，怎么通过一个眼神，一个停顿，或者语气变化来理解对方的意思。[S2]嗯，是的。[S1]还有就是文化适应能力，在不同的文化里，有些事能做，有些事不能做，这些都没人写在书上，但我们就是知道。[S2]没错。[S1]他说AI要是能学会这些，那才算是真正的智能突破了。这也能解决一些AI安全的问题，比如那个很有名的回形针悖论。[S2]哦，那个我知道，就是你让AI造回形针，它最后可能会为了这个目标把整个世界都给占了，用来造回形针。[S1]对。但如果它有情境智能，它就能理解我们人类社会的复杂性，知道有些事是不能做的，就算你没有明确下指令禁止它。[S2]有道理，有道理。那，那技术上要怎么实现呢？听起来好难啊。[S1]是挺难的。他提了三大技术支柱。第一个叫强交互性。就是AI要不停地跟环境，特别是跟人来互动学习，不光要知道怎么做，还要知道为什么这么做。[S2]嗯，在互动里学习。[S1]第二个叫具身性。就是AI得有个身体，不一定是真的人形机器人，在虚拟世界里也行，总之它得能感知和行动。[S2]哦，明白。[S1]第三个，我觉得是最特别的，叫拟人化。[S2]拟人化？[S1]对，就是说AI需要有类似人类的情感共鸣能力。不是假装有感情，而是真正理解人的情绪，人的偏好，懂得社交的距离感，什么时候该关心，什么时候该保持沉默。[S2]哇，这个要求可太高了，感觉比养个孩子还难。[S1]哈哈，可不是嘛。所以他说这事儿吧，不是要去替代其他的技术路线，而是把它们都整合起来。像什么推理增强啊，多模态啊，强化学习啊，最终都是为了服务于一个目标，就是让AI能深刻地理解情境。[S2]嗯。[S1]所以总的来说，就是别光在已有的路上卷了，要去定义一些大家都觉得重要，但没人说清楚的问题。[S2]确实。听你这么一说，感觉这个情境扩展，Context Scaling，确实给人工智能指了一个挺不一样的方向。不再是冷冰冰的计算，而是要变得更懂我们人类，更懂这个复杂的世界。[S1]是啊，他说这可能是通往通用人工智能，就是AGI，非常关键的一步。[S2]嗯，听起来未来可期啊。">Context Scaling Discussion</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/zh_spk1_prompt_demo1.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/zh_spk2_prompt_demo1.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo1_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo1_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Transcription:<br>[S1]可以每天都骑，并且可能会让你爱上骑车，然后通过爱上骑车呢，你省了很多很多钱。<br>Prompt2 Transcription:<br> [S2]他最后就能让同样食材炒出来的菜味道大大提升。<br>Generation Transcription:<br>[S1]诶，我们今天来聊聊那个，原神吧。你玩过吗？[S2]原神啊，我听过，特别特别火，但我自己没怎么玩过。就是，它到底是个什么样的游戏啊？[S1]它其实是个，呃，动作类的角色扮演游戏，就是那种ARPG。[S2]哦，ARPG。[S1]对，然后它最大的一个特点呢，就是开放世界。[S2]开放世界？就是说地图特别大，可以随便跑那种吗？[S1]没错。就是一张超级大的地图，然后你想去哪儿就去哪儿。你可以，呃，爬山，游泳，还能在天上飞，就是滑翔。[S2]哇，那自由度还挺高的。[S1]是的。所以很多人一开始玩，就沉浸在那个世界里了，到处看风景，到处探险。[S2]嗯，有道理。那它有剧情吗？讲了个什么故事啊？[S1]有的有的。就是，故事发生在一个叫提瓦特的大陆上。[S2]提瓦特，嗯。[S1]对，这个大陆分成了七个国家，每个国家都有自己的神，然后也对应一种元素，就是什么风啊，火啊，水啊之类的。[S2]哦，设定还挺完整的。[S1]是，然后玩家呢，就扮演一个叫旅行者的人。你本来是和你的哥哥或者妹妹，就是一对双胞胎，在各个世界里穿梭旅行。[S2]嗯哼。[S1]结果到了提瓦特的时候，被一个陌生的神给拦下来了，然后你的亲人就被抓走了，你们俩就分开了。[S2]啊，所以游戏的目标就是去找那个失散的亲人？[S1]对，主要的故事线就是这个。然后你路上会遇到一个，呃，飞在天上的小向导，叫派蒙，她会一直陪着你。[S2]哦，就是那个图标上的小家伙是吧？[S1]没错没错，就是她。所以你就要跟派蒙一起，游历这七个国家，一边找亲人，一边卷入各个国家的各种事情里。[S2]听起来还挺王道的冒险故事。那，你说它是动作游戏，打起来是什么样的？[S1]打架也很有意思。你队伍里最多可以放四个角色，然后在战斗的时候可以随时切换。[S2]哦，可以换人打。[S1]对。而且每个角色都有自己的元素属性，刚才说的那个七种元素。[S2]嗯。[S1]然后这些元素之间呢，可以打出各种反应。比方说，敌人身上有水，你用雷元素去打他，就会有感电伤害，伤害更高。或者你用冰去冻住水面，就能造出一条冰路走过去。[S2]哇，这个好酷。不光是打架，还能跟环境互动。[S1]是的，很多解谜都要用到这个元素互动。[S2]明白。那，这游戏听起来这么好，它是免费的吗？我记得好像是。[S1]对，它本身是免费下载免费玩的。[S2]那它怎么赚钱呢？[S1]诶，这就说到重点了。它用的是，就是，抽卡的模式。[S2]啊，抽卡。就是我们常说的氪金是吧。[S1]没错。游戏里有很多角色和强力的武器，除了主线送的几个基础角色，大部分好看又厉害的角色，都得靠抽卡来获得。[S2]哦，原来是这样。那不花钱能玩吗？[S1]能玩，完全能玩。游戏里也会送一些抽卡的资源，但是如果你想快速拿到自己喜欢的角色，或者想让角色变得特别特别强，那可能，呃，就要花钱了。[S2]懂了，就是所谓的免费游玩，道具收费。[S1]对对对，就是这个模式。所以很多人批评它也是因为这个点，觉得太肝或者太氪金。[S2]确实，这个模式争议一直都挺大的。[S1]是啊。不过它质量也确实高，所以尽管有批评，但它在商业上特别成功。我记得资料上说，它二零二零年九月上线，第一年光是在手机上就赚了超过二十三亿美元。[S2]二十三亿，美元？我的天，那也太夸张了。[S1]是啊，是有史以来第一年收入最高的游戏了。而且它还是跨平台的，就是手机，电脑，PS主机上都能玩，数据还是互通的。[S2]嗯，这个方便。还能跟朋友一起玩吗？[S1]可以，它有多人联机模式，最多四个人一起在大世界里跑图，或者一起去打副本，就是那个秘境。[S2]哦，内容还挺丰富的。我记得好像还听说里面能盖房子？[S1]对，那个叫尘歌壶，是家园系统。后来还加了什么打牌游戏，叫七圣召唤，还有音乐游戏。反正，开发商一直在更新，不断加新东西进去。[S2]哇，那感觉真是个大坑啊，一旦玩进去就出不来了。[S1]哈哈，确实是。所以总的来说，它就是一个制作非常精良，世界观宏大，玩法多样，但是呢，也有着典型抽卡游戏氪金模式的这么一个游戏。[S2]明白了，这么一说我就对它有个大概的了解了。谢谢你啊。">Game Discussion</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/zh_spk1_prompt_demo2.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/zh_spk2_prompt_demo2.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo2_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo2_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1] How much do you know about her?<br>Prompt2 Text:<br>[S2] Well, we know this much about her. You've been with her constantly since the first day you met her. And we followed you while you went dining, dancing, and sailing. And last night, I happened to be there when you were having dinner with her at Le Petit Tableau.<br>Generation Transcription:<br>[S1]Hey, did you hear about that company called MoSi AI? [S2]MoSi AI? Yeah, I think I've heard of them. Aren't they the ones doing AI stuff? What new thing have they come up with now? [S1]Yeah, that's them! They recently launched this super hot new product called, um, Asteroid. [S2]Asteroid. That's a pretty cool name. Does it mean like the space rock? [S1]Yeah, I think that's what it means. Let me tell you, this thing is incredible. They say it's currently the most realistic, human-like conversational TTS model out there. [S2]Oh, TTS technology? You mean the text-to-speech thing? Aren't there already a lot of those on the market? What makes this one so special? [S1]Well, it's completely different. They say the voice produced by Asteroid sounds almost exactly like a real person talking. And it's super smooth and natural. Not at all like, you know, that stiff robotic tone. [S2]I see. Some voice assistants do still have that mechanical feel, especially during multi-turn conversations. So how amazing is this Asteroid exactly? [S1]I heard they internally call Asteroid China's own version of NotebookLM. [S2]NotebookLM? Oh, I know that one. Isn't that the personal AI that Google made? The one that helps organize notes and answers all kinds of questions? So Asteroid has similar functions? [S1]Right. That's probably what they mean. It's not just that the voice sounds incredibly human. The intelligence level is also really high. It can have these really logical, contextual, in-depth conversations with you. It's just like chatting with a real person. [S2]Wow, that sounds amazing. If they can really achieve that... [S1]Yeah, it's basically like having a personal assistant that's both articulate and really understands you. [S2]Hmm. That does sound appealing. [S1]And some people are saying it's like the, what's it called again in the voice technology circle? Oh right, DeepSeek. [S2]DeepSeek? Isn't that the company making large language models? Their models are pretty popular now. That's high praise. So they're saying Asteroid is top-tier technology? [S1]Yeah, I think that's what they mean. It's like they've reached a whole new level in voice synthesis. Similar to the impact DeepSeek has had in natural language processing. It could be that kind of groundbreaking technology. [S2]If Asteroid is really that impressive, where could it be used? I feel like there must be huge potential there. [S1]Absolutely. Just imagine future smart customer service, audiobook reading, and those virtual livestreamers that are so popular now. The quality would improve dramatically. We might even have personal assistants using Asteroid to talk to us directly. How natural would that be? [S2]Yeah. That does sound exciting. When can we actually try it out? Are there any demos available? [S1]I haven't looked into that carefully yet. But since they've already announced it, I'm guessing it won't be long. I'm really eager to try it and see just how human-like it is. [S2]Yeah, yeah. If it can really deliver what they're promising, getting information and interacting with machines will be so much more convenient. The experience will be much better too. [S1]Exactly, exactly. We're just waiting for MoSi AI to give us this big surprise.">Asteroid TTS Talk</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/en_spk1_prompt_demo3.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/en_spk2_prompt_demo3.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo3_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/demo3_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            
+          </tbody>
+        </table>
+      </div>
+    </d-figure>
+
+    <h3>Voice Cloning</h3>
+
+    <d-figure class="full-width">
+      <div class="table-container">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Prompt1</th>
+              <th>Prompt2</th>
+              <th>MoonCast</th>
+              <th>MOSS-TTSD-v0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]跟观众分享我人生的感悟，因为我们都是只活一次，我们也都是第一次活，我们也不知道该怎么活着。Prompt2 Text:<br>[S2]所以我觉得这些成功的电影它都很真诚而且很有生命力，它就跟当年的那个林浩的那个一模一样。<br>Generation Transcription:<br>[S1]哎呀！这不是我偶像华哥吗？[S2]哈哈，贾玲你好！久仰大名啊！[S1]别别别，您这句“久仰大名”我可受不起！我才是从小看您的电影、听您的歌长大的！[S2]那看来我真的是“老一辈”了？[S1]不不不！您这是“经典永流传”！您看您这状态，比我还能蹦跶呢！[S2]你太会说话了！对了，最近在忙什么？听说你又拍新电影了？[S1]对啊，刚忙完一部，不过跟您的作品比，我那就是“小打小闹”。[S2]别这么说，你的《你好，李焕英》我看了，真的很感动，演技超棒！[S1]真的吗？那……华哥，下次有机会合作一下？我演您失散多年的妹妹！[S2]可以啊！不过剧本得写好点，别让我演你“失散多年还嫌弃你”的哥哥就行！[S1]哎呀，华哥您这话说的，我这么可爱，谁会嫌弃我啊！[S2]那我得考虑考虑片酬了，毕竟和你搭戏，压力很大啊！[S1]哼！那这样，片酬我分您一半！管够！[S2]哇，这么大方？那我得好好珍惜这次机会了！[S1]说真的，华哥，能和您聊天太开心了，您真是又帅又没架子！[S2]你也是啊，又幽默又有才华，希望下次真的能合作！[S1]一言为定！到时候我负责搞笑，您负责帅，票房绝对爆！[S2]好，击掌为盟！[S1]成交！">贾玲 x 刘德华</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/jialing_promptvn.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/dehua_promptvn.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone1_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone1_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]嘎子，你听叔的，你听叔的，其实你跟所有人PK，有的时候我也在看，我也在看，无非两，两件事，一个是面子，不想输。Prompt2 Text:<br>[S2]你别说，那天潘老师有一个徒弟开直播，给我开专场，潘老师一徒弟开直播给我开专场，给我一顿骂。<br>Generation Transcription:<br>[S1]嘎子，咱今儿个又给老铁们整了这小鹏汽车，那家伙，老霸道了，你看这颜色，多正，开出去回头率指定高。[S2] 可不是咋的潘叔，我跟你说，这车开起来那叫一个稳当，上次我拉着我丈母娘，她都说这车坐着比那大奔还舒服。[S1] 那是，咱这车用料扎实着呢，就说这座椅加热通风，冬天不冻屁股，夏天不捂后背，老舒坦了。[S2] 潘叔你还别说，这车的智能语音系统也老厉害了，上回我就是东北话跟它唠嗑，说给我放个二人转，它咔咔就给安排上了，一点不含糊。[S1] (笑)这玩意儿是越来越精了，你看这大屏幕，跟个小电视似的，倒车影像那叫一个清楚，新手司机都不带怕的。[S2] 对对对，而且这车充电也方便，楼下安个充电桩，一宿就充满了，跑个长途啥的，服务区充电也快，不耽误事儿。[S1] 现在买新能源车，图的就是个省心省钱，这车保养也便宜，一年下来能省不少油钱呢。[S2] 可不咋的潘叔，关键是性价比高啊这配置，这做工，卖这个价，真是良心价了。[S1] 而且这车空间也大，上次我帮邻居拉点东西，后排座椅一放倒，那都能当个小货车使了，老能装了。[S2] 潘叔你这一说，我想起来了，这车还有个露营模式，把座椅放平了，铺上垫子，在外面过夜都没问题，老浪漫了。[S1] 哎呦我去，你们年轻人花样就是多，咱这岁数就图个实在，开着放心，用着省心。[S2] 潘叔，咱给直播间老铁们再来点实在的呗，今儿个下单，除了送保养，咱再送个原厂脚垫和后备箱垫，中不。[S1] 这个中，必须中，老铁们，嘎子都发话了，这福利可是实打实的，看上的赶紧下手，过了这村可就没这店了啊。[S2] 对，就一百台，先到先得，祝老铁们用车愉快，开上小鹏，鹏程万里。">潘长江 x 嘎子</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/pang.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/gazi2.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone2_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone2_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]什么，等一下，等一下，我看到一个留言说什么邓紫棋都42岁了，你算错了吧，我10年前上我是歌手的时候，22岁啊兄弟，10年了，22加10，32懂吗？懂吗？32不是42，你算错了，谁教你的数学，谁是你的数学老师。Prompt2 Text:<br>[S2]对我来讲是一种荣幸，但是也是压力蛮大的。不过我觉得是一种，呃，很好的一个挑战。 <br>Generation Transcription:<br>[S1]杰伦哥！好久不见！最近你发的新歌里那段钢琴solo太炸了，我练了三天才勉强弹顺。[S2]哟，现在年轻人还听这么复古的编曲啊？我以为你们都在搞电子trap。不过…你弹错了一个半音。[S1]哇，这都能听出来？！果然还是骗不过“人类钢琴AI”…不过说真的，现在排行榜前十里八首是情歌，你觉得华语音乐是不是越来越同质化了？[S2]我们当年写《双截棍》的时候，公司说“这什么鬼”，现在反而很多人怀念那种“乱来的勇气”。其实不是风格问题，是敢不敢把地铁噪音、麻将声都塞进歌里的态度啦。[S1]就像我新专辑里加了鲸鱼叫声采样！但流量算法总推“安全牌”，我上次实验性编曲的播放量只有情歌的十分之一…[S2]听哥一句，当年《以父之名》电台不敢放，现在变成教科书里的经典，等那些AI写歌的泡沫破掉，留下来的还是疯子。[S1]那下次我写首融入了广场舞神曲和京剧的trap，你可要feat我！歌名就叫《奶茶与鲸鱼的狂想》。[S2]成交！不过歌词里得加“珍珠奶茶喝不胖”…走吧，该去给那些“安全牌”颁奖了。">邓紫棋 x 周杰伦</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/dzq_enhanced.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/jay_promptvn.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone3_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone3_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]I mean and then I think it's also important to reason from first principles rather than by analogy. So the normal way that we conduct our lives is we, we, we reason by analogy it's, we're doing this because it's like something else that was done, or it's like what other people are doing.<br>Prompt2 Text:<br>[S2]NVIDIA reinvented computing for the first time after 60 years. In fact, Erwin at IBM knows quite well that the computer has largely been the same since the 60s.<br>Generation Transcription:<br>[S1]Jensen, AI's moving faster than a Tesla on Ludicrous Mode. Where do you see it in ten years?[S2]Elon, it’s like Moore’s Law on steroids. In a decade, AI will be deeply integrated into every industry—healthcare, transportation, entertainment. GPUs will power autonomous systems that learn in real-time, making decisions faster than humans. Imagine AI doctors diagnosing with near-perfect accuracy or cities running on AI-driven logistics.[S1]I agree, but I’m worried about control. If AI gets smarter than us—and it will—how do we ensure it doesn’t outmaneuver humanity? My Neuralink project is partly about keeping up with AI’s brainpower.[S2]Control’s a tough one. It’s about designing robust guardrails—think of it as AI’s “ethics chip.” NVIDIA’s working on frameworks to make AI transparent and accountable. But honestly, it’s a race. We need global cooperation to set standards, or it’s chaos.[S1]Global cooperation? Good luck with that. I’m betting on proactive measures—building AI like xAI’s Grok to align with human values. It’s not perfect, but it’s a start. What’s NVIDIA’s take on aligning AI with human goals?[S2]We’re focused on enabling developers to embed ethical principles into AI models. Our DGX systems let researchers simulate scenarios to test AI behavior. But alignment’s tricky—it’s not just tech, it’s philosophy. What are “human values” when cultures disagree?[S1]Exactly. That’s why I push for a multi-planetary future. If AI goes rogue, we need a backup planet. Mars isn’t just a dream; it’s insurance.[S2]Only you’d think of colonizing Mars as an AI failsafe. I’m more earthbound—AI can optimize energy, food, water here. Let’s fix this planet first.[S1]Fair point. But whether it’s Earth or Mars, AI’s the key. We just need to make sure it’s our copilot, not the pilot.">Elon x Jensen</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/Musk_enhanced.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/huangrenxun_enhanced.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone4_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone4_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="topic-cell">
+                <span class="topic-trigger" data-script="Prompt1 Text:<br>[S1]In short, we embarked on a mission to make America great again for all Americans.<br>Prompt2 Text:<br>[S2]I am here with students at wakefield high school in arlington, Virginia, and we've got students tuning in from all across America from kindergarten through twelfth grade, and I am just so glad that all could join us today and I want to thank wakefield for being such an outstanding host.<br>Generation Transcription:<br>[S1]Barack, China's AI is unstoppable, like a rocket. They're pumping billions into it—facial recognition, autonomous weapons, you name it. We’re falling behind, big time.[S2]Donald, their investment’s massive, no question. But AI’s a global race. They’ve got scale, but we’ve got innovation—Silicon Valley, universities. We need to double down on R&D, not just complain.[S1]R&D? They’re stealing our tech! I say hit them with sanctions, block their chips. I made deals to slow them down. Your approach was too weak, all talk.[S2]Weak? We laid groundwork—export controls, alliances to secure tech supply chains. Sanctions alone won’t stop them; they’re building their own chips now. We need to lead with breakthroughs.[S1]Breakthroughs? They’ve got AI cameras everywhere, controlling their people. We need to bring chip manufacturing home, make America number one again.[S2]Domestic manufacturing’s key, but AI’s global. Their data advantage is real—more users, fewer privacy rules. We counter with ethics, open standards, and better algorithms.[S1]Ethics? That’s cute. They’re winning because they don’t play nice. I say we decouple, protect our AI edge. We can’t let them dominate.[S2]Decoupling’s tough—AI thrives on collaboration. Their rise is real, but we shape the game with innovation, not just walls. Lead the standards, we lead the future.[S1]Standards? I’ll make the best AI deals. They’ll follow us, or they’re out. Believe me.">Trump x Obama</span>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/trump_promptvn.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/Obama_enhanced.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone5_mooncast.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/voiceclone5_mossttsd.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </d-figure>
+
+    <h3>AI Podcast Generation Comparison</h3>
+
+    <p>
+    Based on recent hot topics in the AI field, we generate a series of AI information podcasts.
+    By comparing podcast generation from Doubao (a commercial model) with our open-source workflow, we find that the two perform comparably across multiple dimensions.
+    Whether in terms of emotional expressiveness, naturalness of tone, or overall delivery quality, our open-source model demonstrates performance levels that rival the commercial solution.
+    This showcases the significant potential of MOSS-TTSD in the field of text-to-speech synthesis.
+    </p>
+
+    <d-figure class="full-width">
+      <div class="table-container">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Doubao Podcast</th>
+              <th>MOSS-TTSD-v0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <p>2025.06.17</p>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_17_doubao.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_17.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <p>2025.06.18</p>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_18_doubao.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_18.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <p>2025.06.19</p>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_19_doubao.mp3" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/miracleplus_6_19.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </d-figure>
+
+    <h3>Vocal Event</h3>
+
+    <d-figure class="full-width">
+      <div class="table-container">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Transcription</th>
+              <th>MOSS-TTSD-v0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <p>Cough</p>
+              </td>
+              <td>
+                <p>[S1]今晚你来吗?<br>
+                  [S2](咳)估计去不了，人有点不舒服。<br>
+                  [S1]啊这样啊，那你好好休息。<br>
+                  [S2]没事儿，你们玩开心点。</p>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/cough.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <p>Laugh</p>
+              </td>
+              <td>
+                <p>[S1]哎你看见刚才那人的帽子没?<br>
+                  [S2](笑)看见了!上头居然有个螺旋桨!<br>
+                  [S1]我真是服了，怎么会有人戴那种帽子。<br></p>
+              <td>
+                <audio class="audio-player" controls preload="metadata">
+                  <source src="https://audio.mosi-ai.com/ttsd_demo/ttsd_v1/ttsd-6.20/laugh.wav" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    
+  </d-article>
+
+
+
+  <d-appendix>
+    <h3>Contributors</h3>
+    <p>
+      <b>TTSD Training:</b> Yuqian Zhang, Donghua Yu, Zhengyuan Lin, Yiwei Zhao, Jun Zhan, Dong Zhang<br>
+      <b>TTS Pretraining:</b> Botian Jiang, Yiwei Zhao, Jin Wang, Yucheng Yuan, Xin Zhang<br>
+      <b>Foundation Model Pretraining:</b> Xingjian Zhao, Zhe Xu, Hanfu Chen, Yang Wang, Yaozhou Jiang, Ruiming Wang, Cheng Chang<br>
+      <b>Codec:</b> Yitian Gong, Ruifan Deng, Luozhijie Jin, Qinghui Gao, Dong Zhang<br>
+      <b>Infrastructure:</b> Ruixiao Li, Mingshu Chen, Cheng Chang<br>
+      <b>Data Pipeline:</b> Ke Chen, Wenbo Zhang, Wenxuan Wang<br>
+      <b>Data Collection:</b> Qinghui Gao, Zhengyuan Lin, Donghua Yu, Yuqian Zhang, Zhaoye Fei<br>
+      <b>Additional Contribution:</b> Qian Tu, Chenchen Yang, Liwei Fan, Kexin Huang<br>
+      <b>Supervision:</b> Qinyuan Cheng, Zhaoye Fei, Shimin Li, Xipeng Qiu<br>
+    </p>
+
+    <d-footnote-list></d-footnote-list>
+    <d-citation-list></d-citation-list>
+  </d-appendix>
+
+  <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+  <d-bibliography src="bibliography.bib"></d-bibliography>
+
+  <div id="script-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.35); z-index:9999; align-items:center; justify-content:center;">
+    <div id="script-modal-content" style="background:#fff; color:#222; border-radius:12px; max-width:480px; width:90vw; padding:2em 1.5em; box-shadow:0 8px 32px rgba(0,0,0,0.18); position:relative; max-height:70vh; overflow-y:auto;">
+      <span id="script-modal-close" style="position:absolute;top:12px;right:18px;cursor:pointer;font-size:1.5em;">&times;</span>
+      <div id="script-modal-text"></div>
+    </div>
+  </div>
+
+<script type="text/javascript" src="index.bundle.js"></script></body>
