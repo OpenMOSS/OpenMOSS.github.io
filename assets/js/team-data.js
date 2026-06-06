@@ -159,8 +159,8 @@ const teamData = {
 
     // 博士研究生
     phdStudents: [
-        { id: 'junqi-dai', name: { zh: '代俊奇', en: 'Junqi Dai' }, photo: 'assets/img/代俊奇.jpg', year: '2019' },
-        { id: 'zhaoye-fei', name: { zh: '费朝烨', en: 'Zhaoye Fei' }, photo: 'assets/img/费朝烨.jpeg', homepage: 'https://ngc7292.github.io/', year: '2020' },
+        { id: 'junqi-dai', name: { zh: '代俊奇', en: 'Junqi Dai' }, photo: 'assets/img/代俊奇.jpg', year: '2022' },
+        { id: 'zhaoye-fei', name: { zh: '费朝烨', en: 'Zhaoye Fei' }, photo: 'assets/img/费朝烨.jpeg', homepage: 'https://ngc7292.github.io/', year: '2023' },
         { id: 'peiju-liu', name: { zh: '刘佩举', en: 'Peiju Liu' }, photo: 'assets/img/刘佩举.jpg', year: '2021' },
         { id: 'xiaoran-liu', name: { zh: '柳潇然', en: 'Xiaoran Liu' }, photo: 'assets/img/柳潇然.jpeg', homepage: 'https://github.com/lxr-tech', year: '2022' },
         { id: 'bo-wang', name: { zh: '王博', en: 'Bo Wang' }, photo: 'assets/img/王博.jpg', year: '2022' },
@@ -201,7 +201,6 @@ const teamData = {
         { id: 'junxuan-wang', name: { zh: '汪俊轩', en: 'Junxuan Wang' }, photo: 'assets/img/汪俊轩.jpg', year: '2025' },
         { id: 'xinyuan-wang', name: { zh: '王新元', en: 'Xinyuan Wang' }, photo: 'assets/img/王新元.JPG', homepage: 'https://dirtycomputer.github.io/', year: '2025' },
         { id: 'jinhao-wu', name: { zh: '吴锦皓', en: 'Jinhao Wu' }, photo: 'assets/img/吴锦皓.png', year: '2025' },
-        { id: 'guangjun-xu', name: { zh: '徐光君', en: 'Guangjun Xu' }, photo: 'assets/img/徐光君.png', homepage: 'http://www.linkedin.com/in/guangjun327', year: '2025' },
         { id: 'chenchen-yang', name: { zh: '杨晨晨', en: 'Chenchen Yang' }, photo: 'assets/img/杨晨晨.jpg', homepage: 'https://cr-fish.github.io/', year: '2025' },
         { id: 'linqi-yin', name: { zh: '殷林琪', en: 'Linqi Yin' }, photo: 'assets/img/殷林琪.JPEG', year: '2025' },
         { id: 'haowei-zhang', name: { zh: '张浩威', en: 'Haowei Zhang' }, photo: 'assets/img/张浩威.png', homepage: 'https://haowei-freesky.github.io/', year: '2025' },
@@ -370,7 +369,7 @@ const alumniData = {
     masters: [
         { name: { zh: '曹零', en: 'Ling Cao' }, destination: { zh: '阿里巴巴', en: 'Alibaba' }, homepage: null, year: '2011' },
         { name: { zh: '田乐', en: 'Le Tian' }, destination: { zh: '微软', en: 'Microsoft' }, homepage: null, year: '2011' },
-        { name: { zh: '赵嘉亿', en: 'Jiayi Zhao' }, destination: { zh: '谷歌', en: 'Google' }, homepage: null, year: '2011' },
+        { name: { zh: '赵嘉亿', en: 'Jiayi Zhao' }, destination: { zh: '谷歌（美国）', en: 'Google, USA' }, homepage: null, year: '2011' },
         { name: { zh: '黄超超', en: 'Chaochao Huang' }, destination: { zh: '上汽集团', en: 'SAIC Motor' }, homepage: null, year: '2012' },
         { name: { zh: '吴世宇', en: 'Shiyu Wu' }, destination: { zh: '百度', en: 'Baidu' }, homepage: null, year: '2013' },
         { name: { zh: '徐嘉诚', en: 'Jiacheng Xu' }, destination: { zh: 'Salesforce 研究科学家', en: 'Research Scientist, Salesforce AI Research' }, homepage: 'https://jiacheng-xu.github.io/', year: '2013' },
