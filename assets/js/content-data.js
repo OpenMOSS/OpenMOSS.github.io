@@ -6,6 +6,34 @@
     },
     highlights: [
       {
+        title: { zh: 'Thinking with Video：用视频生成做多模态推理', en: 'Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm' },
+        desc: { zh: '提出“用视频思考”范式：让 Sora-2 等视频生成模型以视频帧为统一媒介进行多模态推理，弥补文字/图像难以刻画动态过程的不足。', en: 'A “Thinking with Video” paradigm where video-generation models like Sora-2 reason over generated video frames as a unified medium for dynamic multimodal reasoning.' },
+        date: '2026.6',
+        image: 'assets/img/highlights/thinking-with-video.png',
+        url: '/blog/cn/thinking-with-video/'
+      },
+      {
+        title: { zh: 'MOSS-TTS 技术报告', en: 'MOSS-TTS Technical Report' },
+        desc: { zh: '可扩展的语音生成基座模型，支持零样本音色克隆、时长与发音控制、流畅中英混说与长语音生成。', en: 'A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.' },
+        date: '2026.3',
+        image: 'assets/img/highlights/moss-tts.png',
+        url: '/blog/cn/moss-tts/'
+      },
+      {
+        title: { zh: 'AI 也能学会“科学品味”', en: 'AI Can Learn Scientific Taste' },
+        desc: { zh: '提出“社区反馈强化学习”(RLCF)：用大规模引用信号训练 Scientific Judge，并对齐 Scientific Thinker 提出高影响力研究构想。', en: 'Introduces Reinforcement Learning from Community Feedback (RLCF), training a Scientific Judge and Scientific Thinker from large-scale scientific community signals.' },
+        date: '2026.3',
+        image: 'assets/img/highlights/scientific-taste.png',
+        url: '/blog/cn/scientific-taste/'
+      },
+      {
+        title: { zh: 'MOVA：可扩展的同步视频-音频生成', en: 'MOVA: Towards Scalable and Synchronized Video-Audio Generation' },
+        desc: { zh: '开源视频-音频联合生成模型，可同步生成高质量画面与声音，覆盖唇形同步语音、环境音效与内容匹配的音乐。', en: 'An open-source joint video-audio generation model producing high-quality, synchronized visuals and audio, including lip-synced speech, environmental sound effects, and content-aligned music.' },
+        date: '2026.2',
+        image: 'assets/img/highlights/mova.jpg',
+        url: '/blog/cn/mova/'
+      },
+      {
         title: { zh: 'MOSS-Speech: 真语音到语音生成', en: 'MOSS-Speech: True Speech-to-Speech Generation' },
         desc: { zh: '原生端到端语音交互，无需任何中间文本引导', en: 'Native end-to-end speech interaction without any intermediate text guidance' },
         date: '2025.10.1',

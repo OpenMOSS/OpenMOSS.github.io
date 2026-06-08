@@ -1,0 +1,222 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOVA：可扩展的同步视频-音频生成</title>
+  <meta name="description" content="开源视频-音频联合生成模型，可同步生成高质量画面与声音，覆盖唇形同步语音、环境音效和内容匹配的音乐。">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "MOVA：可扩展的同步视频-音频生成",
+        "description": "开源视频-音频联合生成模型，可同步生成高质量画面与声音，覆盖唇形同步语音、环境音效和内容匹配的音乐。",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-02-01"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>MOVA：可扩展的同步视频-音频生成</h1>
+    <p>开源视频-音频联合生成模型，可同步生成高质量画面与声音，覆盖唇形同步语音、环境音效和内容匹配的音乐。</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/mova.jpg" alt="MOVA 技术报告主图">
+    </figure>
+
+    <p>
+      过去一年，视频生成模型在画面质量、时长和运动一致性上快速进步，但许多系统仍然把声音视为后处理步骤：先生成无声视频，再由另一个模型配音或补音效。
+      这种级联系统容易出现口型不准、音效滞后、空间感割裂等问题。
+      <strong>MOVA</strong> 的目标是从一开始就把视频与音频放在同一个生成过程中，让画面、语音、音效和音乐共同建模。
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>端到端音视频生成</h3>
+        <p>支持文本到音视频、图像到音视频，直接生成同步画面和声音，而不是后期拼接。</p>
+      </div>
+      <div class="summary-card">
+        <h3>口型同步语音</h3>
+        <p>面向中英文对话、演讲和多人谈话，保持口型、语义、表情和语调之间的一致性。</p>
+      </div>
+      <div class="summary-card">
+        <h3>环境音效契合</h3>
+        <p>为车辆、风声、枪声、脚步和空间混响等动态场景生成与画面动作同步的声音反馈。</p>
+      </div>
+      <div class="summary-card">
+        <h3>全栈开源</h3>
+        <p>开放模型权重、训练代码、推理代码和微调方案，降低音视频基模研究与应用门槛。</p>
+      </div>
+    </div>
+
+    <h2>为什么需要原生音视频模型</h2>
+    <p>
+      传统视频生成优先追求画面拟真，声音常常由独立模型补齐。但真实世界中的声音不是附属物，而是物理过程的一部分。
+      车轮卷起沙尘时会伴随马达与路面声，人物开口时唇形、表情和语调应该同时变化，空间中的枪声、回声和装备摩擦也应与画面结构一致。
+      MOVA 把这些要素作为联合生成问题处理。
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>32B</strong>MoE 总参数规模</div>
+      <div class="metric"><strong>18B</strong>推理时激活参数</div>
+      <div class="metric"><strong>720p</strong>最高发布分辨率</div>
+      <div class="metric"><strong>8 秒</strong>单段视听片段长度</div>
+    </div>
+
+    <h2>异构双塔与双向 Bridge</h2>
+    <p>
+      MOVA 采用非对称双塔架构，将大尺寸视频生成骨干与小尺寸音频生成骨干耦合起来。
+      视频塔基于 14B 参数的 Wan 2.2 I2V，音频塔来自 1.3B 参数的文本到音频扩散模型。
+      两个塔之间通过双向 Bridge 交换隐藏状态，使视频在生成过程中感知声音节奏，音频也能捕捉画面动作和空间结构。
+    </p>
+    <p>
+      音频和视频的时间密度天然不同。视频通常以帧为单位，音频信号则更密集。
+      为避免生成过程中出现时间轴漂移，MOVA 引入 <strong>Aligned ROPE</strong>，把音频 token 与视频 token 映射到同一物理时间尺度上，从底层降低不同步问题。
+    </p>
+
+    <h2>多阶段数据管线</h2>
+    <p>
+      MOVA 的数据处理不是简单裁剪视频，而是尽量保留原始音视频信息，并对质量、同步性和描述粒度进行分阶段治理。
+      第一阶段将原始数据预处理为固定长度、固定帧率和分辨率的视频片段；第二阶段根据音频质量、视频质量和音视频同步性筛选高质量片段；第三阶段分别进行音频理解、视觉理解和大语言模型融合，生成细粒度音视频描述。
+    </p>
+    <p>
+      这种管线让模型不只学习“画面里有什么”，还学习“声音为什么出现、何时出现、与哪个动作相关”。
+      对端到端音视频生成而言，这种跨模态标注比单模态 caption 更关键。
+    </p>
+
+    <h2>从 360p 对齐到 720p 精修</h2>
+    <p>
+      MOVA 采用三阶段训练策略。第一阶段在 360p 上建立音频与口型、动作之间的基本对齐；第二阶段仍在 360p 上稳定同步质量并细化语义；第三阶段提升到 720p，把算力集中到高清画面和更细致的空间建模上。
+      这种由粗到细的策略降低了随机初始化 Bridge 的训练难度，也避免过早追求高画质而破坏同步结构。
+    </p>
+    <p>
+      在训练与推理中，MOVA 还引入 Dual Sigma Shift 与双重 CFG。
+      前者为音频和视频设置不同的噪声偏移，减少隐式模态依赖；后者把文本引导和模态桥接引导分开调节，让用户可以在画质、指令遵循与口型同步之间做明确取舍。
+      为避免强引导带来的音量畸变，系统还使用 LUFS 响度归一化稳定输出音频。
+    </p>
+
+    <h2>Agent 工作流</h2>
+    <p>
+      高性能基模并不等于用户输入总是足够清晰。MOVA 在实际部署中加入三阶段 Agent 工作流：先用视觉模型解析首帧图像，再用通用语言模型结合视觉约束重写提示词，最后由 MOVA 同时接受首帧和重写后的提示词进行双重条件生成。
+      这让系统能更好处理原始、含混或与首帧略有偏差的用户需求。
+    </p>
+
+    <h2>评测与开源意义</h2>
+    <p>
+      在 Verse-Bench 等评测中，MOVA 重点验证了音频质量、音视频对齐、口型同步和语音准确度等指标。
+      团队还引入 Arena 人类偏好评测，让用户在不同模型生成结果之间投票，以补充客观指标难以覆盖的整体观感。
+      这些评测共同指向同一件事：音视频生成的关键不只是画面是否漂亮，而是声音、动作、语义和空间是否共同成立。
+    </p>
+    <p>
+      MOVA 的全栈开源补上了端到端音视频基础模型的重要一块。开发者可以直接使用模型生成内容，也可以研究双塔 Diffusion、Bridge、时间对齐、训练策略与推理控制如何共同工作，并在垂直场景中继续微调。
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2602.08794">https://arxiv.org/abs/2602.08794</a><br>
+      GitHub: <a href="https://github.com/OpenMOSS/MOVA">https://github.com/OpenMOSS/MOVA</a><br>
+      Project: <a href="https://mosi.cn/models/mova">https://mosi.cn/models/mova</a>
+    </p>
+  </d-appendix>
+</body>

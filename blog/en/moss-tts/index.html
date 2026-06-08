@@ -1,0 +1,218 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOSS-TTS Technical Report</title>
+  <meta name="description" content="A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "MOSS-TTS Technical Report",
+        "description": "A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-03-01"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>MOSS-TTS Technical Report</h1>
+    <p>A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/moss-tts.png" alt="MOSS-TTS technical report hero image">
+    </figure>
+
+    <p>
+      When speech must not only read the text correctly, but also sound like a particular speaker, stay stable across long narration, switch smoothly between Chinese and English, and satisfy explicit duration constraints, conventional sentence-level TTS systems reach their limits.
+      <strong>MOSS-TTS</strong> is positioned as a speech-generation foundation model: it unifies voice identity, prosody, pronunciation, duration, and long-context stability in a scalable generation framework.
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>Zero-shot voice cloning</h3>
+        <p>Reconstructs voice timbre, speaking rate, pause patterns, and expressive style from short reference speech.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Long-form generation</h3>
+        <p>Targets documentaries, audiobooks, and long explanations, reducing manual segmentation and stitching.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Duration and pronunciation control</h3>
+        <p>Allows fine-grained intervention over speech rate, length, pinyin, phonemes, and local pronunciation.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Multilingual speech</h3>
+        <p>Supports major languages and smooth language switching, including Chinese-English mixed speech.</p>
+      </div>
+    </div>
+
+    <h2>From TTS Model to Speech Foundation Model</h2>
+    <p>
+      MOSS-TTS does not treat speech synthesis as plain text-to-audio conversion. Real speech carries speaker identity, semantic content, emotional density, stress, pauses, speaking rate, and cross-lingual pronunciation habits.
+      A speech foundation model therefore needs three ingredients: a high-fidelity audio representation, large and diverse real-world training data, and an architecture that can model long discrete sequences reliably.
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>12.5 fps</strong>audio-token frame rate</div>
+      <div class="metric"><strong>0.125-4 kbps</strong>variable bitrate range</div>
+      <div class="metric"><strong>3M hours</strong>audio-tokenizer pretraining data</div>
+      <div class="metric"><strong>Two architectures</strong>offline quality and streaming latency</div>
+    </div>
+
+    <h2>MOSS Audio Tokenizer</h2>
+    <p>
+      The interface underneath MOSS-TTS is <strong>MOSS Audio Tokenizer</strong>, built on Cat, a Causal Audio Tokenizer with Transformer.
+      It turns continuous audio into discrete tokens for autoregressive modeling. With a pure causal Transformer design and multi-layer RVQ mechanism, it preserves high-fidelity reconstruction at low bitrates while retaining speech semantics.
+    </p>
+    <p>
+      Instead of relying on existing pretrained audio models such as Whisper or HuBERT, the tokenizer learns directly from raw audio.
+      This gives speech, sound effects, and music a shared discretization interface, which later supports MOSS-TTS, dialogue speech generation, sound-effect generation, and real-time systems.
+    </p>
+
+    <h2>Data Engine and Multi-track Assets</h2>
+    <p>
+      Speech quality comes from data engineering as much as model design. MOSS Data Engine converts massive raw audio into reusable training assets across long narration, dialogue, character voice design, and sound-effect generation.
+      The pipeline governs audio quality, content alignment, trainability, and task structure through multi-stage filtering and consistency checks.
+    </p>
+    <p>
+      For MOSS-TTS, long-form stability, multilingual generalization, zero-shot cloning, and pronunciation control are not isolated features. They share the same representation and data standards, which is why MOSS-TTS can serve as the foundation for the broader model family.
+    </p>
+
+    <h2>Two Architectures</h2>
+    <p>
+      To cover both deployment and research needs, MOSS-TTS trains and releases two complementary architectures.
+      The <strong>Delay-Pattern</strong> architecture uses a single Transformer backbone with multiple heads for RVQ codebooks, and delay scheduling to stabilize multi-codebook token generation. It is suited for long-form narration, content generation, and large-scale deployment.
+    </p>
+    <p>
+      The <strong>Global Latent + Local Transformer</strong> architecture lets the backbone emit a global latent at each step, then uses a lightweight local Transformer to generate token blocks.
+      This route is lighter, more direct, and more streaming-friendly, making it a strong baseline for low-latency interactive systems.
+    </p>
+
+    <h2>Editable Speech Generation</h2>
+    <p>
+      Production workflows often require control over how something is pronounced, how long the utterance should be, where pauses appear, and how local expression changes.
+      MOSS-TTS supports pinyin and phoneme-level controls, allowing users to adjust polyphonic characters, tones, and local pronunciation while preserving naturalness.
+    </p>
+
+    <h2>Role in the MOSS-TTS Family</h2>
+    <p>
+      MOSS-TTS is the foundation model behind the MOSS-TTS Family. MOSS-TTSD targets multi-speaker dialogue, MOSS-VoiceGenerator targets character voice design, MOSS-SoundEffect targets environmental audio, and MOSS-TTS-Realtime targets streaming interaction.
+      Together they form a sound-production stack for creation workflows and product systems.
+    </p>
+
+    <h2>Open Source and Ecosystem</h2>
+    <p>
+      The MOSS-TTS route emphasizes scalability, reproducibility, and deployability. For the research community, the dual-architecture design and unified audio tokenizer provide strong baselines for comparison and ablation.
+      For engineering teams, MOSS-TTS offers a path from high-quality offline synthesis to real-time system integration.
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2603.18090">https://arxiv.org/abs/2603.18090</a><br>
+      GitHub: <a href="https://github.com/OpenMOSS/MOSS-TTS">https://github.com/OpenMOSS/MOSS-TTS</a>
+    </p>
+  </d-appendix>
+</body>

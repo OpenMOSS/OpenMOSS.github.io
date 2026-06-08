@@ -1,0 +1,217 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOVA: Towards Scalable and Synchronized Video-Audio Generation</title>
+  <meta name="description" content="An open-source video-audio generation model that synchronously produces high-quality visuals and sound, including lip-synced speech, environmental sound effects, and content-aligned music.">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "MOVA: Towards Scalable and Synchronized Video-Audio Generation",
+        "description": "An open-source video-audio generation model that synchronously produces high-quality visuals and sound, including lip-synced speech, environmental sound effects, and content-aligned music.",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-02-01"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>MOVA: Towards Scalable and Synchronized Video-Audio Generation</h1>
+    <p>An open-source video-audio generation model that synchronously produces high-quality visuals and sound, including lip-synced speech, environmental sound effects, and content-aligned music.</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/mova.jpg" alt="MOVA technical report hero image">
+    </figure>
+
+    <p>
+      Video generation has advanced rapidly in visual quality, duration, and motion consistency, yet many systems still treat audio as a post-processing step: first generate a silent video, then add speech, sound effects, or music with a separate model.
+      This cascaded design often produces lip-sync errors, delayed effects, and a weak sense of acoustic space.
+      <strong>MOVA</strong> starts from a different premise: video and audio should be generated together.
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>Native video-audio generation</h3>
+        <p>Supports text-to-video-audio and image-to-video-audio, producing synchronized visuals and sound directly.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Lip-synced speech</h3>
+        <p>Handles Chinese and English dialogue, speeches, and multi-person conversations with aligned mouth motion and intonation.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Contextual sound effects</h3>
+        <p>Generates sounds for vehicles, wind, gunshots, footsteps, and room reverberation in sync with visual actions.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Full-stack open source</h3>
+        <p>Releases model weights, training code, inference code, and fine-tuning recipes for research and applications.</p>
+      </div>
+    </div>
+
+    <h2>Why Native Video-Audio Models Matter</h2>
+    <p>
+      Conventional video generation optimizes visual realism first, while audio is often added by an independent system. But sound is part of the physical event.
+      A vehicle turning in sand, a person speaking, or a street scene with gunfire all require audio, motion, semantics, and spatial cues to cohere.
+      MOVA treats this as a joint generation problem.
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>32B</strong>total MoE parameters</div>
+      <div class="metric"><strong>18B</strong>active parameters at inference</div>
+      <div class="metric"><strong>720p</strong>highest released resolution</div>
+      <div class="metric"><strong>8 s</strong>video-audio clip duration</div>
+    </div>
+
+    <h2>Heterogeneous Dual Towers and Bidirectional Bridge</h2>
+    <p>
+      MOVA uses an asymmetric dual-tower architecture coupling a large video backbone with a smaller audio backbone.
+      The video tower builds on the 14B-parameter Wan 2.2 I2V model, while the audio tower comes from a 1.3B-parameter text-to-audio diffusion model.
+      A bidirectional Bridge lets hidden states cross between the towers at each layer, so video can react to audio rhythm and audio can follow visual motion and spatial structure.
+    </p>
+    <p>
+      Audio and video have very different temporal densities. Video is frame-based, while audio is much denser.
+      MOVA introduces <strong>Aligned ROPE</strong> to map audio and video tokens onto the same physical timeline, reducing drift at the representation level.
+    </p>
+
+    <h2>Multi-stage Data Pipeline</h2>
+    <p>
+      MOVA's data pipeline preserves as much original video-audio information as possible while controlling quality, synchronization, and annotation granularity.
+      Raw data is first cut into fixed-length clips; then filtered by audio quality, video quality, and audiovisual synchrony; finally, audio understanding models, visual understanding models, and LLM fusion produce fine-grained video-audio descriptions.
+    </p>
+    <p>
+      This lets the model learn not only what appears in the frame, but also why a sound occurs, when it occurs, and which visual action it belongs to.
+    </p>
+
+    <h2>From 360p Alignment to 720p Refinement</h2>
+    <p>
+      MOVA uses a three-stage training strategy. Stage 1 learns basic audio-visual and lip-motion alignment at 360p. Stage 2 stabilizes synchronization and semantic details at the same resolution. Stage 3 moves to 720p, focusing computation on high-resolution visual detail without breaking the learned synchronization structure.
+    </p>
+    <p>
+      MOVA also introduces Dual Sigma Shift and dual CFG. The former assigns different noise shifts to audio and video, reducing implicit modality dependency. The latter separates text guidance from Bridge guidance, allowing users to trade off visual fidelity, instruction following, and lip-sync precision. LUFS loudness normalization keeps audio stable under strong guidance.
+    </p>
+
+    <h2>Agent Workflow</h2>
+    <p>
+      A strong base model still benefits from better user-intent interpretation. MOVA's deployment workflow first parses the initial image with a vision model, then rewrites the prompt with a general LLM using both the visual constraints and user instruction, and finally performs dual-conditioned generation from the first frame and rewritten prompt.
+      This workflow improves consistency when user prompts are raw, underspecified, or slightly mismatched with the first frame.
+    </p>
+
+    <h2>Evaluation and Open-source Value</h2>
+    <p>
+      MOVA is evaluated on audio quality, audiovisual alignment, lip-sync accuracy, and speech accuracy, and is also tested with an Arena-style human preference evaluation.
+      The key lesson is that video-audio generation should not be judged only by whether the image looks good. Sound, motion, semantics, and space must work together.
+    </p>
+    <p>
+      By open-sourcing the full stack, MOVA gives developers a direct model for content creation and gives researchers a concrete system for studying dual-tower diffusion, bridge-based fusion, temporal alignment, training strategies, and inference-time control.
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2602.08794">https://arxiv.org/abs/2602.08794</a><br>
+      GitHub: <a href="https://github.com/OpenMOSS/MOVA">https://github.com/OpenMOSS/MOVA</a><br>
+      Project: <a href="https://mosi.cn/models/mova">https://mosi.cn/models/mova</a>
+    </p>
+  </d-appendix>
+</body>

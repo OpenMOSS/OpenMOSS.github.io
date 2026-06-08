@@ -1,0 +1,219 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 也能学会“科学品味”</title>
+  <meta name="description" content="AI Can Learn Scientific Taste 提出 RLCF：从科研社区反馈中训练 Scientific Judge 与 Scientific Thinker，让 AI 学会判断并构思高影响力研究想法。">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "AI 也能学会“科学品味”",
+        "description": "AI Can Learn Scientific Taste 提出 RLCF：从科研社区反馈中训练 Scientific Judge 与 Scientific Thinker，让 AI 学会判断并构思高影响力研究想法。",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-03-15"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>AI 也能学会“科学品味”</h1>
+    <p>把“什么研究值得做”转化为可学习的偏好建模问题：从社区反馈中训练科研判断力，再用判断力反过来提升科研构思能力。</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/scientific-taste.png" alt="AI Can Learn Scientific Taste 主图">
+    </figure>
+
+    <p>
+      顶尖科学家不仅会阅读文献、写代码和跑实验，更重要的是能判断什么问题值得做，什么方向可能产生长期影响。
+      <strong>AI Can Learn Scientific Taste</strong> 将这种“科研品味”定义为判断和构思高影响力研究想法的能力，并把它转化成一个偏好建模与对齐问题。
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>RLCF</h3>
+        <p>提出 Reinforcement Learning from Community Feedback，从大规模科研社区反馈中学习偏好，而不是依赖昂贵人工标注。</p>
+      </div>
+      <div class="summary-card">
+        <h3>Scientific Judge</h3>
+        <p>输入两篇论文的标题和摘要，推理判断哪一篇具有更高影响力，学习科研判断力。</p>
+      </div>
+      <div class="summary-card">
+        <h3>Scientific Thinker</h3>
+        <p>给定一篇论文，提出后续研究想法，并由 Judge 作为奖励模型持续对齐。</p>
+      </div>
+      <div class="summary-card">
+        <h3>可泛化的品味</h3>
+        <p>Judge 在未来年份、未见领域和同行评审偏好上都能泛化，Thinker 也能迁移到更晚出现的研究主题。</p>
+      </div>
+    </div>
+
+    <h2>科研品味不是主观任性</h2>
+    <p>
+      论文中的“科研品味”不是个人偏好，而是社区长期互动后形成的集体判断。
+      一项研究如果被持续复用、扩展和引用，说明它契合了学术共同体对价值的长期选择。
+      因此，引用、复用和评审偏好等社区反馈可以成为训练 AI 科研判断力的信号。
+    </p>
+    <p>
+      这个视角补上了 AI 科学家系统中的关键短板。
+      现有模型可以检索文献、生成代码和执行实验，但如果缺少“什么方向值得投入”的判断，就很难形成专家级研究闭环。
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>700K</strong>SciJudgeBench 论文偏好对</div>
+      <div class="metric"><strong>4K</strong>Thinker 高引论文训练样本</div>
+      <div class="metric"><strong>70-80%</strong>训练后想法胜率</div>
+      <div class="metric"><strong>44</strong>页论文与 4 幅图</div>
+    </div>
+
+    <h2>RLCF：从社区反馈中强化学习</h2>
+    <p>
+      RLCF 的核心洞察是：科研构思没有唯一标准答案，传统 RLVR 很难直接使用；RLHF 又受限于专家标注成本，并且难以覆盖社区尺度的长期偏好。
+      团队因此用引用等社区反馈构建偏好信号，在相同领域、相近发表时间的论文之间形成高低影响力对比。
+    </p>
+    <p>
+      整个流程分为三步：第一，收集论文及社区反馈；第二，训练 <strong>Scientific Judge</strong>，让模型判断两篇论文哪一篇更有影响力；第三，用 Judge 作为生成式奖励模型，训练 <strong>Scientific Thinker</strong> 提出更有潜力的后续研究想法。
+    </p>
+
+    <h2>Scientific Judge：学会科研判断力</h2>
+    <p>
+      SciJudgeBench 包含 70 万对 arXiv 论文，每一对论文在领域和发表时间上严格匹配，并具有显著引用差异。
+      这种设计避免模型只学到年份、领域或热门主题的浅层偏差，而是逼迫它从标题和摘要中识别更深层的研究价值信号。
+    </p>
+    <p>
+      实验显示，Scientific Judge 随数据规模和模型规模提升而持续变强。
+      基于 Qwen3-30B 训练的 Judge 超过 GPT-5.2、Gemini 3 Pro 等前沿闭源模型，并且在 2025 年未来论文、未见学科领域以及 ICLR 评审偏好等测试上保持泛化能力。
+    </p>
+
+    <h2>Scientific Thinker：用判断力训练创造力</h2>
+    <p>
+      如果 Judge 是科研鉴赏家，Thinker 就是科研构思者。
+      它的任务是给定一篇论文，提出一个可能更有影响力的后续研究想法。
+      训练时，Judge 对同一组候选想法进行两两比较，组内胜率被用作奖励，这一过程被称为基于比较的 GRPO。
+    </p>
+    <p>
+      在 2025 年 1 月到 7 月的高引论文上训练、仅使用约 4K 数据后，Scientific Thinker 产生的想法相对基座模型达到 70-80% 胜率，并能泛化到晚于训练数据的研究主题。
+      这说明更好的科研判断力可以反过来引导更强的科研创造力。
+    </p>
+
+    <h2>迈向专家级 AI 科学家</h2>
+    <p>
+      这项工作把“科研品味”从难以描述的专家直觉拆解为两个可训练能力：判断力与构思力。
+      Judge 负责识别什么样的研究更可能产生影响，Thinker 负责提出更有潜力的新方向。
+      二者合在一起，形成了 AI 科学家从评估到生成的闭环。
+    </p>
+    <p>
+      这并不意味着引用数就是科研价值的全部，也不意味着模型已经拥有完整的人类科学判断。
+      但 RLCF 给出了一个可扩展起点：用社区长期反馈训练 AI 识别价值，再把这种识别能力用于生成更好的研究想法。
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2603.14473">https://arxiv.org/abs/2603.14473</a><br>
+      Project: <a href="https://tongjingqi.github.io/AI-Can-Learn-Scientific-Taste">https://tongjingqi.github.io/AI-Can-Learn-Scientific-Taste</a><br>
+      GitHub: <a href="https://github.com/tongjingqi/AI-Can-Learn-Scientific-Taste">https://github.com/tongjingqi/AI-Can-Learn-Scientific-Taste</a><br>
+      Data and models: <a href="https://huggingface.co/collections/OpenMOSS-Team/ai-can-learn-scientific-taste">https://huggingface.co/collections/OpenMOSS-Team/ai-can-learn-scientific-taste</a>
+    </p>
+  </d-appendix>
+</body>

@@ -1,0 +1,221 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Can Learn Scientific Taste</title>
+  <meta name="description" content="AI Can Learn Scientific Taste proposes RLCF, training a Scientific Judge and Scientific Thinker from community feedback so AI can judge and propose high-impact research ideas.">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "AI Can Learn Scientific Taste",
+        "description": "AI Can Learn Scientific Taste proposes RLCF, training a Scientific Judge and Scientific Thinker from community feedback so AI can judge and propose high-impact research ideas.",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-03-15"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>AI Can Learn Scientific Taste</h1>
+    <p>Turning "what is worth studying" into a learnable preference-modeling problem: learn scientific judgment from community feedback, then use that judgment to improve scientific ideation.</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/scientific-taste.png" alt="AI Can Learn Scientific Taste hero image">
+    </figure>
+
+    <p>
+      Top scientists do more than read papers, write code, and run experiments.
+      They judge which problems are worth pursuing and which directions may have lasting impact.
+      <strong>AI Can Learn Scientific Taste</strong> defines scientific taste as the ability to judge and propose high-impact research ideas, then formulates it as a preference modeling and alignment problem.
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>RLCF</h3>
+        <p>Reinforcement Learning from Community Feedback learns preferences from large-scale scientific community signals instead of costly expert labels.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Scientific Judge</h3>
+        <p>Given the titles and abstracts of two papers, the model reasons about which work is likely to have higher impact.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Scientific Thinker</h3>
+        <p>Given a paper, the model proposes follow-up research ideas and is aligned with the Judge as a reward model.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Generalizable taste</h3>
+        <p>The Judge generalizes to future years, unseen fields, and peer-review preferences; the Thinker transfers to later research topics.</p>
+      </div>
+    </div>
+
+    <h2>Scientific Taste Is Not Arbitrary Preference</h2>
+    <p>
+      The paper treats scientific taste not as an individual's subjective whim, but as a collective judgment formed through long-term community interaction.
+      If a work is repeatedly reused, extended, and cited, it reflects a durable community preference about research value.
+      Citations, reuse, and review preferences can therefore provide learning signals for scientific judgment.
+    </p>
+    <p>
+      This perspective addresses a missing component in AI scientist systems.
+      Current models can retrieve literature, write code, and execute experiments, but without a sense of which direction is worth pursuing, they struggle to close the expert research loop.
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>700K</strong>SciJudgeBench paper pairs</div>
+      <div class="metric"><strong>4K</strong>Thinker training examples</div>
+      <div class="metric"><strong>70-80%</strong>win rate after training</div>
+      <div class="metric"><strong>44</strong>paper pages and 4 figures</div>
+    </div>
+
+    <h2>RLCF: Reinforcement Learning from Community Feedback</h2>
+    <p>
+      RLCF starts from a practical observation: scientific ideation has no single ground-truth answer, making RLVR difficult to apply directly.
+      RLHF is also limited because expert annotation is expensive and cannot easily capture long-term community-scale preference.
+      The team instead constructs preference pairs using community feedback such as citations, matching papers by field and publication time.
+    </p>
+    <p>
+      The workflow has three steps. First, collect papers and community feedback. Second, train <strong>Scientific Judge</strong> to decide which of two papers has higher impact. Third, use the Judge as a generative reward model to train <strong>Scientific Thinker</strong> to propose stronger follow-up ideas.
+    </p>
+
+    <h2>Scientific Judge Learns Research Judgment</h2>
+    <p>
+      SciJudgeBench contains 700K arXiv paper pairs. Each pair is tightly matched by field and publication year while showing a significant citation difference.
+      This design discourages shortcuts based only on year, domain, or topic popularity, pushing the model to learn deeper signals from titles and abstracts.
+    </p>
+    <p>
+      Experiments show that Scientific Judge improves with both data scale and model scale.
+      A Judge trained from Qwen3-30B outperforms frontier closed models such as GPT-5.2 and Gemini 3 Pro, while also generalizing to 2025 papers, unseen disciplines, and ICLR review-score preferences.
+    </p>
+
+    <h2>Scientific Thinker Uses Judgment to Improve Creativity</h2>
+    <p>
+      If Judge is the research critic, Thinker is the research idea generator.
+      Given a paper, it proposes a potentially high-impact follow-up idea.
+      During training, the Judge compares generated ideas pairwise within a group; the within-group win rate becomes the reward, a process the paper calls comparison-based GRPO.
+    </p>
+    <p>
+      After training on high-citation papers from January to July 2025 using only about 4K examples, Scientific Thinker reaches a 70-80% win rate over its base model and generalizes to later research topics.
+      Better judgment can therefore guide stronger scientific creativity.
+    </p>
+
+    <h2>Toward Expert-Level AI Scientists</h2>
+    <p>
+      This work decomposes "scientific taste" into two trainable abilities: judgment and ideation.
+      Judge identifies which research is more likely to matter; Thinker proposes directions with higher potential.
+      Together, they form a loop from evaluation to generation.
+    </p>
+    <p>
+      Citations are not the whole of scientific value, and the model does not yet possess full human scientific judgment.
+      But RLCF provides a scalable starting point: learn value signals from long-term community feedback, then use those signals to generate better research ideas.
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2603.14473">https://arxiv.org/abs/2603.14473</a><br>
+      Project: <a href="https://tongjingqi.github.io/AI-Can-Learn-Scientific-Taste">https://tongjingqi.github.io/AI-Can-Learn-Scientific-Taste</a><br>
+      GitHub: <a href="https://github.com/tongjingqi/AI-Can-Learn-Scientific-Taste">https://github.com/tongjingqi/AI-Can-Learn-Scientific-Taste</a><br>
+      Data and models: <a href="https://huggingface.co/collections/OpenMOSS-Team/ai-can-learn-scientific-taste">https://huggingface.co/collections/OpenMOSS-Team/ai-can-learn-scientific-taste</a>
+    </p>
+  </d-appendix>
+</body>

@@ -1,0 +1,210 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm</title>
+  <meta name="description" content="Thinking with Video frames video generation as a multimodal reasoning paradigm, using generated video frames as a dynamic medium for visual and text-centric reasoning.">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm",
+        "description": "Thinking with Video frames video generation as a multimodal reasoning paradigm, using generated video frames as a dynamic medium for visual and text-centric reasoning.",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-06-01"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm</h1>
+    <p>Turning video generation models from content generators into dynamic reasoners: a model can express processes, test hypotheses, and reason through generated frames.</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/thinking-with-video.png" alt="Thinking with Video hero image">
+    </figure>
+
+    <p>
+      Multimodal reasoning often relies on two intermediate representations: language models reason through text, while vision-language systems reason over static images.
+      Many questions, however, are inherently dynamic: how an object moves, how a structure changes, how a physical process unfolds, or how a geometric relation evolves over time.
+      <strong>Thinking with Video</strong> asks a direct question: what if a video generation model could make the reasoning process visible as a sequence of frames?
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>Video as a reasoning medium</h3>
+        <p>The generated video is not only an output. It becomes a visible trajectory that represents the model's dynamic reasoning process.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Unified multimodal representation</h3>
+        <p>Text conditions, visual states, and temporal evolution are grounded in one video trajectory instead of separate text and image channels.</p>
+      </div>
+      <div class="summary-card">
+        <h3>VideoThinkBench</h3>
+        <p>The benchmark covers visual puzzles, dynamic understanding, mathematics, and multidisciplinary question answering.</p>
+      </div>
+      <div class="summary-card">
+        <h3>Composable reasoning strategies</h3>
+        <p>Self-consistency and in-context learning further improve performance, suggesting that video reasoning can be strengthened systematically.</p>
+      </div>
+    </div>
+
+    <h2>Why Reason with Video</h2>
+    <p>
+      A static image captures only a moment, while text often compresses spatial, temporal, and motion relations into discrete symbols.
+      For visual puzzles, physical processes, action prediction, and geometric transformations, this compression can remove essential information.
+      Video generation models can simulate what follows from a condition, turning a hypothetical process into an inspectable trajectory.
+    </p>
+    <p>
+      This does not claim that the model has a complete internal world model.
+      The point is that video provides a medium closer to dynamic reality: a model can generate candidate processes and use frame-level changes to support a final answer.
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>34</strong>paper pages</div>
+      <div class="metric"><strong>17</strong>figures</div>
+      <div class="metric"><strong>+10%</strong>over GPT-5 on visual puzzles</div>
+      <div class="metric"><strong>69.2%</strong>on MMMU</div>
+    </div>
+
+    <h2>The Paradigm</h2>
+    <p>
+      In Thinking with Video, the model receives a question, image, or text condition, then generates a video as an intermediate reasoning artifact.
+      On vision-centric tasks, the video can reveal object relations, occlusion changes, and geometric evolution.
+      On text-centric tasks, it can act as a multimodal scratchpad that maps abstract problems into visualized steps.
+    </p>
+    <p>
+      The workflow changes the role of a video generation model from "what should be generated" to "what process supports the answer."
+      Multiple generations enable self-consistency, and examples can guide the model toward more stable video reasoning patterns.
+    </p>
+
+    <h2>VideoThinkBench</h2>
+    <p>
+      To evaluate this capability, the paper introduces <strong>VideoThinkBench</strong>.
+      It includes vision-centric tasks such as Eyeballing Puzzles and text-centric tasks such as GSM8K, MATH, and MMMU.
+      This design avoids evaluating video models only by visual quality and instead asks whether generated processes help answer reasoning questions.
+    </p>
+    <p>
+      The results show that video generation models such as Sora-2 are already competitive with strong vision-language models on vision-centric tasks.
+      The paper reports that Sora-2 surpasses GPT-5 by about 10% on Eyeballing Puzzles, while also reaching 92% on MATH and 69.2% on MMMU.
+    </p>
+
+    <h2>What It Changes</h2>
+    <p>
+      The contribution is not that every reasoning problem should become a video problem.
+      Instead, it identifies a new direction: a generative model can use its strongest modality as the reasoning space.
+      Text chain-of-thought is well suited for symbolic steps, images for static structure, and video for time, motion, and causal processes.
+    </p>
+    <p>
+      Video reasoning still faces high generation cost, error accumulation, verifiability, and hallucination.
+      But it gives researchers a concrete way to turn the dynamic modeling ability of video generators into measurable and improvable reasoning behavior.
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2511.04570">https://arxiv.org/abs/2511.04570</a><br>
+      CVPR 2026: <a href="https://openaccess.thecvf.com/content/CVPR2026/html/Tong_Thinking_with_Video_Video_Generation_as_a_Promising_Multimodal_Reasoning_CVPR_2026_paper.html">https://openaccess.thecvf.com/content/CVPR2026/html/Tong_Thinking_with_Video_Video_Generation_as_a_Promising_Multimodal_Reasoning_CVPR_2026_paper.html</a>
+    </p>
+  </d-appendix>
+</body>

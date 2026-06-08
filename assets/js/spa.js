@@ -389,12 +389,19 @@
     var items = [];
     (SPA_DATA.highlights || []).forEach(function (h) {
       var htags = (h.tags && (h.tags[currentLang] || h.tags.zh)) || [];
+      var url = h.url || 'javascript:void(0)';
+      var isBlogUrl = /^\/?blog\//.test(url);
+      if (isBlogUrl) {
+        url = currentLang === 'en'
+          ? url.replace(/^\/?blog\/cn\//, '/blog/en/')
+          : url.replace(/^\/?blog\/en\//, '/blog/cn/');
+      }
       items.push({
-        tags: htags.concat([t('blog.tag.external')]),
+        tags: htags.concat([t(isBlogUrl ? 'blog.tag.blog' : 'blog.tag.external')]),
         title: pick(h.title),
         desc: pick(h.desc),
         date: h.date, sort: dateKey(h.date), image: h.image,
-        url: h.url || 'javascript:void(0)', external: !!h.url
+        url: url, external: !!h.url && !isBlogUrl
       });
     });
     (SPA_DATA.blogPosts || []).forEach(function (p) {

@@ -1,0 +1,209 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thinking with Video：用视频生成做多模态推理</title>
+  <meta name="description" content="Thinking with Video 提出一种用视频生成模型进行多模态推理的范式，让模型把动态过程展开为视频帧，并在 VideoThinkBench 上评估视觉与文本推理能力。">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+    d-article {
+      color: rgba(0, 0, 0, 0.84);
+    }
+
+    d-article h2 {
+      margin-top: 2.2em;
+    }
+
+    d-article h3 {
+      margin-top: 1.6em;
+    }
+
+    .article-hero {
+      grid-column: page;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .article-hero img {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .summary-grid {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 1.6rem 0 2rem;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .metric-strip {
+      grid-column: page;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .metric {
+      border-top: 2px solid #1d4f91;
+      padding-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .resource-list a {
+      word-break: break-all;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid,
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "Thinking with Video：用视频生成做多模态推理",
+        "description": "Thinking with Video 提出一种用视频生成模型进行多模态推理的范式，让模型把动态过程展开为视频帧，并在 VideoThinkBench 上评估视觉与文本推理能力。",
+        "authors": [
+          {
+            "author": "OpenMOSS Team",
+            "authorURL": "https://github.com/OpenMOSS",
+            "affiliation": "SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-06-01"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>Thinking with Video：用视频生成做多模态推理</h1>
+    <p>把视频生成模型从“内容生成器”推进为“动态推理器”：让模型用连续视频帧表达过程、验证假设，并在统一媒介中处理视觉与文本推理。</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/thinking-with-video.png" alt="Thinking with Video 主图">
+    </figure>
+
+    <p>
+      多模态推理通常依赖两类中间表示：语言模型用文本链式思考，视觉模型用静态图像理解场景。
+      但很多问题本质上是动态的：物体如何移动、结构如何变化、力学过程如何展开、几何关系如何在时间中显现。
+      <strong>Thinking with Video</strong> 提出一个直接的想法：让视频生成模型把推理过程显式展开成视频，再从生成的帧序列中完成判断。
+    </p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>视频作为推理媒介</h3>
+        <p>不再把视频只看作输出结果，而是把连续帧当作模型的可视化思考轨迹，用来表达动态过程。</p>
+      </div>
+      <div class="summary-card">
+        <h3>统一多模态表示</h3>
+        <p>将文字条件、视觉状态和时间演化压到同一条视频轨迹中，减少文本推理与视觉生成之间的割裂。</p>
+      </div>
+      <div class="summary-card">
+        <h3>VideoThinkBench</h3>
+        <p>构建覆盖视觉谜题、动态理解、数学和多学科问答的评测，用来观察视频生成模型的推理边界。</p>
+      </div>
+      <div class="summary-card">
+        <h3>可组合推理策略</h3>
+        <p>自一致性采样和上下文示例能进一步提升表现，说明视频生成也能承载类似推理增强机制。</p>
+      </div>
+    </div>
+
+    <h2>为什么需要“用视频思考”</h2>
+    <p>
+      静态图像只能捕捉一个瞬间，文本又经常需要把空间、时间和运动关系压缩成离散符号。
+      对视觉谜题、物理过程、动作预测和几何变换来说，这种压缩会丢掉关键线索。
+      视频生成模型具备从条件出发模拟后续画面的能力，因此它天然可以把“如果这样，会发生什么”变成一段可观察的轨迹。
+    </p>
+    <p>
+      这并不意味着模型真的在内部拥有完备的世界模型。
+      关键在于，视频为推理提供了一种更贴近动态世界的外显媒介：模型可以生成多个候选过程，再根据帧序列中的状态变化选择答案。
+    </p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>34</strong>页技术论文</div>
+      <div class="metric"><strong>17</strong>幅图展示范式与评测</div>
+      <div class="metric"><strong>+10%</strong>视觉谜题上超过 GPT-5</div>
+      <div class="metric"><strong>69.2%</strong>MMMU 文本中心任务表现</div>
+    </div>
+
+    <h2>范式：生成一段可被读取的过程</h2>
+    <p>
+      在 Thinking with Video 中，模型接收问题、图像或文字条件，然后生成一段视频作为中间推理结果。
+      对于视觉中心任务，生成的视频可以展示物体关系、遮挡变化或几何结构如何演化；对于文本中心任务，视频也可以作为一种多模态草稿，把抽象问题落到可视化步骤中。
+    </p>
+    <p>
+      这种流程使视频生成模型不仅回答“生成什么”，也回答“为什么会这样”。
+      当任务需要多个候选路径时，可以通过多次生成进行自一致性比较；当任务需要示例诱导时，也可以通过上下文样例引导模型形成更稳定的视频推理模式。
+    </p>
+
+    <h2>VideoThinkBench：从视觉谜题到学科问答</h2>
+    <p>
+      为了系统评估这种能力，论文提出了 <strong>VideoThinkBench</strong>。
+      评测既包含视觉中心任务，如 Eyeballing Puzzles，也包含文本中心任务，如 GSM8K、MATH 和 MMMU。
+      这样的设置可以避免只看“画面是否逼真”，而是直接追问：生成过程是否真的帮助模型做出正确判断。
+    </p>
+    <p>
+      结果显示，在视觉中心任务上，Sora-2 等视频生成模型已经能与强视觉语言模型竞争；在 Eyeballing Puzzles 上，论文报告其超过 GPT-5 约 10%。
+      在文本中心任务上，视频生成模型也并非只能处理视觉题：论文报告 Sora-2 在 MATH 上达到 92%，在 MMMU 上达到 69.2%。
+    </p>
+
+    <h2>它改变了什么</h2>
+    <p>
+      这项工作的重点不是把所有推理都改写成视频，而是指出一个新的方向：生成模型可以用自身擅长的模态作为推理空间。
+      文本链式思考适合符号演算，图像适合静态结构，视频则适合时间、运动和因果过程。
+      当模型能在这些媒介之间切换时，多模态推理就不再只是“看图答题”，而是开始接近“模拟过程后再判断”。
+    </p>
+    <p>
+      当然，视频推理还面临生成成本、错误累积、可验证性和幻觉等问题。
+      但它提供了一个清晰的研究入口：把视频生成模型的动态建模能力转化为可评测、可组合、可改进的推理能力。
+    </p>
+  </d-article>
+
+  <d-appendix>
+    <h3>Resources</h3>
+    <p class="resource-list">
+      Paper: <a href="https://arxiv.org/abs/2511.04570">https://arxiv.org/abs/2511.04570</a><br>
+      CVPR 2026: <a href="https://openaccess.thecvf.com/content/CVPR2026/html/Tong_Thinking_with_Video_Video_Generation_as_a_Promising_Multimodal_Reasoning_CVPR_2026_paper.html">https://openaccess.thecvf.com/content/CVPR2026/html/Tong_Thinking_with_Video_Video_Generation_as_a_Promising_Multimodal_Reasoning_CVPR_2026_paper.html</a>
+    </p>
+  </d-appendix>
+</body>

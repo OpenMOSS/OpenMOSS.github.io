@@ -22,7 +22,7 @@ desc: A “Thinking with Video” paradigm—video-generation models like Sora-2
 标签: 多模态, 视频
 tags: Multimodal, Video
 图: assets/img/highlights/thinking-with-video.png
-链接: https://openaccess.thecvf.com/content/CVPR2026/html/Tong_Thinking_with_Video_Video_Generation_as_a_Promising_Multimodal_Reasoning_CVPR_2026_paper.html
+链接: /blog/cn/thinking-with-video/
 
 ---
 
@@ -34,7 +34,7 @@ desc: A scalable speech-generation foundation model supporting zero-shot voice c
 标签: 语音
 tags: Speech
 图: assets/img/highlights/moss-tts.png
-链接: https://arxiv.org/abs/2603.18090
+链接: /blog/cn/moss-tts/
 
 ---
 
@@ -46,7 +46,7 @@ desc: Introduces Reinforcement Learning from Community Feedback (RLCF): a "Scien
 标签: AI4AI
 tags: AI4AI
 图: assets/img/highlights/scientific-taste.png
-链接: https://arxiv.org/abs/2603.14473
+链接: /blog/cn/scientific-taste/
 
 ---
 
@@ -58,7 +58,7 @@ desc: An open-source joint video-audio generation model producing high-quality, 
 标签: 视频, 语音
 tags: Video, Speech
 图: assets/img/highlights/mova.jpg
-链接: https://arxiv.org/abs/2602.08794
+链接: /blog/cn/mova/
 
 ---
 
