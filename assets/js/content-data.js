@@ -137,12 +137,12 @@
       { id: 'visiting', titleKey: 'positions.card.visiting', descKey: 'positions.card.visiting.desc' }
     ],
     whyUs: [
-      { icon: '✨', titleKey: 'positions.why.research', descKey: 'positions.why.research.desc' },
-      { icon: '🚀', titleKey: 'positions.why.resources', descKey: 'positions.why.resources.desc' },
-      { icon: '👥', titleKey: 'positions.why.team', descKey: 'positions.why.team.desc' },
-      { icon: '💡', titleKey: 'positions.why.opensource', descKey: 'positions.why.opensource.desc' },
-      { icon: '🌏', titleKey: 'positions.why.collaboration', descKey: 'positions.why.collaboration.desc' },
-      { icon: '📈', titleKey: 'positions.why.career', descKey: 'positions.why.career.desc' }
+      { icon: '<i class="fas fa-microscope"></i>', titleKey: 'positions.why.research', descKey: 'positions.why.research.desc' },
+      { icon: '<i class="fas fa-microchip"></i>', titleKey: 'positions.why.resources', descKey: 'positions.why.resources.desc' },
+      { icon: '<i class="fas fa-users"></i>', titleKey: 'positions.why.team', descKey: 'positions.why.team.desc' },
+      { icon: '<i class="fas fa-code-branch"></i>', titleKey: 'positions.why.opensource', descKey: 'positions.why.opensource.desc' },
+      { icon: '<i class="fas fa-earth-asia"></i>', titleKey: 'positions.why.collaboration', descKey: 'positions.why.collaboration.desc' },
+      { icon: '<i class="fas fa-graduation-cap"></i>', titleKey: 'positions.why.career', descKey: 'positions.why.career.desc' }
     ],
     positions: {
       // 职位详情（双语支持）
