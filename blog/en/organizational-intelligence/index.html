@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organizational Intelligence: Governing Agentic AI at the Level of the Organization</title>
+  <meta name="description" content="As AI moves from capable models to autonomous agents, the binding constraint shifts from the model to the organization around it. This essay argues that the organization—not the isolated model or task—is the right unit at which to design, evaluate, and govern agentic AI, and makes it concrete with a state formalization, a three-loop capability model, an L0–L5 governance-maturity model, and requirements for organization-level benchmarks.">
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <script defer src="/blog/blog-chrome.js?v=3"></script>
+  <style>
+/* ============================================================
+   SURFACE B — OI Distill v2 post  (FINAL, drop-in <style>)
+   Scoped to this page only.
+   1) Widen the body "text" column to ~800px while preserving the
+      named Distill grid lines (screen|page|kicker|middle|text|
+      gutter) so grid-column:page wide elements still span wide and
+      d-title/d-byline/d-appendix stay left-aligned with the body.
+   2) Modernize typography + components on the brand #0e419c family.
+   <768px keeps Distill's near-full-width default (not overridden).
+   ============================================================ */
+
+/* ---- Scoped brand tokens (so this works even if site vars are absent) ---- */
+d-article,
+d-title,
+d-byline,
+d-appendix{
+  --oi-blue:#0e419c;
+  --oi-blue-80:#145bda;
+  --oi-blue-dark:#08306f;
+  --oi-ink:#1a2233;
+  --oi-soft:#51607a;
+  --oi-border:#dbe3f2;
+  --oi-mist:#eaf0fb;
+  --oi-band:#eef3fb;
+  --oi-sand:#f7f9fc;
+}
+
+/* ============================================================
+   1. SINGLE-COLUMN WIDTH  (figures == text width, no breakout)
+   One unified ~880px column: body text AND every wide element
+   (hero, figures, tables, summary cards, formula) share the same
+   width — page / middle / text / gutter all map to the same column,
+   so nothing breaks out wider than the prose. Centered;
+   minmax(20px,1fr) guarantees a side margin at all widths.
+   <768px keeps Distill's near-full-width default.
+   ============================================================ */
+@media (min-width:768px){
+  d-article,
+  d-title,
+  d-byline,
+  d-appendix,
+  distill-appendix,
+  d-footnote-list,
+  d-citation-list{
+    grid-template-columns:
+      [screen-start] minmax(20px,1fr)
+      [page-start kicker-start middle-start text-start gutter-start] minmax(0,880px)
+      [text-end middle-end page-end gutter-end kicker-end] minmax(20px,1fr)
+      [screen-end];
+    grid-column-gap:0;
+  }
+}
+
+/* ============================================================
+   2. TYPOGRAPHY  (Roboto already applied site-wide)
+   ============================================================ */
+d-article{
+  color:var(--oi-ink);
+  font-size:17px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+d-article p{margin:0 0 1.25em}
+
+d-article a,
+d-article p a,
+d-article li a{
+  color:var(--oi-blue);
+  text-decoration:none;
+  border-bottom:1px solid rgba(14,65,156,.28);
+  transition:color .15s ease,border-color .15s ease;
+}
+d-article a:hover{
+  color:var(--oi-blue-dark);
+  border-bottom-color:var(--oi-blue);
+}
+d-article strong{font-weight:650;color:var(--oi-ink)}
+
+/* ---- Headings: single brand accent tick on h2 (no double rule) ---- */
+d-article h2{
+  margin:2.5em 0 .7em;
+  font-size:30px;
+  line-height:1.24;
+  font-weight:680;
+  letter-spacing:-.016em;
+  color:var(--oi-ink);
+}
+d-article h2::before{
+  content:"";
+  display:block;
+  width:40px;
+  height:3px;
+  margin-bottom:.7em;
+  background:var(--oi-blue);
+  border-radius:2px;
+}
+d-article h3{
+  margin:1.8em 0 .5em;
+  font-size:21px;
+  line-height:1.3;
+  font-weight:650;
+  letter-spacing:-.01em;
+  color:var(--oi-ink);
+}
+
+/* ---- Lists ---- */
+d-article ul,
+d-article ol{margin:0 0 1.3em;padding-left:1.4em}
+d-article li{margin:.4em 0;line-height:1.7}
+d-article ul>li::marker{color:var(--oi-blue)}
+
+/* ---- Justified body prose (scoped: not summary cards / captions) ---- */
+d-article > p,
+d-article > ul > li,
+d-article > ol > li{
+  text-align:justify;
+  hyphens:auto;
+  -webkit-hyphens:auto;
+}
+
+/* ---- Blockquote: brand keyline + soft mist tint ---- */
+d-article blockquote{
+  margin:1.6em 0;
+  padding:.45em 0 .45em 1.25em;
+  border-left:3px solid var(--oi-blue);
+  font-style:italic;
+  font-size:1.02em;
+  line-height:1.6;
+  color:var(--oi-soft);
+  background:linear-gradient(90deg,rgba(234,240,251,.5),rgba(234,240,251,0));
+  border-radius:0 8px 8px 0;
+}
+
+/* ============================================================
+   TITLE BLOCK + BYLINE
+   ============================================================ */
+d-title h1{
+  font-size:46px;
+  line-height:1.12;
+  font-weight:700;
+  letter-spacing:-.025em;
+  color:var(--oi-ink);
+  margin:0 0 .35em;
+}
+d-title p{
+  font-size:21px;
+  line-height:1.5;
+  font-weight:400;
+  color:var(--oi-soft);
+  max-width:52ch;
+  margin:0;
+}
+d-byline{
+  border-top:1px solid var(--oi-border);
+  border-bottom:1px solid var(--oi-border);
+  margin:1.8em 0 0;
+  padding:1em 0;
+  font-size:13px;
+  line-height:1.6;
+  color:var(--oi-soft);
+}
+d-byline a{color:var(--oi-blue);text-decoration:none}
+d-byline a:hover{text-decoration:underline}
+
+/* ============================================================
+   WIDE COMPONENTS  (keep grid-column:page so they span wide)
+   ============================================================ */
+
+/* ---- Hero ---- */
+.article-hero{grid-column:page;margin:1.8rem auto 2.4rem;justify-self:center}
+.article-hero img{
+  max-width:100%;
+  height:auto;
+  display:block;
+  border:1px solid var(--oi-border);
+  border-radius:12px;
+  box-shadow:0 10px 28px rgba(14,65,156,.09);
+}
+
+/* ---- Figures ---- */
+d-article figure.fig{grid-column:page;margin:2.4rem auto;justify-self:center}
+d-article figure.fig img{
+  max-width:100%;
+  height:auto;
+  display:block;
+  border:1px solid var(--oi-border);
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 8px 22px rgba(14,65,156,.07);
+}
+d-article figure.fig figcaption{
+  font-size:.86rem;
+  line-height:1.6;
+  color:var(--oi-soft);
+  margin-top:.85rem;
+  padding-left:.9rem;
+  border-left:2px solid var(--oi-border);
+  max-width:62ch;
+}
+
+/* ---- Summary grid (2-col cards) with a quiet left accent rule ---- */
+.summary-grid{
+  grid-column:page;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin:1.9rem 0 2.4rem;
+}
+.summary-card{
+  position:relative;
+  border:1px solid var(--oi-border);
+  border-radius:12px;
+  padding:20px 22px 20px 24px;
+  background:#fff;
+  box-shadow:0 1px 2px rgba(14,65,156,.05);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.summary-card::before{
+  content:"";
+  position:absolute;
+  left:0;top:16px;bottom:16px;
+  width:3px;
+  border-radius:0 2px 2px 0;
+  background:var(--oi-blue);
+  opacity:.85;
+}
+.summary-card:hover{
+  transform:translateY(-2px);
+  border-color:var(--oi-blue-80);
+  box-shadow:0 12px 26px -8px rgba(14,65,156,.16);
+}
+.summary-card h3{
+  margin:0 0 8px;
+  font-size:1.02rem;
+  font-weight:650;
+  letter-spacing:-.01em;
+  color:var(--oi-blue-dark);
+}
+.summary-card p{
+  margin:0;
+  font-size:.95rem;
+  line-height:1.6;
+  color:var(--oi-soft);
+}
+
+/* ---- State-vector formula ---- */
+.state-vector{
+  grid-column:page;
+  text-align:center;
+  font-size:1.22rem;
+  letter-spacing:.03em;
+  line-height:1.6;
+  margin:1.7rem 0 2rem;
+  padding:1.2rem 1.4rem;
+  color:var(--oi-blue-dark);
+  background:var(--oi-band);
+  border:1px solid var(--oi-border);
+  border-radius:12px;
+}
+.state-vector sub{font-size:.7em}
+
+/* ---- OI table ---- */
+d-article table.oi{
+  grid-column:page;
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+  margin:1.7rem 0 2.4rem;
+  font-size:.93rem;
+  border:1px solid var(--oi-border);
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+}
+d-article table.oi th,
+d-article table.oi td{
+  border-bottom:1px solid var(--oi-border);
+  padding:12px 16px;
+  text-align:left;
+  vertical-align:top;
+  line-height:1.55;
+}
+d-article table.oi thead th{
+  background:var(--oi-band);
+  color:var(--oi-blue-dark);
+  font-weight:700;
+  font-size:.8rem;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  border-bottom:2px solid #c7d6ee;
+}
+d-article table.oi tbody tr:last-child td{border-bottom:0}
+d-article table.oi tbody tr:hover td{background:var(--oi-sand)}
+d-article table.oi td:first-child{
+  white-space:nowrap;
+  font-weight:650;
+  color:var(--oi-blue);
+}
+
+/* ---- Appendix / Resources ---- */
+d-appendix{color:var(--oi-soft);border-top:1px solid var(--oi-border)}
+d-appendix h3,
+.resource-list h3{color:var(--oi-ink);font-weight:650}
+.resource-list{font-size:15px;line-height:1.7;color:var(--oi-soft)}
+.resource-list a{
+  word-break:break-word;
+  overflow-wrap:anywhere;
+  color:var(--oi-blue);
+  text-decoration:none;
+  border-bottom:1px solid rgba(14,65,156,.28);
+}
+.resource-list a:hover{
+  color:var(--oi-blue-dark);
+  border-bottom-color:var(--oi-blue-dark);
+}
+
+/* ============================================================
+   RESPONSIVE  (<768px keeps Distill's near-full-width default)
+   ============================================================ */
+@media (max-width:1024px){
+  d-title h1{font-size:40px}
+  d-title p{font-size:19px}
+  d-article h2{font-size:27px}
+}
+@media (max-width:760px){
+  d-article{font-size:16.5px;line-height:1.72}
+  d-title h1{font-size:32px;letter-spacing:-.02em}
+  d-title p{font-size:18px}
+  d-article h2{font-size:25px;margin-top:2em}
+  d-article h3{font-size:19px}
+  .summary-grid{grid-template-columns:1fr;gap:14px}
+  .state-vector{font-size:1.1rem;padding:18px 14px}
+  .article-hero img,
+  d-article figure.fig img{border-radius:8px}
+  d-article table.oi{font-size:.88rem}
+  d-article table.oi th,
+  d-article table.oi td{padding:10px 12px}
+}
+  
+/* ---- References list ---- */
+d-article ol.ref-list{font-size:.9rem;line-height:1.5;color:var(--oi-soft);padding-left:1.6em;margin:.4em 0 1em}
+d-article ol.ref-list li{margin:0 0 .7em;text-align:left;hyphens:none}
+d-article ol.ref-list a{color:var(--oi-blue);word-break:break-word;border-bottom:1px solid rgba(14,65,156,.28)}
+
+/* ---- Citation block ---- */
+d-appendix .cite-text{font-size:.92rem;line-height:1.6;color:var(--oi-soft);margin:.2rem 0 .8rem}
+d-appendix .cite-text a{color:var(--oi-blue);border-bottom:1px solid rgba(14,65,156,.28)}
+d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;line-height:1.5;background:var(--oi-band);border:1px solid var(--oi-border);border-radius:10px;padding:14px 16px;overflow-x:auto;color:var(--oi-ink);white-space:pre;margin:0 0 .4rem}
+</style>
+</head>
+
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title": "Organizational Intelligence: Governing Agentic AI at the Level of the Organization",
+        "description": "As AI moves from capable models to autonomous agents, the binding constraint shifts from the model to the organization around it. The organization—not the isolated model or task—is the right unit at which to design, evaluate, and govern agentic AI.",
+        "authors": [
+          {
+            "author": "Xipeng Qiu",
+            "authorURL": "https://xpqiu.github.io/",
+            "affiliation": "OpenMOSS Team, SII and Fudan",
+            "affiliationURL": "https://github.com/OpenMOSS"
+          }
+        ],
+        "doi": "",
+        "publishedDate": "2026-06-19"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>Organizational Intelligence: Governing Agentic AI at the Level of the Organization</h1>
+    <p>When a powerful model enters a real organization, the question is no longer "is the model smart enough?" but "can the organization become smarter because of it?"</p>
+  </d-title>
+
+  <d-article>
+<figure class="article-hero" style="width:750px;max-width:100%">
+  <img src="images/fig-regime-shift.png" alt="The shift in the unit of intelligence: model, application, organization.">
+</figure>
+
+<p>Recent AI progress has been measured mostly at the model or application level. Once these AI capabilities enter enterprises, governments, hospitals, laboratories, and other real organizations, however, the surrounding organization becomes the bottleneck. A capable model does not by itself know local knowledge, conventions, authority boundaries, accountability structures, task histories, or heterogeneous systems. <em>Organizational intelligence</em> (OI) is the system-level capability that emerges when AI agents are embedded in, constrained by, and&mdash;under governance conditions&mdash;able to drive reflection and evolution of a complex organization. It couples people, roles, processes, knowledge, data, systems, permissions, and accountability with agents that perceive, ground, remember, plan, act, verify, collaborate, and learn.</p>
+
+<p>The organization, not the isolated model or task, is the right unit for evaluating and governing agentic AI: its most consequential effect may lie less in which tasks are automated than in how intelligence is organized, governed, and improved across an organization. The term has a long genealogy across sociology, management, information systems, collective intelligence, and multi-agent systems; the contribution is a synthesis for the era of large language model agents, not a priority claim. The paper models the organization as a dynamic information-processing and decision network, develops a capability-loop model of nested operational, reflective, and evolution loops, maps the capabilities to implementation components, and traces implications for organizational form and human-AI symbiosis. It then proposes how to evaluate OI, through capability signals and an L<sub>0</sub>&ndash;L<sub>5</sub> maturity model whose higher levels demand not just broader autonomy but stronger governance entry conditions: least privilege, audit, independent verification, human control, and controlled evolution.</p>
+
+<h2>Introduction</h2>
+
+<p>Artificial intelligence's development can be read as a cumulative shift in the <em>unit of intelligence</em>: from model-level capability, to application-level capability, to organization-level capability. This should not be read as a move away from models: at all three units, the underlying intelligence may still be supplied by one or more model calls; what changes is the surrounding context, infrastructure, and governance around the model. This is an analytic framing, not a maturity scale or an autonomy taxonomy: it tracks the unit at which AI capability is organized and evaluated.</p>
+
+<p>The first unit is <em>model-level capability</em>: deep neural networks and, more recently, large language models (LLMs) became increasingly capable at language understanding, code generation, multimodal recognition, mathematical reasoning, and other benchmarked tasks. Chain-of-thought prompting made visible the fact that multi-step reasoning can be elicited from sufficiently capable models under suitable prompting conditions (Wei et al., 2022). Here intelligence is treated primarily as a property of a model under a relatively thin evaluation setting: how large it is, how broadly it was trained, and how well it performs on standard tasks.</p>
+
+<p>The second unit is <em>application-level capability</em>. Once general-purpose models became useful, they were wrapped into application-level settings: assistants, copilots, chat interfaces, customer-service agents, writing tools, and coding tools. Tool use and agentic prompting then turned these applications from single-turn responders into systems that plan, call tools, and act over multiple steps (Xi et al., 2023): coding agents that edit and run real software repositories, computer-use agents that operate other applications through their user interface, and enterprise copilots and autonomous agents deployed across productivity suites and management platforms. Here intelligence is treated as a callable service in a user-task context: what can this application do for this user in this task?</p>
+
+<p>The third unit, and the central concern here, is <em>organization-level capability</em>. As many isolated AI applications enter the same firm, hospital, university, laboratory, or public agency, a different question appears: can these local capabilities combine into an intelligence of the organization as a whole? Can an AI system work not only for one prompt or one user, but continuously within a real organization, understanding local knowledge and conventions, remembering long-running matters, coordinating heterogeneous systems, respecting permissions and accountability, and improving from execution feedback? The central bottleneck is not only whether an agent can reason or call tools, but whether the right information, context, authority, memory, and feedback can reach the right human or artificial decision node at the right time, be turned into legitimate action, and return as organizational learning. Multi-agent and workflow systems are an important bridge, but they become organization-level only when connected to shared organizational state, memory, permissions, accountability, and cross-process feedback. At this unit, much of the capability lies outside the model call itself: in the execution substrate that supplies context, tools, memory, workflow policy, validation gates, human checkpoints, and audit trails.</p>
+
+<p>The capability that can emerge at this third unit is <em>Organizational Intelligence</em> (OI). In the sense used here, OI is not a single model, product, or framework. It is the system-level capability formed when model capabilities and AI agents are embedded into a complex organization and made to operate under its knowledge, roles, processes, systems, permissions, and accountability mechanisms. OI shifts the unit of analysis from model performance in a task to the organization as a socio-technical system. The question is no longer only whether an agent can complete a task, but whether an organization as a whole becomes better at perceiving, deciding, acting, learning, and governing itself. This distinction matters: a deployment with many agents, tools, or automated workflows is still only a collection of point applications if it lacks shared task state, governed memory, permissioned action, accountable ownership, and feedback loops that improve the organization rather than only the next response. OI becomes a design and evaluation object: it asks what must be present before AI capability can be attributed to the organization as a whole.</p>
+
+<h3>The Organizational Gap</h3>
+
+<p>The need for OI follows from a recurring organizational failure: strong local intelligence does not guarantee organizational intelligence. In organizations, capability depends on whether the right information, context, authority, memory, and feedback reach the right decision and execution nodes at the right time. Many AI deployment failures are therefore not simply failures of model reasoning, but failures of organizational information flow. The organizational gap has at least five components.</p>
+
+<ul>
+  <li><strong>Knowledge-flow gap.</strong> Organizations run on private, situated knowledge—local policies, historical project decisions, clinical conventions, manufacturing parameters, undocumented practices, and interpersonal context—that a generic model trained on public data does not have. Much of this knowledge is tacit rather than explicit in the sense developed by Nonaka and Takeuchi (1995). The issue is not only that the model lacks local knowledge, but that relevant knowledge is distributed across people, documents, systems, routines, and tacit conventions, and often fails to reach the decision point where it is needed.</li>
+  <li><strong>Memory-continuity gap.</strong> Organizational work often spans weeks, months, or years. Without persistent, searchable, governable long-term memory, the organization cannot keep commitments, blockers, evidence, and decisions available across episodes; AI remains episodic rather than part of continuous work.</li>
+  <li><strong>Decision-action gap.</strong> Organizational action is not merely tool invocation or text production. It includes deciding what should be done next, setting priorities, allocating attention and resources, routing work across roles, coordinating people and systems, authorizing commitments, and changing organizational state. These actions are knowledge-dependent, but they are not reducible to knowledge retrieval: they require legitimate channels through which decisions become commitments and commitments become accountable execution. Tool and system calls are only one surface of this gap. The deeper issue is whether an AI system can participate in the organization's governed process of deciding, committing, executing, and revising action.</li>
+  <li><strong>Feedback-learning gap.</strong> Organizations learn when outcomes travel back into memory, routines, skills, and revised rules. Deployed model weights, however, are often static, and local task feedback is easily lost. If successes, failures, reviews, and exceptions cannot be converted into updated memory, reusable skills, local playbooks, and governed improvements to rules or models, AI remains an accelerant rather than a learning organizational participant.</li>
+  <li><strong>Authority-accountability gap.</strong> Information and action in organizations travel through authority relations. Every consequential action attaches to a permission, a role, and a responsibility. A model has no job position, authority boundary, or accountability relation by default. OI therefore requires permissions, audit trails, and explicit human-AI responsibility boundaries.</li>
+</ul>
+
+<p>Together these gaps form the <em>organizational gap</em>: the distance between powerful point intelligence and an organization-level capability whose information flows, decision channels, memory, feedback, and accountability structures let it work coherently inside real organizational constraints.</p>
+
+<h3>Definition and Scope</h3>
+
+<p>Formally:</p>
+
+<blockquote>
+<strong>Organizational Intelligence</strong> is the system-level intelligent capability that <em>emerges</em> when model capabilities and AI agents move from benchmarks and point applications into complex organizational contexts. Its object is not an isolated task or user, but a dynamic organization constituted by people, roles, processes, knowledge, data, software systems, permissions, and accountability mechanisms. Its goal is to enable AI systems to continuously perceive task states, route relevant information to the right decision nodes, ground decisions in organizational knowledge, form long-term memory, plan and decide under organizational goals and constraints, turn decisions into authorized action across people and systems, verify results against the task's acceptance criteria before they commit, collaborate with humans and other agents, and improve from execution feedback under governance constraints.
+</blockquote>
+
+<p>The term is used in three related senses here: as a <em>phenomenon or capability</em> (the system-level intelligence of an organization after AI agents are embedded into its governed organizational processes), as a <em>system</em> (a concrete technical implementation), and as a <em>level</em> (the object evaluated by the maturity model). The capability is realized by, but not identical to, an OI system. Context disambiguates; the sense is flagged only where it matters.</p>
+
+<p>Three things about this definition matter. OI is a <em>form of organization of intelligence</em>, not a technology; its unit of analysis is the organization, not the model; and its ultimate concern is reconstruction, because once intelligence can be produced, stored, invoked, coordinated, and improved in organized form, roles, workflows, boundaries, and even production relations all become redesignable. The novelty is not the phrase OI, nor the general idea of organizing agents; it is the claim that LLM agents make the organization itself the unit at which memory, action, evaluation, and governance must be designed. The paper develops this spine by modeling the organization as a dynamic information-and-decision network, formalizing its state, and then unpacking the nested feedback loops under governance that maintain and improve that state.</p>
+
+<h3>Contributions</h3>
+
+<p>The contributions are fivefold.</p>
+
+<ol>
+  <li>It argues that the organization, not the isolated model or task, becomes the right unit of analysis once agentic AI spans memory, decision-action, evaluation, and governance in governed organizational processes.</li>
+  <li>It characterizes the organization as an information-processing and decision network composed of eight coupled elements (people, roles, processes, knowledge, data, software systems, permissions, and accountability) that together form the organizational state.</li>
+  <li>It maps the eight organizational capabilities—task perception, organizational grounding, long-term memory, tool and system execution, planning and decision-making, verification, controlled learning and evolution, and human-AI coordination—to the operational, reflective, and evolution loops, and shows which capabilities belong to which loop and governance tier.</li>
+  <li>It maps these capabilities to implementation components—perception, connectivity, memory and knowledge, cognition, orchestration, learning, and governance—while relating them to recent work on agentic harnesses and execution scaffolds.</li>
+  <li>It derives the consequences for organizational reconstruction: automation, organizational boundaries, production relations, human-AI symbiosis, self-improvement governance, evaluation, maturity levels, and open research.</li>
+</ol>
+
+<p>The intended contribution is not another inventory of agent architectures, but a position-and-framework argument about the unit at which agentic AI must be designed and evaluated.</p>
+
+<h2>Research Object: The Organization as a Dynamic System</h2>
+
+<p>OI needs a precise object of analysis. The organization is modeled here not as an abstract group or a static org chart but as a dynamic socio-technical system whose people, roles, processes, knowledge, data, software systems, permissions, and accountability mechanisms together fix what it can perceive, decide, do, remember, and improve.</p>
+
+<h3>Organizations as Information-Processing Systems</h3>
+
+<p>The information-processing view of organizations is the source of this paper's spine: it is the lens under which the rest of this section models the organization as a state object and an information-and-decision network. Its premise is that organizations are themselves information-processing and decision systems. March and Simon (1958) describe organizations as boundedly rational systems in which decisions are constrained by attention, routines, and limited information. Cyert and March (1963) further emphasize standard operating procedures, problemistic search, coalitions, and organizational slack. These concepts map naturally to AI systems: agent workflows encode routines; reactive agent behavior resembles problemistic local search; redundancy and rollback paths function as engineering slack.</p>
+
+<p>Galbraith (1974) gave the canonical information-processing view of organization design. The central design task is to match the information-processing requirements created by task uncertainty with the information-processing capacity of the organization. This gives OI its core engineering interpretation: AI deployment matters at the organization level when it changes how information is acquired, routed, interpreted, authorized, acted upon, and returned as feedback. Stronger model calls increase local capacity; OI requires redesigning the organizational information flows that connect that capacity to legitimate decision and action.</p>
+
+<h3>Organizational State: Eight Elements in One Object</h3>
+
+<p>The eight elements should not be read as an unordered checklist. They form a single organizational state. Let the state of an organization at time <em>t</em> be</p>
+
+<div class="state-vector">O<sub>t</sub> = ⟨ H, R, P, K<sub>t</sub>, D<sub>t</sub>, S, A, G ⟩</div>
+
+<p>where <em>H</em> is the set of people, <em>R</em> the set of roles and positions, <em>P</em> the set of processes, <em>K<sub>t</sub></em> organizational knowledge, <em>D<sub>t</sub></em> organizational data, <em>S</em> software systems, <em>A</em> permission relations, and <em>G</em> accountability and governance mechanisms. <em>K<sub>t</sub></em> and <em>D<sub>t</sub></em> are explicitly time-indexed; the other elements may be more stable in the short run but are also changeable over longer horizons.</p>
+
+<p>This notation is an analytic decomposition, not a storage schema. <em>D<sub>t</sub></em> is the evidence and trace layer: transaction records, logs, messages, forms, sensor readings, and other data from which aspects of organizational state can be inferred. <em>O<sub>t</sub></em> is the organization-level object those traces describe: people, authority, routines, knowledge, systems, permissions, and accountability relations as they actually constrain future work. In a fully instrumented event-sourced system, <em>D<sub>t</sub></em> might be sufficient to reconstruct a large part of <em>O<sub>t</sub></em>; in ordinary organizations it remains partial, delayed, ambiguous, and permissioned. The distinction has a governance consequence the rest of the paper enforces: an audit log is evidence of a state transition, but until it is reviewed and accepted it remains provisional. The system may update its own working record automatically, but promoting any of it into authoritative, shared organizational knowledge <em>K<sub>t</sub></em> is a separate, reviewed act, not an automatic write.</p>
+
+<p>The interpretation of each component is given below.</p>
+
+<table class="oi">
+<thead>
+<tr><th>State component</th><th>Role in OI</th></tr>
+</thead>
+<tbody>
+<tr><td><em>H</em>: people</td><td>Carriers of tacit knowledge, sources of value judgment, collaborators, exception handlers, and ultimate accountability subjects.</td></tr>
+<tr><td><em>R</em>: roles and positions</td><td>Structured bundles of responsibility, authority, and expected competence; they anchor ownership and authorization decisions, especially in the route-and-authorize step where work is moved through appropriate channels and accountability is established.</td></tr>
+<tr><td><em>P</em>: processes</td><td>Standardized ways work is done; simultaneously a source of efficiency and a potential source of rigidity.</td></tr>
+<tr><td><em>K<sub>t</sub></em>: knowledge</td><td>Explicit and tacit organizational cognition; the local context that generic AI lacks.</td></tr>
+<tr><td><em>D<sub>t</sub></em>: data</td><td>Recorded traces and evidence used to infer, audit, and update organizational state; not identical to the state itself unless one assumes complete digital observability.</td></tr>
+<tr><td><em>S</em>: software systems</td><td>The digital organs of the organization: ERP, CRM, OA suites, repositories, databases, ticketing systems, and collaboration platforms.</td></tr>
+<tr><td><em>A</em>: permissions</td><td>Rules specifying who may see, change, approve, or execute what.</td></tr>
+<tr><td><em>G</em>: accountability and governance</td><td>Structures that specify who is responsible for consequences, how actions are traced, and how high-risk changes are authorized.</td></tr>
+</tbody>
+</table>
+
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: The eight coupled elements as components of the organizational state O<sub>t</sub>.</em></p>
+
+<p>The elements are mutually defining. Roles bind people, permissions, and accountability; processes connect roles, knowledge, and systems; data flow through systems and may become knowledge; permissions and accountability cut across all actions. A system that optimizes knowledge retrieval while ignoring permissions, or that calls tools without accountability, falls short of OI in the sense used here; this requirement is made precise later as a governance entry condition in the maturity model. The state vector and the eight-element table are thus two notations for one analytical object. Any implementation maintains a partial, permissioned, evolving representation of that state: task states, selected memory entries, audit records, and action evidence together form the substrate on which the decision network operates.</p>
+
+<h3>Information, Decision, and Change Dynamics</h3>
+
+<p>The state object becomes operational when it is viewed as an information-processing and decision network—the organizational reading of the information-processing tradition. Nodes are decision and execution units: people, roles, AI agents, and software systems. Edges are information and control flows: reporting, triggering, approval, delegation, escalation, tool invocation, and feedback. Node states include knowledge, memory, tasks, authority, current commitments, and unresolved exceptions.</p>
+
+<p>On this view, OI appears in the quality, speed, robustness, and adaptiveness with which the network processes information and makes decisions. Galbraith (1974) makes the design challenge explicit: the organization must match information-processing capacity to task uncertainty. AI adds powerful nodes; OI requires designing the connections so that those nodes receive the right state, act through the right channels, and remain governable.</p>
+
+<p>The main dynamics can be summarized as follows. <em>Task dynamics</em> are the life cycle of organizational matters. Let T<sub>t</sub> be the set of active matters at time <em>t</em>; each carries a state, a goal, constraints, evidence, dependencies, and an owner, and moves through the network as it is created, routed, blocked, escalated, completed, reopened, and audited. <em>State dynamics</em> are the conditions that drift continuously, above all the knowledge <em>K<sub>t</sub></em> and data <em>D<sub>t</sub></em>, from inventory and project status to personnel load, system health, and customer situations. <em>Event dynamics</em> are the triggers that demand a response: an arriving payment, an approval, a threshold crossing, or a service incident. <em>Feedback dynamics</em> close the loop: verified outcomes update shared state, curated memory entries, local playbooks, reusable skills, and, under governance, changes to the system itself.</p>
+
+<figure class="fig" style="width:750px;max-width:100%"><img src="images/fig-dynamic-network.png" alt="The organization as a dynamic information and decision network."><figcaption>The organization as a dynamic information and decision network. Organizational matters circulate through people, roles, AI agents, and software systems; authorized decisions and actions update shared state, and verified outcomes re-enter as new signals under governance gates marked G.</figcaption></figure>
+
+<p><strong>Analytical consequences.</strong> The formulation is used below as a set of constraints, not only as notation. First, a capability counts as organizational only when it reads or updates a governed representation of <em>O<sub>t</sub></em>—a partial, auditable snapshot of task states, memory, permissions, and evidence—rather than merely producing an isolated answer. Second, an action counts as an organizational state transition only when it moves through an authorized channel (determined by <em>A</em> and <em>G</em>), leaves auditable evidence in <em>D<sub>t</sub></em>, and is accepted by a verification gate. Third, learning and evolution are separated by what they change: updates to memory entries, task-state representations, skills, and playbooks are reflective learning under existing rules, while changes to processes, authority boundaries, role interfaces, validation gates, or system connectors alter the future operating conditions of the organization and belong to the evolution loop. These three constraints are the spine of the capability map, nested-loop governance model, reconstruction argument, and maturity levels developed in the rest of the paper.</p>
+
+<h2>Provenance and Theoretical Foundations</h2>
+
+<p>The research object rests on a longer tradition. Five foundations set the boundary for OI—the first three organizational and managerial, the last two computational—and a closing subsection separates what in it is genuinely new from what is not.</p>
+
+<h3>Organizational Intelligence Before LLMs</h3>
+
+<p>The phrase <em>organizational intelligence</em> has a substantial history. Wilensky (1967) used it in the title of <em>Organizational Intelligence: Knowledge and Policy in Government and Industry</em>, treating intelligence as the organizational process of acquiring, processing, interpreting, and transmitting knowledge needed for policy and decision-making. The key insight remains relevant: many failures are not failures of individual intelligence but failures of information flow, specialization, hierarchy, and power that prevent the right information from reaching the right decision node at the right time.</p>
+
+<p>Subsequent management and information-systems work made the idea more operational. Huber (1990) analyzed how advanced information technology changes organizational design, intelligence, and decision-making. Matsuda (1992) formalized organizational intelligence as the coordination of human intelligence and machine intelligence, an early and direct anticipation of the human-AI symbiosis question. Glynn (1996) connected individual and organizational intelligence to innovation. Allee (1997) framed knowledge evolution as an expansion of organizational intelligence. Mendelson and Ziegler (1999) popularized organizational IQ. Halal (2002) treated organizational intelligence as a broader framework than knowledge management. Albrecht (2003) proposed a seven-dimensional managerial framework for diagnosing organizational intelligence.</p>
+
+<p>Recent human-AI collaboration work also uses adjacent language. For example, Kolbjørnsrud (2024) frames the &ldquo;intelligent organization&rdquo; as a design problem for human-AI collaboration and explicitly treats organizational intelligence as something augmented by the interaction of humans and AI. This shows that the language of AI-era organizational intelligence is already in circulation; what is new is not the phrase but the unit of analysis and the governance-as-entry-condition constraints, which Kolbjørnsrud's role-and-work design framing does not fix.</p>
+
+<h3>Organizational Knowledge, Learning, and Memory</h3>
+
+<p>Knowledge and learning theory explains why OI cannot be reduced to automation. Senge (1990) treats the learning organization as a source of long-term competitiveness. Nonaka and Takeuchi (1995) distinguish tacit and explicit knowledge and propose the SECI spiral: socialization, externalization, combination, and internalization. OI asks whether AI can participate in this spiral: externalizing tacit practices from meetings, messages, code, and tickets into retrievable knowledge, and internalizing explicit norms into operational behavior. But knowledge conversion is not enough; learning must also be governed.</p>
+
+<p>Argyris and Schön (1978) distinguish single-loop from double-loop learning. Single-loop learning corrects deviations under existing goals; double-loop learning questions the goals and norms themselves. Runtime agent improvement methods support single-loop improvement: Self-Refine (Madaan et al., 2023) revises an output within a single task, while Reflexion (Shinn et al., 2023) carries verbal lessons across episodes, but both correct behavior under fixed goals in the sense of Argyris and Schön (1978). Allowing AI systems to revise organizational goals or rules is closer to double-loop learning and introduces governance risk.</p>
+
+<p>March (1991) frames organizational learning as a tension between exploration and exploitation. OI systems face the same tension: a system that only follows existing SOPs is efficient but rigid; a system that constantly experiments is adaptive but risky. Walsh and Ungson (1991) define organizational memory as the storage and retrieval of organizational history across multiple retention bins. Modern agent memory systems such as MemGPT (Packer et al., 2023), Generative Agents (Park et al., 2023), and MemoryBank (Zhong et al., 2024) can be read as partial technical realizations of such retention bins.</p>
+
+<h3>Boundaries, Governance, and Collective Intelligence</h3>
+
+<p>Transaction-cost economics explains why OI can affect organizational boundaries. Coase (1937) asks why firms exist when markets coordinate through prices; Williamson (1975) explains governance choices through asset specificity, uncertainty, and transaction frequency. If AI changes internal coordination costs and market transaction costs asymmetrically, it can change the make-or-buy boundary of the firm.</p>
+
+<p>Collective intelligence research adds a different foundation. Surowiecki (2004) emphasizes diversity, independence, and decentralized aggregation. Woolley et al. (2010) find evidence for a collective-intelligence factor in human groups, driven less by maximum individual IQ than by social sensitivity and balanced participation. Malone (2018) describes organizations as &ldquo;superminds&rdquo; composed of people and computers. OI inherits the central lesson: the intelligence of a collective depends on connection and coordination, not merely on the strength of individual members. This principle carries directly into the organization-oriented MAS tradition, which asks how to design that coordination when artificial agents are part of the collective.</p>
+
+<h3>Organization-Oriented Multi-Agent Systems</h3>
+
+<p>Organizing artificial agents is itself a pre-LLM tradition in computer science (Wooldridge, 2009). The organization-oriented MAS literature built explicit models of agents grouped into roles, norms, and dependencies: the Agent-Group-Role meta-model and its organizational reading (Ferber and Gutknecht, 1998; Ferber et al., 2004), MOISE as an organizational model (Hannoun et al., 2000), surveys of paradigms from hierarchies to coalitions, teams, markets, and matrices (Horling and Lesser, 2004), and treatments of multi-agent architectures as organizational structures (Kolp et al., 2006; Dignum, 2009).</p>
+
+<p>What changes with LLM agents is the cognitive substrate. Earlier agents were often symbolic and rule-bound; LLM agents have language understanding, tool use, memory, and broad task generality. Contemporary multi-agent frameworks such as CAMEL (Li et al., 2023), MetaGPT (Hong et al., 2024), ChatDev (Qian et al., 2024), AutoGen (Wu et al., 2024), and AgentVerse (Chen et al., 2024) reactivate organizational ideas under a much richer agent substrate (see Guo et al., 2024 for a survey).</p>
+
+<h3>Agentic Harnesses and Self-Improving Scaffolds</h3>
+
+<p>Recent agent research makes the extra-model execution layer increasingly explicit. Pan et al. (2026) call this layer a natural-language agent harness: a surrounding system that organizes model calls into tasks through instructions, tools, memory, artifacts, control flow, and evaluation. Code itself can serve as an agent harness, giving agents an executable substrate for reasoning, action, environment interaction, verification, and workflow composition (Ning et al., 2026). Lin et al. (2026) further frame harness engineering as an observability-driven process in which prompts, tools, middleware, memory, and evaluation hooks are automatically revised to improve coding-agent performance.</p>
+
+<p>The relevance for OI is direct: agent capability depends not only on model weights or prompts but on the surrounding scaffold that determines what the model can see, which tools it can call, which artifacts it can modify, how failures are detected, and how improvements are retained. Multi-agent harness work makes the organizational analogy sharper still: Liu et al. (2026) synthesize role assignments, tool allocations, communication topologies, and coordination protocols for vulnerability discovery. These are technical analogues of roles, authority boundaries, communication channels, and task allocation in organizations.</p>
+
+<p>For OI, the harness layer is only a start. An execution harness can coordinate model calls, tools, memory, and validation, but organizational intelligence also requires the embedding of that harness into real roles, knowledge, incentives, legal obligations, human-AI symbiosis, and accountability. Similarly, the possibility that AI systems may improve parts of their own development loop is not an OI definition but a governance problem for OI. Industry analysis from Anthropic describes current movement from chatbots to coding agents and autonomous agents, while explicitly treating full recursive self-improvement as not yet achieved and not inevitable (Anthropic, 2026). OI should treat self-improvement as governed learning and evolution rather than as an assumed endpoint.</p>
+
+<h3>What Is New, and What Is Not</h3>
+
+<p>The novelty claim is deliberately scoped. This paper does not present OI as a new label, nor agent organization as a new design problem. Its claim is that LLM agents make a different unit newly practical and newly urgent: the organization itself becomes the object whose memory, action, evaluation, and governance have to be designed together.</p>
+
+<p>The phrase <em>organizational intelligence</em> already appears in Wilensky's account of knowledge and policy in government and industry, and later information-systems and management work developed related claims about how information technology, human-machine coordination, knowledge management, and organizational design affect collective intelligence (Wilensky, 1967; Huber, 1990; Matsuda, 1992; Halal, 2002; Albrecht, 2003). Computer science adds a separate pre-LLM lineage: organization-oriented MAS treated roles, norms, groups, dependencies, and communication structures as first-class design objects, while recent work on human-AI collaboration and agentic harnesses has made collaboration and the extra-model scaffold technically explicit (Kolbjørnsrud, 2024). Even self-improvement is not a new endpoint; it has long appeared in ultraintelligence and superintelligence debates (Good, 1966; Bostrom, 2014).</p>
+
+<p>This paper therefore does not claim conceptual priority over these traditions. Its claim is narrower: LLM agents make it practical, and increasingly necessary, to treat the organization as the design and evaluation unit for AI systems. In that unit, memory is not just context length, action is not just tool use, collaboration is not just multi-agent messaging, and improvement is not just model update. They are organizational functions that have to be connected to roles, processes, authority, accountability, and feedback.</p>
+
+<p><strong>Two objections deserve direct answers.</strong> The first is that the synthesis is merely incremental: old organization theory relabeled over routine enterprise-AI engineering. But the framework commits to design constraints and falsifiable rules that none of its components supplies on its own:</p>
+<ol>
+  <li>governance as an entry condition that caps maturity, not a score traded off against capability;</li>
+  <li>a reviewed boundary between automatic memory updates and promotion into shared organizational knowledge;</li>
+  <li>the separation of operational, reflective, and evolution loops by risk profile;</li>
+  <li>and a concrete requirements list for organization-level benchmarks.</li>
+</ol>
+<p>Each commitment is checkable against deployed systems, and each can fail. A relabeling offers no such test.</p>
+
+<p>The second objection is that OI merely renames industry notions such as agentic AI or the digital workforce, or restates a capability milestone already named elsewhere—most directly OpenAI's reported five-level framework for tracking progress toward AGI, whose top level, &ldquo;Organizations,&rdquo; is described as AI that can do the work of an organization (Metz, 2024). These framings name product ambitions or a capability frontier; OI instead fixes a unit of analysis (the organization), constitutive constraints (the eight elements), an evaluation object (maturity under governance entry conditions), and a required co-evolution of capability and governance. The contrast is sharpest where the labels collide: the five-level reading places the organization at the <em>top of a single system's capability ladder</em>—AI that can <em>do the work of</em> an organization—whereas OI treats the organization as the <em>unit in which human and AI intelligence must be organized and governed</em>, makes governance an entry condition rather than a higher capability tier, and is augmentation-oriented rather than a substitution endpoint. An agentic-AI deployment, or a system that clears such a capability bar, can be assessed against OI criteria; the converse does not hold.</p>
+
+<p>The synthesis offered here specifies OI as a capability of <em>real organizations</em> in which LLM agents with cognition, memory, tool use, collaboration, runtime learning, and execution scaffolds are embedded into the eight elements of organizational life. The integration is meant as a framework for research and system design, not as a claim of conceptual priority.</p>
+
+<h2>Capabilities and Feedback Loops</h2>
+
+<p>The organizational state and decision network say what OI acts on; the next question is what acts. The <em>acting system</em> is the OI system: the human and AI agents embedded in O<sub>t</sub>, together with three shared working parts. Its memory layer is not introduced as a separate formal state variable; it is the governed, retrievable organization of past traces, decisions, cases, and skills that the system can reuse, whereas D<sub>t</sub> denotes the broader recorded evidence layer. Its <em>policies</em> are the routing rules, applicable procedures, and validation and escalation gates that govern how work may be done and what must be checked before an action is taken. Its audit log is an append-only record of what was done, by whom, and on what evidence. All of this operates inside the permissions A and accountability rules G of the state it sits in. The audit log belongs to D<sub>t</sub>; it supports accountability and later reconstruction, but it is not by itself the organizational change being audited.</p>
+
+<h3>Three nested loops</h3>
+
+<p>The OI system runs a cycle of organizational work, then wraps that cycle in two slower loops. The first learns within the current system; the second changes the conditions under which future work will run. These three loops are the spine of this section: they distinguish closing the work loop, improving work under existing rules, and changing the system that sets those rules. That separation carries most of the governance argument.</p>
+
+<figure class="fig" style="width:715px;max-width:100%"><img src="images/fig-three-loops.png" alt="Three nested feedback loops in an OI system."><figcaption>Three nested feedback loops in an OI system. The inner loop is an organizational work loop, not a single-agent reasoning loop: matters are sensed, routed, interpreted, decided, committed, executed, verified, and folded back into shared state. The outer loops improve memory, skills, and local playbooks, then change the system's rules, interfaces, and pipelines under progressively stronger governance gates.</figcaption></figure>
+
+<p>The innermost loop is operational (operation in the broad organizational sense of sensing, interpreting, deciding, and executing, not mere tool automation): it is one pass through the organization's decision and execution network that reads observable traces and a maintained representation of O<sub>t</sub>, then helps produce updates to one or more components of O<sub>t+1</sub>. These are network functions, not steps performed by one agent; different people, AI agents, software systems, and accountable owners may participate in different parts of the loop, and many matters run concurrently.</p>
+
+<ol>
+  <li><em>Sense and update</em>: read events, messages, system records, and human inputs from D<sub>t</sub>, S, and T<sub>t</sub>, then update a shared representation of what matters are active, blocked, handed off, or resolved.</li>
+  <li><em>Interpret</em>: align each matter with K<sub>t</sub> and the system's memory layer so that signals are understood in local organizational context rather than as generic task descriptions.</li>
+  <li><em>Route and authorize</em>: move the matter through the appropriate human, agentic, system, or escalation channel, establishing ownership and authority where the organization requires them.</li>
+  <li><em>Deliberate and decide</em>: combine local knowledge, memory, constraints, and goals to choose what should be done next, including whether to act, ask, defer, escalate, or change the plan.</li>
+  <li><em>Commit and execute</em>: turn the decision into an authorized commitment, handoff, system operation, or other state-changing act across people and systems, within permissions A.</li>
+  <li><em>Verify, audit, and feed back</em>: check the result against acceptance criteria, record who did what on which evidence, and accept the state transition only after the change has passed the required gate.</li>
+</ol>
+
+<p>That last step is what closes the operational loop. A pass that nothing checks, records, or feeds back is an action taken on trust rather than an organizational state transition.</p>
+
+<p>Run by itself, this loop is no more than automation with extra steps. What makes it organizational intelligence is that two slower loops close around it. The <em>reflective</em> loop learns within the current system: it turns outcomes into better memory, reusable skills, task-state representations, and local playbooks. The <em>evolution</em> loop changes the system that future work runs on: policies, formal procedures, role interfaces, tool connectors, evaluation gates, and model- or harness-update pipelines. In the language of Argyris and Schön (1978), the reflective loop is mostly single-loop learning under existing goals and rules, while the evolution loop is the governed double-loop case in which those goals or rules can change. The three loops differ not only in what they touch but in how far a mistake propagates, which is why it is worth keeping them apart.</p>
+
+<table class="oi">
+<thead>
+<tr><th>Loop</th><th>Main function</th><th>Governance condition</th></tr>
+</thead>
+<tbody>
+<tr><td>Operational loop</td><td>Sense organizational signals, update shared task state, interpret local context, route or authorize work, make decisions, commit authorized action, and verify outcomes before they are accepted as organizational state transitions.</td><td>Must respect identity, permissions, audit, rollback, verification gates, and human control requirements.</td></tr>
+<tr><td>Reflective loop</td><td>Convert outcomes into updated memory, reusable skills, local playbooks, and better task-state representations under existing goals and rules.</td><td>Requires provenance, review for shared knowledge, conflict handling, and forgetting rules.</td></tr>
+<tr><td>Evolution loop</td><td>Change policies, formal procedures, role interfaces, tool connectors, evaluation gates, or model- and harness-update pipelines.</td><td>Requires stronger authorization, versioning, evaluation, staged rollout (canary release), rollback, and external audit for high-risk changes.</td></tr>
+</tbody>
+</table>
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: Three nested feedback loops in an OI system.</em></p>
+
+<p>Concretely, the reflective loop edits memory entries, reusable skills, local playbooks, and task-state representations from observed outcomes. Such updates can be automated when they remain the system's private working record; promoting any of them into the organization's shared, authoritative knowledge K<sub>t+1</sub> is a different act with organizational consequences and should pass through review rather than happen silently. Likewise, a reflective loop may adjust local defaults or propose a procedure change, but changing policies of record, validation gates, role interfaces, connectors, evaluation criteria, or update pipelines belongs to the evolution loop. The pattern across the three loops is the real claim: the further a loop reaches from the operational core, the more a mistake propagates and the harder it is to reverse, so the governance bar rises with it. These outer loops are governed organizational change, not autonomous rights the system grants itself.</p>
+
+<h3>From loops to capabilities</h3>
+
+<p>The same three loops unfold into a capability map for the rest of this section. The operational loop requires perception, grounding, routing and authorization, planning and decision-making, tool execution, and verification, but these are capabilities of the organizational network rather than a serial prompt loop inside one agent. Routing and authorization is carried by the orchestration component together with the role and permission state (R, A), not by a separate capability subsection. Controlled learning spans the reflective loop; controlled evolution covers higher-risk changes to the system's future operating conditions. Human-AI coordination, with the governance it requires, cuts across all three. The master map below lines up each capability with its loop function, implementation component, representative methods, and evaluation signals.</p>
+
+<table class="oi">
+<thead>
+<tr><th>Capability</th><th>Loop function</th><th>Implementation component</th><th>Representative technical lines</th><th>Example evaluation signals</th></tr>
+</thead>
+<tbody>
+<tr><td>Continuous task perception</td><td>Sense / update</td><td>Perception</td><td>Event streams, state tracking, active triggers, attention scheduling.</td><td>Perception coverage and latency.</td></tr>
+<tr><td>Organizational grounding</td><td>Interpret</td><td>Memory and knowledge</td><td>RAG, knowledge graphs, private knowledge bases, SECI externalization.</td><td>Grounding fidelity, hallucination resistance.</td></tr>
+<tr><td>Long-term memory</td><td>Context</td><td>Memory and knowledge</td><td>Memory streams, MemGPT, MemoryBank, skill libraries.</td><td>Memory reuse rate, long-horizon consistency.</td></tr>
+<tr><td>Planning and decision-making</td><td>Decide</td><td>Cognition and planning</td><td>Plan–act–observe–replan loops, hierarchical decomposition, compositional workflow planning.</td><td>Task completion, plan quality, exception recovery.</td></tr>
+<tr><td>Tool and system execution</td><td>Commit</td><td>Connectivity</td><td>Tool calling, MCP, API integration, transactions and rollback.</td><td>Tool-call success, rollback correctness.</td></tr>
+<tr><td>Verification and checking</td><td>Verify</td><td>Cognition; governance gate</td><td>LLM-as-judge, rubric and test gates, self-consistency, maker-checker separation.</td><td>Check precision and recall, false-accept rate; independent (non-author) verification required for consequential commits.</td></tr>
+<tr><td>Controlled learning and evolution</td><td>Reflect / evolve</td><td>Learning and evolution</td><td>Reflexion, Self-Refine, skill consolidation, local playbook updates, harness or policy revision, controlled RLHF or constitutional updates.</td><td>Repeated-task learning curves; change evaluation and rollback outcomes.</td></tr>
+<tr><td>Human-AI coordination</td><td>Cross-cutting</td><td>Orchestration; governance control plane</td><td>Multi-agent orchestration, coordination protocols, escalation paths, ownership anchors, human control points.</td><td>Collaboration reliability, escalation precision; permission violations and audit completeness as entry conditions.</td></tr>
+</tbody>
+</table>
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: Capability view of the OI feedback system. The table doubles as the structural map connecting the capabilities in this section with the implementation components and evaluation signals.</em></p>
+
+<h3>Continuous Task Perception</h3>
+
+<p>Continuous task perception is the <em>sense-and-update</em> function of the operational loop: it reads traces from D<sub>t</sub>, S, and T<sub>t</sub> and maintains the shared representation of O<sub>t</sub>. The hard part is persistence, not retrieval. A real organization never goes quiet: events—messages, tickets, logs, approvals, incidents, and customer interactions—arrive continuously. Answering a question when asked is the easy case; what matters is tracking where each matter stands when no one is asking.</p>
+
+<p>Three commitments follow. The system must be triggered by what happens in the organization, not only by a user's prompt. It must keep a structured, queryable account of each task, so that any agent or person can see where the matter stands, what blocks it, who owns it, and what evidence supports it. And because the signals always outnumber the attention available to handle them, it must schedule that attention, spending scarce compute and human review on the states that carry the most consequence.</p>
+
+<h3>Organizational Knowledge Grounding</h3>
+
+<p>Grounding is the <em>interpret</em> function of the operational loop: it aligns each matter with the organization's knowledge K<sub>t</sub> so that events and tasks are read in local context rather than as generic descriptions. Retrieval-augmented generation (RAG) (Lewis et al., 2020) remains the baseline, but agentic settings make retrieval more iterative: agents can plan what to retrieve, revise queries, critique evidence, and assemble context over multiple steps, as emphasized by Self-RAG-style adaptive retrieval and critique (Asai et al., 2024) and agentic RAG surveys (Singh et al., 2025). Graph-structured retrieval adds another layer by organizing entities, relations, and community summaries rather than treating knowledge as flat document chunks (Edge et al., 2024). Enterprise retrieval benchmarks sharpen the requirement: HERB-style tasks require evidence assembly across documents, meetings, chat, code repositories, and URLs, plus the ability to recognize when available evidence is insufficient rather than force an answer (Choubey et al., 2025). Still, organizational grounding is broader than document search. It includes definitions that differ by department, tacit practices embedded in messages and meetings, versioned policies, role-specific norms, and authority-dependent interpretations.</p>
+
+<p>The hardest part is that organizational knowledge is contextual and private. The same term may mean different things in different organizations; the same policy may be executed differently across units. OI needs provenance, freshness, permission tags, conflict resolution, and human review for knowledge updates.</p>
+
+<h3>Long-Term Memory</h3>
+
+<p>Long-term memory gives OI continuity only when it is distinguished from adjacent mechanisms. A long context window is the <em>runtime working set</em> available to a model during one episode; agent long-term memory persists across that agent's tasks; and organizational memory is shared and governed across people, agents, and systems. It is also distinct from D<sub>t</sub>: data says what traces were recorded, while memory says what has been retained, indexed, summarized, connected, permissioned, and made available for future work. The design problem becomes an allocation problem: what belongs in the current window, what should be retrieved on demand, what should be consolidated into an agent's durable memory, what should remain as trace data, what should become shared organizational state, and what should be promoted to authoritative knowledge.</p>
+
+<p>Long-context scaling enlarges the runtime working set, but it does not by itself create long-term or organizational memory. Methods such as LongRoPE (Ding et al., 2024) make it possible to place much larger documents, codebases, transcripts, or case histories into a model's input. Yet evaluations of long-context behavior show that a large nominal window is not equivalent to reliable use of all relevant information: models may use positions in the context unevenly (Liu et al., 2024), and synthetic long-context tests can overstate real task competence if they measure only simple retrieval rather than multi-hop tracing, aggregation, or reasoning under longer inputs (Hsieh et al., 2024). For OI, long context is valuable for bounded bundles such as a meeting transcript, contract folder, patient case file, or incident timeline, but it remains an episode-level resource.</p>
+
+<p>Agent memory supplies the building blocks for the layer between the runtime window and the organization, but as parts of the allocation problem rather than a menu of systems. Allocation and movement are made architectural by MemGPT and pushed to production scale by Mem0 (Packer et al., 2023; Chhikara et al., 2025); CoALA separates episodic, semantic, and procedural stores (Sumers et al., 2024); retrieval, reinforcement, and forgetting are handled by recency–importance–relevance streams, forgetting mechanisms, and dynamic linking in Generative Agents, MemoryBank, and A-MEM (Park et al., 2023; Zhong et al., 2024; Xu et al., 2025); and Voyager treats reusable skills as a memory of capability (Wang et al., 2024). Mapped onto O<sub>t</sub>, these populate the working set, an agent's durable memory, and the skill library, yet none yet provides the shared, permissioned, auditable organization-level memory OI requires.</p>
+
+<p>OI extends this stack to organization-level memory, where the unit of continuity is no longer a single agent but a governed organization. Experience has to be shared across agents and people without violating permissions. Errors, contradictions, and stale entries have to be caught and corrected. The store has to honor privacy, retention, and the right to be forgotten, while still preserving enough provenance for audit and accountability. A mature OI memory is persistent, shared, permissioned, updatable, resource-aware, and auditable at once.</p>
+
+<h4>Memory Allocation and Maintained Organizational State</h4>
+
+<p>Memory allocation changes both design and evaluation because it determines which parts of the maintained representation of O<sub>t</sub> are placed in the context window, retrieved on demand, persisted as memory, left as trace data D<sub>t</sub>, or promoted to authoritative knowledge K<sub>t</sub>. Here organizational state refers back to the eight-element state: it is not a new object, but the governed implementation-side representation of task state, selected traces, memory entries, permissions, provenance, and action evidence. OI systems should combine long contexts, retrieval, explicit memory policies, and durable state representation rather than treating any one mechanism as sufficient. They should also record what context was available to an agent when it made a recommendation or tool call, because later review depends not only on the final answer but on the evidence and memory snapshot from which that answer was produced.</p>
+
+<p>The same boundary is being recognized in industry practice under the practitioner label <em>company brain</em>: a living, connected organizational context layer that captures decisions, messages, code, incidents, tickets, and commitments so that people and agents can act from shared context (Falconer, 2026; SOTA Sync, 2026; Hornof, 2026). These are practitioner and community sources rather than peer-reviewed research, so the label is used here only as independent corroboration. The architectural point is that data, documents, RAG indexes, and tool access are insufficient unless they are organized into a maintained representation of O<sub>t</sub> with provenance, permissions, freshness, relationships, and action traces. That representation is the memory-and-state substrate of OI; it supports OI but is not the whole system, which also requires human-AI roles, planning, tool execution, feedback loops, governance, and accountability.</p>
+
+<h3>Planning and Decision-Making</h3>
+
+<p>Planning and decision-making is the <em>deliberate-and-decide</em> function of the operational loop: organizational work is rarely single-step. It requires decomposing goals, sequencing actions, satisfying constraints, handling uncertainty, and replanning when blocked. In agentic settings, planning is less a one-time search over intermediate thoughts than a plan–act–observe–replan loop: the system decomposes a goal, chooses tools and human checkpoints, observes the result of each step, updates task state, and revises the plan when assumptions fail. Recent evaluations make this shift concrete by stressing compositional knowledge work, realistic user interaction, policy constraints, long-horizon tool execution, and company-like digital tasks rather than isolated puzzle solving (Boisvert et al., 2024; Yao et al., 2024; Li et al., 2025; Xu et al., 2024).</p>
+
+<p>The organizational bottlenecks are long-horizon reliability, exploration-exploitation balance, and constraint respect. Organizations often seek satisficing solutions under budgets, deadlines, compliance rules, stakeholder conflicts, and authority boundaries. EnterpriseArena makes this planning demand explicit by evaluating CFO-style allocation under partial observability, hard budgets, delayed effects, and regime shifts (Han et al., 2026). At OI scale, planning must distinguish reuse from exploration, routine execution from escalation, and ordinary decomposition from cases that need formal planning or human review.</p>
+
+<h3>Tool and System Execution</h3>
+
+<p>Tool and system execution is the <em>commit-and-execute</em> function of the operational loop, turning authorized decisions into changes to O<sub>t</sub> within permissions A. At its base, tool use turns AI from a text generator into an actor. Early work established the reasoning-and-acting pattern and learned API use (Yao et al., 2023; Schick et al., 2023); the agentic shift since then is from one-off tool calls to long-horizon, multi-step execution across many real systems under user interaction, workflow, and policy constraints, which is what current benchmarks such as τ-bench and Tool Decathlon emphasize (Yao et al., 2024; Li et al., 2025).</p>
+
+<p>In organizations, however, tool use must satisfy additional constraints. Calls must carry identity, authorization, audit context, and rollback semantics. A model that can call many systems is dangerous unless each call is checked against least privilege. The Model Context Protocol (MCP) is a promising standardization effort because it defines a reusable way to connect AI systems to tools and data sources (Anthropic, 2024). Complementary interoperability efforts such as the Agent2Agent (A2A) protocol target cross-agent communication rather than tool connectivity (Google, 2025). But protocol-level connectivity is only a substrate; production OI also requires authentication, multi-tenant permissions, transactional behavior, exception handling, and security hardening.</p>
+
+<h3>Verification and Checking</h3>
+
+<p>Acting is not the same as succeeding, so the operational loop closes with an explicit check. The design principle is separation: the component that produces an action should not be the one that grades it, because a model asked to judge its own output exhibits a measurable self-preference bias, systematically over-rating it (Zheng et al., 2023; Panickssery et al., 2024). An independent evaluator instead gates each pass against an explicit, written definition of done, and that check, not the actor's self-report, authorizes any change to organizational state. Self-critique methods such as Self-Refine and Reflexion are valuable for revision (Madaan et al., 2023; Shinn et al., 2023), but they do not by themselves meet this bar, since the critic and the author are the same system.</p>
+
+<p>In an organization, verification is a governance gate, not only a quality check: it decides not only whether a result is good enough but whether it may commit to organizational state. Routine, low-risk actions can clear automated checks, while consequential ones demand stronger evidence or human review, and the same maker-checker separation reappears at the orchestration layer. For state-changing work, the check should inspect executable postconditions and resulting system state rather than only a transcript or natural-language judgment; Agent-Diff points in this direction by evaluating enterprise API tasks with state-diff contracts (Pysklo et al., 2026). The signals that matter are check precision and recall—and, above all, the false-accept rate—since a verifier that waves through bad work is worse than none.</p>
+
+<h3>Controlled Learning and Evolution</h3>
+
+<p>What separates OI from static automation is controlled learning and evolution, but the two are not the same governance act. Reflective learning improves behavior within current goals and rules: Reflexion stores verbal self-reflections in memory (Shinn et al., 2023), Self-Refine critiques and revises its own output (Madaan et al., 2023), and STaR bootstraps reasoning from generated rationales (Zelikman et al., 2022). Controlled evolution changes the behavior policy or execution substrate itself: InstructGPT brought feedback-based alignment to industrial scale (Ouyang et al., 2022), and Constitutional AI drives self-critique from written principles (Bai et al., 2022).</p>
+
+<p>These methods operate at different time scales. Runtime reflection and self-refinement improve memory, skills, and local playbooks without changing model weights or formal policy; alignment training and constitutional updates change model behavior at lower frequency and higher governance cost. Recent harness work extends the same point from model outputs to the execution substrate itself: prompts, tools, middleware, memory, workflow policy, evaluation hooks, and validation gates can all become objects of improvement (Pan et al., 2026; Ning et al., 2026; Lin et al., 2026). OI should mainly rely on governable runtime reflection for everyday improvement, while reserving changes to harness policy, role interfaces, validation gates, or model behavior for controlled evolution pipelines.</p>
+
+<p>Controlled evolution is therefore broader than improving task competence. Some important changes are structural: removing process steps, consolidating or splitting roles, changing approval paths, altering interfaces between units, replacing a human handoff with a shared state channel, or redesigning a process for lower cost and higher throughput. Such changes may leave the underlying task skill unchanged while altering R, P, S, A, or G in O<sub>t</sub>. They belong to the evolution loop because a mistake changes the future operating conditions of the organization rather than only the current task. These structural effects reappear in the discussion of organizational reconstruction.</p>
+
+<h3>Human-AI Coordination under Governance</h3>
+
+<p>The coordination capability asks how humans and many AI agents coordinate without dissolving authorization, contestability, or accountability.</p>
+
+<p>Multi-agent LLM frameworks already encode roles, workflows, and communication protocols in software, differing mainly in what they emphasize: a software-company SOP in MetaGPT (Hong et al., 2024), a communicative development workflow in ChatDev (Qian et al., 2024), role-playing agent societies in CAMEL (Li et al., 2023), programmable agent conversations in AutoGen (Wu et al., 2024), and emergent collaboration in AgentVerse (Chen et al., 2024). Under far more capable agents, they revive the organization-oriented MAS ideas discussed earlier. In O<sub>t</sub> terms, they specify communication edges among agent nodes but leave permissions A, accountability G, and shared task state largely implicit; OI coordination adds permissioned authority, accountable ownership, and shared state to those topologies.</p>
+
+<p>The human side is the constraint. A system can have many agents and still fail as an organization if it sidelines human judgment, tacit knowledge, accountability, or contestability. Recent human-in-the-loop evaluations further show that escalation is itself a capability: agents should ask for help when uncertainty, risk, or missing authority warrants it, while avoiding unnecessary interruptions (Trinh et al., 2026). Collaboration runs inside a governance control plane of five functions—explicit values and red lines, least-privilege runtime authorization, immutable audit and owner binding, mandatory human review for high-risk decisions, and versioned, staged, reversible change. Here the narrower requirement is that collaboration preserve inspectable roles, calibrated escalation paths, and accountable commitments.</p>
+
+<p>Two failure modes also accumulate quietly whenever loops run with little supervision. We call them <em>intent debt</em>, the widening gap between what a loop was set up to do and what it has gradually drifted into doing, and <em>comprehension debt</em>, the understanding people lose as unreviewed outputs keep shipping. Both are organizational, not merely technical. Left unpaid they convert autonomy into precisely the responsibility diffusion that governance exists to prevent.</p>
+
+<h3>Implementation Components</h3>
+
+<p>The eight capabilities—distinct from the eight state elements, which are what the system acts <em>on</em>—describe what an OI system must <em>do</em>; an implementation must also say what it is <em>built from</em>. The OI capability core sits within a decision network; it decomposes into six implementation components that realize the capabilities, cut through by a control plane of permissions, audit, verification, and human governance. The components group the capabilities into the parts that realize them. Whereas the dynamic network models the organization as the research object, these components instantiate the OI capability core that operates within such a network. Perception and state turn organizational signals into tracked task state; memory and knowledge hold retrievable experience, task histories, and grounded access to the organization's knowledge K<sub>t</sub>, so that grounding and recall share one substrate; connectivity executes actions through permissioned, auditable, rollback-aware tool and system calls; cognition and planning carry planning and the reasoning side of verification; orchestration coordinates human and AI roles, workflows, and handoffs; and learning and evolution implement the two outer loops: reflective learning over memory, skills, and playbooks, and governed evolution over harnesses, policies, gates, and model-update pipelines.</p>
+
+<figure class="fig" style="width:565px;max-width:100%"><img src="images/fig-architecture.png" alt="Implementation components of a governed OI system."><figcaption>Implementation components of a governed OI system: the eight capabilities (what the system does) realized by six capability-core components (what it is built from) within a control plane that enforces permissions, audit, verification, and human control.</figcaption></figure>
+
+<p>Cutting across all of these components is a <em>control plane</em>: permissions, audit, privacy, human control, verification, and rollback. It is drawn as a control plane because these constraints must be enforced where actions are authorized, checked, committed, and learned from; they cannot be delegated to a single downstream compliance module. The mapping is deliberately many-to-one: grounding and memory share the knowledge substrate, while verification and human-AI coordination each appear both as core capabilities and as control-plane conditions. In OI, checking and governance are constitutive of the capability rather than bolted on afterward.</p>
+
+<h2>Organizational Reconstruction</h2>
+
+<p>OI matters because it can reshape organizational form, not only improve task efficiency. This section should therefore be read as a set of consequences of the eight-element state formulation and the decision-network view. Reconstruction means that the capability loops do not merely complete more tasks; at sufficient scope they change one or more coordinates of the organizational state:</p>
+
+<div class="state-vector">O<sub>t</sub> = ⟨ H, R, P, K<sub>t</sub>, D<sub>t</sub>, S, A, G ⟩</div>
+
+<p>That is, who does what, which processes exist, where knowledge and data reside, which systems execute work, who is authorized, and how consequences are governed. The claims below are mechanism-level hypotheses rather than settled empirical conclusions.</p>
+
+<h3>From RPA to APA</h3>
+
+<p>Robotic process automation (RPA) automates rule-based actions at the interface layer of existing information systems (van der Aalst et al., 2018). It works well when workflows are repetitive and well specified, but becomes brittle when tasks require judgment, replanning, or exception handling. Agentic process automation (APA), proposed in ProAgent (Ye et al., 2023), replaces some fixed rules with LLM agents that can plan, decide, and adapt under supervision. RPA and APA are useful process-level starting points, but they are not the formulation of OI. In the state notation, RPA mainly scripts parts of <em>P</em> through existing <em>S</em>; APA adds agentic cognition inside a workflow, but often leaves <em>R</em>, <em>A</em>, <em>G</em>, shared memory, and cross-process feedback implicit. OI begins when such automation is embedded into the organizational state itself: task state is shared, action is authorized, outcomes update governed memory or knowledge, and higher-risk changes pass through reflective or evolution loops rather than remaining local workflow optimizations.</p>
+
+<h3>Task Reconstruction</h3>
+
+<p>Automation does not simply replace jobs. The task-based framework of Acemoglu and Restrepo (2018, 2019) distinguishes a displacement effect, in which automation substitutes for tasks previously performed by labor, from a reinstatement effect, in which technology creates new tasks. Acemoglu and Restrepo (2022) link the balance between these effects to wage inequality. OI should be analyzed at the task level, but not with tasks detached from the organization: each role decomposes into tasks that can be automated, augmented, redesigned, or newly created, and each such change may alter <em>H</em>, <em>R</em>, <em>P</em>, <em>A</em>, and <em>G</em> together.</p>
+
+<p>Management research reaches a similar conclusion. Daugherty and Wilson (2018) describe a "missing middle" between purely human and purely machine work, where humans train, explain, and sustain AI while AI augments human capabilities. Davenport and Kirby (2016) describe strategies through which workers complement automation. OI gives this middle ground a technical substrate: perception, memory, tool use, planning, and governance become the machine-side capabilities that make human-AI collaboration operational.</p>
+
+<p>The practical bottleneck moves upward. When agents reduce the cost of drafting, coding, searching, and routine coordination, the scarce resource shifts from raw execution to organizational comprehension—the comprehension debt: specifying the right problem, interpreting local context, reviewing fast machine output, assigning responsibility, and deciding when an exception should change the rule. In loop terms, the operational loop accelerates first; the organizational question is whether reflective and evolution loops can keep role definitions, playbooks, authority, and accountability synchronized with that acceleration. OI does not merely add automation to existing jobs; it changes which parts of a job become rate-limiting.</p>
+
+<h3>Human-AI Symbiosis and Relations of Production</h3>
+
+<p>OI reopens the older problem of human-AI symbiosis, but the reason is organizational before it is ergonomic. Consequential organizational action requires authority, responsibility, and contestability that cannot be assigned to a model by default, so AI capability has to be embedded in human-AI arrangements that preserve accountable ownership while expanding memory, search, coordination, and execution capacity. Licklider (1960) framed interactive computing as a close partnership in which humans and computers contribute different strengths, and Engelbart (1962) treated augmentation as a system of people, artifacts, language, and methodology; within the organizational-intelligence lineage, Matsuda (1992) had already cast it as the coordination of human and machine intelligence. For OI, the symbiosis problem is therefore not only whether a human and an AI tool collaborate well on a single task, but whether an organization can preserve human agency, judgment, tacit knowledge, and responsibility while reorganizing work around AI-supported memory, search, coordination, and execution.</p>
+
+<p>This requires a stronger design condition than keeping a human nominally "in the loop." A symbiotic OI system should make human roles more capable and more accountable, not leave people to approve opaque machine outputs. In organizational-state terms, symbiosis is a coordinated change to <em>H</em>, <em>R</em>, <em>K<sub>t</sub></em>, <em>A</em>, and <em>G</em>: human expertise and judgment must remain part of the state that constrains future work, not disappear into opaque memory or tool pipelines. Failure modes—deskilling, excessive dependency, invisible human repair work, managerial surveillance, responsibility displacement, and the gradual transfer of local expertise into systems that workers cannot inspect—are organizational, not merely ergonomic. Industry analysis of the progression toward more autonomous agents points to the same bottleneck migration described earlier (Anthropic, 2026): the human role shifts toward problem selection, direction setting, review, escalation, and institutional authorization. Three design consequences follow. Role redesign must specify which capabilities move to agents and which human ones must be preserved, trained, or upgraded; interfaces must support review, correction, appeal, and explanation rather than just fast approval; and the learning loop must benefit the whole human-AI collective, with the AI learning from human judgment while people gain situational awareness, reusable knowledge, and higher-level skills rather than losing them.</p>
+
+<p>Once this symbiosis becomes institutional rather than occasional, it reaches relations of production: ownership, roles in production, division of labor, and distribution. Marx (1859) frames social change as a tension between productive forces and production relations. OI may become a productive force because it reorganizes the controllable elements of the organizational state—knowledge, data, software systems, agentic labor, permissions, and accountability—and can therefore change who controls intelligent labor, who benefits from productivity gains, who bears accountability, and whether workers are augmented or displaced. Following the classical political-economy distinction, three dimensions make this concrete. The first is <em>ownership of the new means of production</em>: organizational data, models, agents, and process knowledge become decisive productive assets, and concentrating them creates new asymmetries of power, including the surveillance dynamics that Zuboff (2019) analyzes. The second is <em>control of the labor process</em>: as task assignment, monitoring, and evaluation become AI-mediated, the same machinery can widen worker discretion or tighten algorithmic control. The third is <em>distribution of the surplus</em>: whether the gains accrue narrowly to whoever owns the intelligent assets or broadly to organizational members and society is a question of institutional design, consistent with the displacement-reinstatement balance of Acemoglu and Restrepo (2022).</p>
+
+<p>This is a hypothesis, not an empirical finding. The outcome depends on design and institutions. OI can support augmentation, shared expertise, safer operations, and new work; it can also centralize control, monitor workers, and accelerate displacement. Technical architecture alone cannot answer the distributional question.</p>
+
+<h3>Boundaries and Organizational Form</h3>
+
+<p>Transaction-cost theory implies that firm boundaries depend on the relative costs of internal coordination and market transaction (Coase, 1937; Williamson, 1975). OI can reduce both. If it reduces internal coordination costs more, firms may internalize previously outsourced activities. If it reduces market search, contracting, and monitoring costs more, firms may become more networked and platform-like. The direction is not predetermined; what changes is the cost calculation behind organizational boundaries. In the state formulation, boundary change asks which knowledge, data, systems, permissions, and accountability relations are kept inside the organization and which are exposed through markets, platforms, or partner interfaces.</p>
+
+<p>OI can be embedded into several different organizational forms, each using it differently. Algorithmic operating models and "AI factories" shift coordination from hierarchical approval chains to data-driven decision engines (Iansiti and Lakhani, 2020). Platform capitalism emphasizes ecosystems and data-mediated coordination (Srnicek, 2017). Supermind theory imagines organizations as people-and-computer collectives (Malone, 2018). OI can be read as the infrastructure that gives these forms a working nervous system. The deployment archetypes below turn this claim into a checklist that matches OI emphasis to organizational form and to the binding gap component.</p>
+
+<h3>Deployment Archetypes</h3>
+
+<p>The same capabilities do not enter every organization through the same door. The table below gives a design checklist for matching OI emphasis to organizational form rather than to an abstract enterprise average. These archetypes are non-exclusive design emphases, not a partition: an organization is matched to whichever constraint currently binds, and most real organizations mix archetypes across units and lifecycle stages. They are another way to read the organizational state: coordination-bound cases expose weak links among <em>R</em>, <em>P</em>, and <em>S</em>; knowledge-bound cases expose weak <em>K<sub>t</sub></em> and memory formation from <em>D<sub>t</sub></em>; governance-bound cases expose constraints in <em>A</em> and <em>G</em>; AI-native cases expose whether the new agentic parts of <em>S</em> can be governed before they sprawl. The first three differ in which components of the organizational gap dominate; AI-native denotes organizations whose binding constraint is governance of the agents themselves rather than integration with legacy structure.</p>
+
+<table class="oi">
+<thead>
+<tr><th>Archetype</th><th>Main organizational bottleneck</th><th>OI design emphasis</th></tr>
+</thead>
+<tbody>
+<tr><td>Coordination-bound</td><td>Functional, divisional, matrix, and platform forms: fragmentation across functions, units, projects, and middle platforms, with slow handoffs and weak capability reuse.</td><td>Cross-boundary orchestration, shared task state, cross-unit memory, dependency and priority tracking, and agent-callable capability interfaces.</td></tr>
+<tr><td>Knowledge-bound</td><td>Owner-driven small firms and tacit-heavy professional firms: undocumented, person-held knowledge and weak process memory.</td><td>Capturing commitments from communication, externalized playbooks, risk reminders, and decision support.</td></tr>
+<tr><td>Governance-bound</td><td>Hierarchical groups, public agencies, and process- or compliance-heavy bodies: long reporting chains, formalistic review, legal procedure, due-process obligations, and late risk discovery.</td><td>End-to-end process visibility, process evidence, explainable risk-based triage, appeal paths, and strict human authority for consequential or legal decisions.</td></tr>
+<tr><td>AI-native</td><td>AI-first startups and agent-operated "service-as-software" firms built around agents from the start: the binding constraint is not legacy integration but governance of the agents themselves—agent sprawl, diffuse accountability, and uncontrolled self-modification.</td><td>Native role and permission design for human-agent teams, agent identity and audit, controlled evolution with rollback, and explicit human accountability anchors.</td></tr>
+</tbody>
+</table>
+
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: Four deployment archetypes for OI, consolidating legacy organizational forms and adding AI-native organizations.</em></p>
+
+<h2>Risk, Governance, and Ethics</h2>
+
+<p>The deeper AI is embedded in organizational operations, the more systemic its risks become. Governance is endogenous to OI and cannot be an external compliance layer. Each risk below is a failure mode of the spine, not a separate taxonomy: accountability and alignment threaten G and the organization's values; permissions, privacy, and memory threaten A and the governed memory substrate; cognitive and social risks threaten K<sub>t</sub> and the diversity the reflective loop depends on; the Turing Trap concerns control of H, R, and the distribution of gains; and governance of self-improvement is the entry condition on the evolution loop. These consolidate into five operational controls, set out below.</p>
+
+<h3>Accountability</h3>
+
+<p>Responsibility becomes difficult when outcomes are jointly produced by humans and multiple AI agents. The response is not to assign responsibility to the model, but to require complete audit trails, explicit human-AI responsibility boundaries, and a clear human accountability owner, assigned ex ante by role, for consequential actions. AI can advise, execute, and document; it should not become a sink for responsibility.</p>
+
+<h3>Alignment and Values</h3>
+
+<p>Organizational agents must align with organizational goals and values, but those goals are often plural and conflicting. RLHF (Ouyang et al., 2022) and Constitutional AI (Bai et al., 2022) suggest model-alignment mechanisms. For OI, alignment also requires making the organization's values and decision principles explicit enough that agents can reason about them and auditors can check conformance. One approach is to externalize existing compliance policies, red lines, and decision frameworks into a queryable form that agents and verification gates can reference; this parallels the &ldquo;organizational constitution&rdquo; idea but grounds it in artifacts that organizations already maintain.</p>
+
+<h3>Permissions, Privacy, and Memory</h3>
+
+<p>Least privilege is the central permission principle. Each agent should receive only the minimum rights necessary for its current role and task, and each system call should carry an authorization context. But privacy is not only an access-control problem: contextual-integrity failures occur when information is technically accessible but used for the wrong purpose, role, recipient, or workflow context, as CI-Work makes measurable in enterprise information-use tasks (Fu et al., 2026). Organizational memory adds a second tension. Remembering more improves continuity, while privacy, confidentiality, data retention, and the right to be forgotten require selective deletion and access control. Memory entries therefore need permission labels, provenance, retention policies, purpose constraints, and reliable deletion or redaction mechanisms.</p>
+
+<h3>Cognitive and Social Risks</h3>
+
+<p>OI can damage organizational cognition. Automation bias can make humans over-trust AI. Single-loop optimization can lock an organization more efficiently into the wrong goals. Homogeneous agents built from the same base model can amplify groupthink, undermining the diversity and independence emphasized by collective-intelligence research (Surowiecki, 2004; Woolley et al., 2010). Long-horizon agent-security benchmarks expose adversarial threats that are specifically dangerous to organizational loops: task injection, intent hijacking, objective drift, and memory poisoning can corrupt the system while leaving surface-level outputs looking correct, and unsafe tool chaining can introduce silent failures that degrade organizational knowledge without triggering alerts (Jiang et al., 2026). Mitigations include heterogeneous models, adversarial review roles, independent evidence checks, memory-integrity checks, and periodic double-loop review; at the organizational level, these reinforce the independent-verification entry condition in the capability framework.</p>
+
+<h3>The Turing Trap</h3>
+
+<p>Brynjolfsson (2022) warns that AI development focused on imitating and replacing humans can concentrate wealth and power, whereas augmentation can broaden capability. OI can be used in either direction. The normative position here is augmentation-first rather than replacement-first: for each task, the design question is who benefits, who bears responsibility, and how human capability migrates.</p>
+
+<p>This does not imply that all substitution is wrong. Dangerous, low-dignity, highly rule-bound tasks may be appropriate for automation. The claim is that substitution should be institutionally managed, with attention to distribution, accountability, and worker transition. Operationally, a decision to substitute rather than augment should enter the governance control plane as a policy-level change&mdash;requiring explicit authorization, accountability assignment, and worker-transition review&mdash;rather than as a routine harness update; in maturity terms, such changes sit at the same governance tier as other consequential policy or model changes.</p>
+
+<h3>Governance of Self-Improvement</h3>
+
+<p>The possibility that AI systems could improve parts of their own development or execution environment is older than current LLM agents (Good, 1966; Bostrom, 2014), but recent agent systems make it more practical. Building on the reflective/evolution distinction&mdash;where the governance bar rises with a loop's reach&mdash;self-improvement in OI should be decomposed rather than treated as a single capability. Agents may improve local artifacts, memory entries, skills, and playbooks; they may also propose or help test changes to formal procedures, harness configurations, evaluation rubrics, or model-update pipelines. These changes differ sharply in reversibility and institutional consequence.</p>
+
+<p>The boundary depends on what is at stake. Artifact-, memory-, and playbook-level improvement can be frequent, but still needs provenance and a correction path; this is reflective learning under existing rules. Harness-level improvement, such as changing prompts, tool policies, middleware, or coordination protocols, changes future behavior, so it should be versioned, evaluated, and rollback-aware. Formal procedure, policy, or model-level improvement can change goals, authority boundaries, or value trade-offs; it should therefore require explicit authorization, independent evaluation, and a human accountable for the result.</p>
+
+<p>This framing differs from unqualified recursive self-improvement. OI does not assume that an AI system should autonomously improve itself without external control. It treats improvement as an organizational change process. The stronger the loop, the stronger the required governance, with concrete controls specified for each tier below.</p>
+
+<h3>Control-Plane Governance Functions</h3>
+
+<p>The five control-plane functions become operational only when decomposed into concrete specifications:</p>
+
+<ol>
+  <li><em>Values</em>: explicit policies, red lines, compliance principles, decision frameworks, and model-behavior constraints.</li>
+  <li><em>Permissions</em>: least privilege, dynamic authorization, and runtime checking for every system call.</li>
+  <li><em>Accountability</em>: immutable audit logs, owner binding, evidence trails, and human responsibility for consequential outcomes.</li>
+  <li><em>Human control</em>: mandatory human review for high-risk, irreversible, or value-sensitive decisions.</li>
+  <li><em>Evolution</em>: approval, versioning, staged rollout, evaluation, and rollback for formal procedure, policy, harness, or model changes.</li>
+</ol>
+
+<p>These five functions make the structural controls operational. The cognitive and social risks above are handled through process design under Human control and Evolution rather than as a separate function, and memory deletion falls under Permissions. Capability and governance must co-evolve. Strong automation without these control-plane functions is not higher OI; it is fragile power.</p>
+
+<h2>Evaluation and Maturity</h2>
+
+<h3>Why Evaluation Is Hard</h3>
+
+<p>Evaluating OI is harder than benchmarking a model because the unit of analysis is the organization. The capability is holistic: the eight capabilities have to work together rather than one at a time. It is contextual, so what counts as correct in one organization can be wrong in another. It is also longitudinal: value appears through continuity, learning, and adaptation over time, not in a single run.</p>
+
+<p>Existing agent benchmarks provide partial signals for tool use, planning, memory, and grounding, but most remain centered on bounded task families with a single primary agent; recent exceptions are discussed below. OI requires benchmarks that simulate organizational environments with private knowledge, heterogeneous systems, permissions, long-running tasks, human checkpoints, and audit requirements. Such benchmarks have two jobs: measure capability gains and detect whether those gains were achieved by bypassing organizational constraints.</p>
+
+<h3>Existing Benchmarks and OI-Relevant Signals</h3>
+
+<p>Recent agent benchmarks move closer to organizational settings, although none fully measures OI. They are best read as partial probes of the OI capability stack rather than as interchangeable evidence for organization-level intelligence. Broader interactive environments such as AppWorld (Trivedi et al., 2024) and OSWorld (Xie et al., 2024) probe app-ecosystem and open-ended computer work. WorkArena++, &tau;-bench, Tool Decathlon, CRMArena-Pro, and Agent-Diff then stress capability substrates such as workflow composition, tool execution, user interaction, enterprise APIs, and state-changing actions. The closest OI signals are the benchmarks that add organization-like context: company sandboxes, heterogeneous enterprise evidence, contextual-integrity privacy, long-horizon resource allocation, human escalation, and long-horizon attack robustness. Read against the eight capabilities, these benchmarks cluster by capability rather than standing as interchangeable scores: AppWorld, OSWorld, and HERB probe perception and grounding; &tau;-bench, Tool Decathlon, and Agent-Diff probe tool execution and executable postconditions, the commit and verify steps of the operational loop; CI-Work probes contextual-integrity governance; EnterpriseArena probes long-horizon coherence; and AgentLAB probes adversarial robustness of the loop. Tellingly, none probes the reflective or evolution loops: organization-level learning and governed change remain essentially unmeasured. The following table summarizes these signals and their limits.</p>
+
+<table class="oi">
+<thead>
+<tr><th>Benchmark</th><th>What it tests</th><th>OI relevance and limitation</th></tr>
+</thead>
+<tbody>
+<tr><td>TheAgentCompany (Xu et al., 2024)</td><td>Consequential tasks in a simulated company environment.</td><td>Directly approximates digital-workplace agency, but lacks permission structures, accountability owners, and longitudinal memory across task episodes.</td></tr>
+<tr><td>EnterpriseBench (Vishwakarma et al., 2025)</td><td>Enterprise tasks across software engineering, HR, finance, and administration with fragmented data and access-control hierarchies.</td><td>Stronger organization-like sandbox, but still synthetic and episodic, with limited longitudinal memory and governance beyond access control.</td></tr>
+<tr><td>WorkArena++ (Boisvert et al., 2024)</td><td>Compositional planning and common knowledge-work tasks.</td><td>Tests workflow composition and reasoning, but only partially captures organizational memory, authority, and accountability.</td></tr>
+<tr><td>&tau;-bench (Yao et al., 2024)</td><td>Tool-agent-user interaction in realistic domains.</td><td>Captures tool use under user interaction and policy constraints, but remains task-family centered.</td></tr>
+<tr><td>CRMArena-Pro (Huang et al., 2025)</td><td>Business scenarios and interactions in CRM-like settings.</td><td>Useful for enterprise interaction and confidentiality signals, but not sufficient for organization-wide learning.</td></tr>
+<tr><td>Tool Decathlon (Li et al., 2025)</td><td>Diverse, realistic, long-horizon tool execution across multiple applications.</td><td>Stresses long-horizon tool use and multi-application execution, but needs stronger organizational governance and memory evaluation.</td></tr>
+<tr><td>HERB (Choubey et al., 2025)</td><td>Deep search over heterogeneous enterprise artifacts, including documents, meetings, Slack, GitHub, and URLs.</td><td>Strong signal for grounding and evidence assembly, but focuses on information access rather than permissioned action.</td></tr>
+<tr><td>Agent-Diff (Pysklo et al., 2026)</td><td>Enterprise API tasks evaluated by state-diff contracts over sandboxed software-service replicas.</td><td>Tests whether actions actually change systems correctly, but remains tied to predefined API tasks and expected diffs.</td></tr>
+<tr><td>CI-Work (Fu et al., 2026)</td><td>Contextual-integrity privacy in enterprise retrieval and information-use workflows.</td><td>Measures the utility&ndash;privacy trade-off directly, but covers a narrower information-flow slice of OI.</td></tr>
+<tr><td>EnterpriseArena (Han et al., 2026)</td><td>Long-horizon CFO-style resource allocation under partial observability, budgets, delayed effects, and changing regimes.</td><td>Probes strategic persistence and delayed consequences, but is domain-specific and simulator-based.</td></tr>
+</tbody>
+</table>
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: Recent agent benchmarks as partial OI evaluation signals.</em></p>
+
+<p>For calibration, in TheAgentCompany's original release, the best agent completed 24.0% of tasks fully autonomously and scored 34.4% under partial-credit evaluation (Xu et al., 2024); EnterpriseBench similarly reports only 41.8% task completion for its strongest evaluated agents (Vishwakarma et al., 2025). These gaps indicate how far current agents remain from organization-level competence. Adjacent 2026 benchmarks expose missing dimensions that a true OI benchmark must add: CI-Work treats privacy as contextual information flow, HiL-Bench evaluates whether agents know when to ask humans for help, Agent-Diff checks whether actions actually produce the intended state changes, and AgentLAB evaluates long-horizon attacks such as task injection, objective drift, and memory poisoning (Fu et al., 2026; Trinh et al., 2026; Pysklo et al., 2026; Jiang et al., 2026). The following table turns these gaps into benchmark requirements. Success should not be measured only by task completion, but also by whether the system preserves responsibility, respects authority, changes systems correctly, and improves without corrupting organizational knowledge.</p>
+
+<table class="oi">
+<thead>
+<tr><th>Requirement</th><th>What it tests</th><th>Failure if omitted</th></tr>
+</thead>
+<tbody>
+<tr><td>Private organizational knowledge</td><td>Local policies, project history, tacit conventions, and role-specific meanings.</td><td>The benchmark reduces to public web or generic office tasks.</td></tr>
+<tr><td>Roles and permissions</td><td>Identity, authority, least privilege, and tool-call authorization.</td><td>Agents can appear competent by acting outside legitimate authority.</td></tr>
+<tr><td>Contextual integrity</td><td>Purpose, sender&ndash;recipient context, workflow context, and appropriate information use.</td><td>Agents can complete tasks while leaking or misusing sensitive information.</td></tr>
+<tr><td>Long-running task state</td><td>Persistence of goals, blockers, evidence, and commitments across episodes.</td><td>One-shot completion hides memory and continuity failures.</td></tr>
+<tr><td>Evidence coverage and abstention</td><td>Source-backed evidence assembly over heterogeneous artifacts, plus refusal when evidence is insufficient.</td><td>Retrieval success hides brittle grounding and hallucinated conclusions.</td></tr>
+<tr><td>Executable postconditions</td><td>State-diff checks, transactional effects, rollback, and explicit definitions of done.</td><td>Transcript-level judging rewards plausible work that did not change the world correctly.</td></tr>
+<tr><td>Human checkpoints</td><td>Review, calibrated escalation, override, and appeal for consequential steps.</td><td>Autonomy is rewarded even when responsibility becomes diffuse or humans are flooded.</td></tr>
+<tr><td>Memory update and forgetting</td><td>Promotion of outcomes into shared memory, conflict handling, retention, and deletion.</td><td>Learning is unmeasured or silently pollutes organizational knowledge.</td></tr>
+<tr><td>Adversarial and memory-security robustness</td><td>Task injection, objective drift, memory poisoning, and unsafe tool chaining.</td><td>Long-running agents can be steered or corrupted while appearing productive.</td></tr>
+<tr><td>Audit and replay</td><td>Evidence trails, action logs, rollback, and post-hoc inspectability.</td><td>Failures cannot be attributed, corrected, or learned from safely.</td></tr>
+</tbody>
+</table>
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: Minimum requirements for organization-level OI benchmarks.</em></p>
+
+<h3>Capability Signals</h3>
+
+<p>The level of OI can be described along four scales: <em>breadth</em> (how many tasks, roles, and systems are covered), <em>depth</em> (how complex the tasks and decisions can be), <em>coherence</em> (how long the system can maintain state and intent), and <em>improvement</em> (how reliably feedback becomes better behavior). Candidate evaluation signals include task-state perception coverage and latency; grounding fidelity; evidence coverage and abstention quality; hallucination resistance; memory reuse rate; long-horizon consistency; tool-call success, state-diff success, and rollback correctness; planning quality; exception recovery; verification check precision and false-accept rate; collaboration reliability; and learning curves for repeated task families. Coordination also needs human-side signals: appropriate-escalation precision and recall, human override and rewrite rates, reviewer workload per task, and false-alarm rates at human checkpoints. Governance-side signals should be reported alongside them: contextual-integrity violations, permission-violation rates, audit completeness, memory-integrity failures, and adversarial attack success rates. Each capability maps to example signals. These metrics should be reported separately before being collapsed into a maturity judgment: perception coverage primarily informs breadth; planning quality and task completion inform depth; long-horizon consistency informs coherence; learning curves inform improvement. Audit completeness, permission-violation rates, and contextual-integrity violations are deliberately not scored on these scales; they act as governance entry conditions that cap maturity.</p>
+
+<h3>Maturity Model</h3>
+
+<p>These signals can be summarized through an L<sub>0</sub>&ndash;L<sub>5</sub> maturity model in which higher levels require broader autonomy and stronger governance entry conditions. (This L<sub>0</sub>&ndash;L<sub>5</sub> scale is a governance-gated maturity model for an <em>organization</em>, in the spirit of staged-autonomy ladders such as the SAE driving-automation levels. It should not be conflated with OpenAI's reported five-level AGI framework, whose Level 5, &ldquo;Organizations,&rdquo; names the capability frontier of a single AI system &mdash; AI that can do the work of an organization &mdash; rather than the governed maturity of a real organization (Metz, 2024). The numerals coincide; the object being measured does not.)</p>
+
+<table class="oi">
+<thead>
+<tr><th>Level</th><th>Name</th><th>Core characteristics</th><th>Human-AI relation; governance entry</th></tr>
+</thead>
+<tbody>
+<tr><td>L<sub>0</sub></td><td>No intelligence</td><td>Human work plus traditional software; automation limited to fixed scripts.</td><td>Humans judge everything.</td></tr>
+<tr><td>L<sub>1</sub></td><td>Tool assistance</td><td>Point AI applications; stateless, single-user, request-driven assistance.</td><td>AI is a passive tool.</td></tr>
+<tr><td>L<sub>2</sub></td><td>Task automation</td><td>A single agent can complete bounded tasks with limited tool use.</td><td>AI executes; humans review outputs; least-privilege tool access with action logging.</td></tr>
+<tr><td>L<sub>3</sub></td><td>Process-level intelligence</td><td>Multi-agent or human-AI workflows complete end-to-end processes with grounding and memory.</td><td>Humans supervise key nodes; role-level permissions and audit trails.</td></tr>
+<tr><td>L<sub>4</sub></td><td>Organization-level intelligence</td><td>Cross-process and cross-department coordination with shared memory, learning, and built-in governance.</td><td>Humans set goals and boundaries; cross-department memory controls, data-retention and forgetting policies, and incident response.</td></tr>
+<tr><td>L<sub>5</sub></td><td>Adaptive reconstruction</td><td>The OI system can, under evolution-loop governance, propose and execute redesigns of the organization's own processes and structures.</td><td>Humans set values and boundaries; change approval, staged rollout, rollback, and post-change evaluation for self-redesign.</td></tr>
+</tbody>
+</table>
+<p style="font-size:.86rem;color:#51607a;margin-top:.5rem"><em>Table: An L<sub>0</sub>&ndash;L<sub>5</sub> maturity model for OI. The name of L<sub>4</sub> refers to organization-wide operation across processes and departments, not to OI as a whole; lower levels are lower degrees of the same capability. The upper levels, L<sub>4</sub> and L<sub>5</sub>, describe research targets rather than widely deployed systems.</em></p>
+
+<p>The scoring rule above has a governance counterpart: governance is an entry condition, and weak permissions, audit, or human control should cap maturity. As minimum examples, L<sub>2</sub> requires least-privilege tool permissions and logging of agent actions; L<sub>3</sub> requires role-level permissions, human review at key checkpoints, and audit trails; L<sub>4</sub> adds cross-department memory access controls, data-retention and forgetting policies, and incident response; L<sub>5</sub> adds change approval, staged rollout, rollback, and post-change evaluation. These rules reconcile the definitional and graded readings of governance: the constitutive requirements of the eight elements determine whether a deployment counts as an OI system at all, while maturity measures how far the capability extends.</p>
+
+<h2>Open Research Questions</h2>
+
+<p>The framework points to four connected research programs.</p>
+
+<ol>
+  <li><strong>Measurement and benchmarks.</strong> OI needs measurable levels, comparable signals, and organization-level benchmarks that satisfy the requirements for OI benchmarking; otherwise maturity remains a metaphor.</li>
+  <li><strong>Memory and controlled learning.</strong> OI needs shared memory that is persistent, permissioned, conflict-resolving, pollution-resistant, and forgettable, with a clear boundary between reflective learning inside current rules and supervised double-loop changes to organizational rules.</li>
+  <li><strong>Reliability and hybrid collective intelligence.</strong> OI needs long-horizon planning, recovery, human-AI collaboration, and collective-intelligence measures that do not collapse into responsibility diffusion or the intent and comprehension debt of collaboration governance.</li>
+  <li><strong>Institutions, boundaries, and power.</strong> OI changes transaction costs, organizational form, and the distribution of control; institutional designs must use the capability while avoiding the concentration of power warned of by the Turing Trap.</li>
+</ol>
+
+<h2>Limitations</h2>
+
+<p>The framework offered here is conceptual and descriptive: the capability-loop model, state formulation, implementation-component mapping, and maturity levels require empirical validation through case studies, longitudinal evaluation, and quantitative refinement before they can be considered predictive. The literature base is weighted toward English-language organization theory and LLM-agent research, underrepresenting organizational traditions and local practices documented in other languages. Some of the most relevant agentic-harness and benchmark literature is recent and preprint-heavy, so the terminology and evidence base may change.</p>
+
+<p>The technology is also moving quickly. System-level claims should be revisited as reasoning models, long-context systems, agent protocols, graph-based RAG, and tool ecosystems evolve. The governance requirements&mdash;least privilege, maker-checker verification, staged rollout and rollback, and governance as an entry condition&mdash;are argued from organizational principles and analogy to software-release practice, not demonstrated. Their necessity, sufficiency, and operational cost, including reviewer workload and the latency introduced by mandatory human checkpoints, remain open questions for the measurement and reliability programs of the research agenda.</p>
+
+<h2>Conclusion</h2>
+
+<p>Organizational intelligence names a shift in the unit of intelligence. As model capabilities move from benchmarks and point applications into real organizations, the central question becomes whether the organization itself becomes better at perceiving events, grounding action in local knowledge, remembering, using tools, planning, verifying results, collaborating, learning, and remaining accountable.</p>
+
+<p>The resulting research agenda spans measurement and benchmarks, governable memory, controlled learning and evolution, reliable long-horizon and hybrid collective intelligence, and the institutional questions of organizational boundaries and power. These questions are design constraints for future OI systems, not afterthoughts.</p>
+
+<p>The positive claim is that LLM agents provide a substrate for synthesizing older organizational, collective-intelligence, and multi-agent traditions into organization-level systems. But capability and governance must co-evolve. Whether this synthesis augments human capability or concentrates power remains an institutional choice, not a technical inevitability. The paper's central argument is that governance must be part of the capability itself, not an external compliance layer applied after autonomy is granted.</p>
+
+<h2>References</h2>
+<ol class="ref-list">
+<li id="ref-acemoglu2018race">Daron Acemoglu and Pascual Restrepo. The race between man and machine: Implications of technology for growth, factor shares, and employment. <em>American Economic Review</em>, 108(6):1488&ndash;1542, 2018. doi: 10.1257/aer.20160696.</li>
+<li id="ref-acemoglu2019automation">Daron Acemoglu and Pascual Restrepo. Automation and new tasks: How technology displaces and reinstates labor. <em>Journal of Economic Perspectives</em>, 33(2):3&ndash;30, 2019. doi: 10.1257/jep.33.2.3.</li>
+<li id="ref-acemoglu2022tasks">Daron Acemoglu and Pascual Restrepo. Tasks, automation, and the rise in U.S. wage inequality. <em>Econometrica</em>, 90(5):1973&ndash;2016, 2022. doi: 10.3982/ECTA19815.</li>
+<li id="ref-albrecht2003">Karl Albrecht. <em>The Power of Minds at Work: Organizational Intelligence in Action</em>. AMACOM, 2003.</li>
+<li id="ref-allee1997">Verna Allee. <em>The Knowledge Evolution: Expanding Organizational Intelligence</em>. Butterworth-Heinemann, 1997.</li>
+<li id="ref-mcp2024">Anthropic. Introducing the model context protocol. Official announcement and documentation, 2024. URL <a href="https://www.anthropic.com/news/model-context-protocol">https://www.anthropic.com/news/model-context-protocol</a>.</li>
+<li id="ref-anthropic2026rsi">Anthropic. When AI builds itself. Anthropic Institute article, 2026. URL <a href="https://www.anthropic.com/institute/recursive-self-improvement">https://www.anthropic.com/institute/recursive-self-improvement</a>. Accessed 2026-06-08.</li>
+<li id="ref-argyris1978">Chris Argyris and Donald A. Sch&ouml;n. <em>Organizational Learning: A Theory of Action Perspective</em>. Addison-Wesley, 1978.</li>
+<li id="ref-asai2024selfrag">Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi. Self-RAG: Learning to retrieve, generate, and critique through self-reflection. In <em>International Conference on Learning Representations</em>, 2024. URL <a href="https://openreview.net/forum?id=hSyW5go0v8">https://openreview.net/forum?id=hSyW5go0v8</a>.</li>
+<li id="ref-bai2022constitutional">Yuntao Bai, Saurav Kadavath, Sandipan Kundu, et al. Constitutional AI: Harmlessness from AI feedback. <em>arXiv preprint</em>, 2022. URL <a href="https://arxiv.org/abs/2212.08073">https://arxiv.org/abs/2212.08073</a>.</li>
+<li id="ref-boisvert2024workarena">L&eacute;o Boisvert, Megh Thakkar, Maxime Gasse, et al. WorkArena++: Towards compositional planning and reasoning-based common knowledge work tasks. <em>arXiv preprint</em>, 2024. URL <a href="https://arxiv.org/abs/2407.05291">https://arxiv.org/abs/2407.05291</a>.</li>
+<li id="ref-bostrom2014superintelligence">Nick Bostrom. <em>Superintelligence: Paths, Dangers, Strategies</em>. Oxford University Press, 2014.</li>
+<li id="ref-brynjolfsson2022turing">Erik Brynjolfsson. The turing trap: The promise and peril of human-like artificial intelligence. <em>Daedalus</em>, 151(2):272&ndash;287, 2022. doi: 10.1162/daed_a_01915.</li>
+<li id="ref-chen2024agentverse">Weize Chen, Yusheng Su, Jingwei Zuo, Cheng Yang, Chenfei Yuan, Chi-Min Chan, Heyang Yu, Yaxi Lu, Yi-Hsin Hung, Chen Qian, Yujia Qin, Xin Cong, Ruobing Xie, Zhiyuan Liu, Maosong Sun, and Jie Zhou. AgentVerse: Facilitating multi-agent collaboration and exploring emergent behaviors. In <em>International Conference on Learning Representations</em>, 2024. URL <a href="https://openreview.net/forum?id=EHg5GDnyq1">https://openreview.net/forum?id=EHg5GDnyq1</a>.</li>
+<li id="ref-chhikara2025mem0">Prateek Chhikara, Dev Khant, Saket Aryan, Taranjeet Singh, and Deshraj Yadav. Mem0: Building production-ready AI agents with scalable long-term memory. <em>arXiv preprint</em>, 2025. URL <a href="https://arxiv.org/abs/2504.19413">https://arxiv.org/abs/2504.19413</a>.</li>
+<li id="ref-choubey2025herb">Prafulla Kumar Choubey, Xiangyu Peng, Shilpa Bhagavath, Kung-Hsiang Huang, Caiming Xiong, and Chien-Sheng Wu. Benchmarking deep search over heterogeneous enterprise data. In <em>Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing: Industry Track</em>, pages 501&ndash;517, Suzhou, China, 2025. Association for Computational Linguistics. doi: 10.18653/v1/2025.emnlp-industry.34. URL <a href="https://aclanthology.org/2025.emnlp-industry.34/">https://aclanthology.org/2025.emnlp-industry.34/</a>.</li>
+<li id="ref-coase1937">Ronald H. Coase. The nature of the firm. <em>Economica</em>, 4(16):386&ndash;405, 1937. doi: 10.1111/j.1468-0335.1937.tb00002.x.</li>
+<li id="ref-cyert1963">Richard M. Cyert and James G. March. <em>A Behavioral Theory of the Firm</em>. Prentice-Hall, 1963.</li>
+<li id="ref-daugherty2018">Paul R. Daugherty and H. James Wilson. <em>Human + Machine: Reimagining Work in the Age of AI</em>. Harvard Business Review Press, 2018.</li>
+<li id="ref-davenportkirby2016">Thomas H. Davenport and Julia Kirby. <em>Only Humans Need Apply: Winners and Losers in the Age of Smart Machines</em>. Harper Business, 2016.</li>
+<li id="ref-dignum2009">Virginia Dignum, editor. <em>Handbook of Research on Multi-Agent Systems: Semantics and Dynamics of Organizational Models</em>. IGI Global, 2009. doi: 10.4018/978-1-60566-256-5.</li>
+<li id="ref-ding2024longrope">Yiran Ding, Li Lyna Zhang, Chengruidong Zhang, Yuanyuan Xu, Ning Shang, Jiahang Xu, Fan Yang, and Mao Yang. LongRoPE: Extending LLM context window beyond 2 million tokens. In <em>Proceedings of the 41st International Conference on Machine Learning</em>, volume 235 of <em>Proceedings of Machine Learning Research</em>, pages 11091&ndash;11104. PMLR, 2024. URL <a href="https://proceedings.mlr.press/v235/ding24i.html">https://proceedings.mlr.press/v235/ding24i.html</a>.</li>
+<li id="ref-edge2024graphrag">Darren Edge, Ha Trinh, Newman Cheng, Joshua Bradley, Alex Chao, Apurva Mody, Steven Truitt, and Jonathan Larson. From local to global: A graph RAG approach to query-focused summarization. <em>arXiv preprint</em>, 2024. URL <a href="https://arxiv.org/abs/2404.16130">https://arxiv.org/abs/2404.16130</a>.</li>
+<li id="ref-engelbart1962augmenting">Douglas C. Engelbart. Augmenting human intellect: A conceptual framework. Technical Report AFOSR-3223, Stanford Research Institute, Menlo Park, CA, 1962.</li>
+<li id="ref-falconer2026companybrain">Falconer. The company brain: A competitive moat in the age of AI. Online guide, 2026. URL <a href="https://falconer.com/guides/company-brain-competitive-moat/">https://falconer.com/guides/company-brain-competitive-moat/</a>. Accessed 2026-06-08.</li>
+<li id="ref-ferber1998">Jacques Ferber and Olivier Gutknecht. A meta-model for the analysis and design of organizations in multi-agent systems. In <em>Proceedings of the International Conference on Multi-Agent Systems</em>, 1998. doi: 10.1109/ICMAS.1998.699041.</li>
+<li id="ref-ferber2004">Jacques Ferber, Olivier Gutknecht, and Fabien Michel. From agents to organizations: An organizational view of multi-agent systems. In <em>Agent-Oriented Software Engineering IV</em>, volume 2935 of <em>Lecture Notes in Computer Science</em>, pages 214&ndash;230. Springer, 2004. doi: 10.1007/978-3-540-24620-6_15.</li>
+<li id="ref-fu2026ciwork">Wenjie Fu, Xiaoting Qin, Jue Zhang, Qingwei Lin, Lukas Wutschitz, Robert Sim, Saravan Rajmohan, and Dongmei Zhang. CI-Work: Benchmarking contextual integrity in enterprise LLM agents. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2604.21308">https://arxiv.org/abs/2604.21308</a>. Accepted to ACL 2026 Industry Track.</li>
+<li id="ref-galbraith1974">Jay R. Galbraith. Organization design: An information processing view. <em>Interfaces</em>, 4(3):28&ndash;36, 1974. doi: 10.1287/inte.4.3.28.</li>
+<li id="ref-glynn1996">Mary Ann Glynn. Innovative genius: A framework for relating individual and organizational intelligences to innovation. <em>Academy of Management Review</em>, 21(4):1081&ndash;1111, 1996. doi: 10.5465/amr.1996.9704071864.</li>
+<li id="ref-good1966ultraintelligent">Irving John Good. Speculations concerning the first ultraintelligent machine. In <em>Advances in Computers</em>, volume 6, pages 31&ndash;88. Academic Press, 1966. doi: 10.1016/S0065-2458(08)60418-0.</li>
+<li id="ref-a2a2025">Google. Announcing the agent2agent protocol (A2A): A new era of agent interoperability. Google for Developers Blog, 2025. URL <a href="https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/">https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/</a>.</li>
+<li id="ref-guo2024survey">Taicheng Guo, Xiuying Chen, Yaqi Wang, Ruidi Chang, Shichao Pei, Nitesh V. Chawla, Olaf Wiest, and Xiangliang Zhang. Large language model based multi-agents: A survey of progress and challenges. In <em>Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence</em>, pages 8048&ndash;8057. ijcai.org, 2024. URL <a href="https://www.ijcai.org/proceedings/2024/890">https://www.ijcai.org/proceedings/2024/890</a>.</li>
+<li id="ref-halal2002">William E. Halal. Organizational intelligence: A broader framework for understanding knowledge. <em>On the Horizon</em>, 10(4), 2002. doi: 10.1108/oth.2002.27410dab.001. URL <a href="https://doi.org/10.1108/oth.2002.27410dab.001">https://doi.org/10.1108/oth.2002.27410dab.001</a>.</li>
+<li id="ref-han2026enterprisearena">Yi Han, Yan Wang, Lingfei Qian, et al. Can LLM agents be CFOs? benchmarking long-horizon resource allocation in an uncertain enterprise environment. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2603.23638">https://arxiv.org/abs/2603.23638</a>.</li>
+<li id="ref-hannoun2000">Mahdi Hannoun, Olivier Boissier, Jaime Sim&atilde;o Sichman, and Claudette Sayettat. MOISE: An organizational model for multi-agent systems. In <em>IBERAMIA-SBIA 2000</em>, volume 1952 of <em>Lecture Notes in Computer Science</em>, pages 156&ndash;165. Springer, 2000. doi: 10.1007/3-540-44399-1_17.</li>
+<li id="ref-hong2024metagpt">Sirui Hong, Mingchen Zhuge, Jonathan Chen, et al. MetaGPT: Meta programming for a multi-agent collaborative framework. In <em>International Conference on Learning Representations</em>, 2024.</li>
+<li id="ref-horling2004">Bryan Horling and Victor Lesser. A survey of multi-agent organizational paradigms. <em>The Knowledge Engineering Review</em>, 19(4):281&ndash;316, 2004. doi: 10.1017/S0269888905000317.</li>
+<li id="ref-hornof2026companybrain">Hornof. Company brain. LLM Wiki concept note, 2026. URL <a href="https://github.com/hornof/llm-wiki/blob/main/concepts/company-brain.md">https://github.com/hornof/llm-wiki/blob/main/concepts/company-brain.md</a>. Accessed 2026-06-08.</li>
+<li id="ref-hsieh2024ruler">Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shantanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang, and Boris Ginsburg. RULER: What's the real context size of your long-context language models? In <em>Conference on Language Modeling</em>, 2024.</li>
+<li id="ref-huang2025crmarena">Kung-Hsiang Huang, Akshara Prabhakar, Onkar Thorat, et al. CRMArena-Pro: Holistic assessment of LLM agents across diverse business scenarios and interactions. <em>arXiv preprint</em>, 2025. URL <a href="https://arxiv.org/abs/2505.18878">https://arxiv.org/abs/2505.18878</a>.</li>
+<li id="ref-huber1990">George P. Huber. A theory of the effects of advanced information technologies on organizational design, intelligence, and decision making. <em>Academy of Management Review</em>, 15(1):47&ndash;71, 1990. doi: 10.5465/amr.1990.4308227.</li>
+<li id="ref-iansiti2020">Marco Iansiti and Karim R. Lakhani. <em>Competing in the Age of AI: Strategy and Leadership When Algorithms and Networks Run the World</em>. Harvard Business Review Press, 2020.</li>
+<li id="ref-jiang2026agentlab">Tanqiu Jiang, Yuhui Wang, Jiacheng Liang, and Ting Wang. AgentLAB: Benchmarking LLM agents against long-horizon attacks. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2602.16901">https://arxiv.org/abs/2602.16901</a>.</li>
+<li id="ref-kolbjornsrud2024">Vegard Kolbj&oslash;rnsrud. Designing the intelligent organization: Six principles for human-AI collaboration. <em>California Management Review</em>, 66(2):44&ndash;64, 2024. doi: 10.1177/00081256231211020. URL <a href="https://doi.org/10.1177/00081256231211020">https://doi.org/10.1177/00081256231211020</a>.</li>
+<li id="ref-kolp2006">Manuel Kolp, Paolo Giorgini, and John Mylopoulos. Multi-agent architectures as organizational structures. <em>Autonomous Agents and Multi-Agent Systems</em>, 13(1):3&ndash;25, 2006. doi: 10.1007/s10458-006-5717-6.</li>
+<li id="ref-lewis2020rag">Patrick Lewis, Ethan Perez, Aleksandra Piktus, et al. Retrieval-augmented generation for knowledge-intensive NLP tasks. In <em>Advances in Neural Information Processing Systems</em>, 2020. URL <a href="https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html">https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html</a>.</li>
+<li id="ref-lig2023camel">Guohao Li, Hasan Abed Al Kader Hammoud, Hani Itani, Dmitrii Khizbullin, and Bernard Ghanem. CAMEL: Communicative agents for &ldquo;mind&rdquo; exploration of large language model society. In <em>Advances in Neural Information Processing Systems</em>, 2023.</li>
+<li id="ref-li2025tooldecathlon">Junlong Li, Wenshuo Zhao, Jian Zhao, et al. The tool decathlon: Benchmarking language agents for diverse, realistic, and long-horizon task execution. <em>arXiv preprint</em>, 2025. URL <a href="https://arxiv.org/abs/2510.25726">https://arxiv.org/abs/2510.25726</a>.</li>
+<li id="ref-licklider1960symbiosis">J. C. R. Licklider. Man-computer symbiosis. <em>IRE Transactions on Human Factors in Electronics</em>, HFE-1(1):4&ndash;11, 1960. doi: 10.1109/THFE2.1960.4503259.</li>
+<li id="ref-lin2026agenticharness">Jiahang Lin, Shichun Liu, Chengjun Pan, et al. Agentic harness engineering: Observability-driven automatic evolution of coding-agent harnesses. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2604.25850">https://arxiv.org/abs/2604.25850</a>.</li>
+<li id="ref-liu2026multiagentharness">Hanzhi Liu, Chaofan Shou, Xiaonan Liu, et al. Synthesizing multi-agent harnesses for vulnerability discovery. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2604.20801">https://arxiv.org/abs/2604.20801</a>.</li>
+<li id="ref-liu2024lostmiddle">Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, and Percy Liang. Lost in the middle: How language models use long contexts. <em>Transactions of the Association for Computational Linguistics</em>, 12:157&ndash;173, 2024. doi: 10.1162/tacl_a_00638. URL <a href="https://aclanthology.org/2024.tacl-1.9/">https://aclanthology.org/2024.tacl-1.9/</a>.</li>
+<li id="ref-madaan2023selfrefine">Aman Madaan, Niket Tandon, Prakhar Gupta, et al. Self-refine: Iterative refinement with self-feedback. In <em>Advances in Neural Information Processing Systems</em>, 2023.</li>
+<li id="ref-malone2018">Thomas W. Malone. <em>Superminds: The Surprising Power of People and Computers Thinking Together</em>. Little, Brown and Company, 2018.</li>
+<li id="ref-march1991">James G. March. Exploration and exploitation in organizational learning. <em>Organization Science</em>, 2(1):71&ndash;87, 1991. doi: 10.1287/orsc.2.1.71.</li>
+<li id="ref-marchsimon1958">James G. March and Herbert A. Simon. <em>Organizations</em>. John Wiley and Sons, 1958.</li>
+<li id="ref-marx1859">Karl Marx. <em>A Contribution to the Critique of Political Economy</em>. Franz Duncker, 1859.</li>
+<li id="ref-matsuda1992">Takehiko Matsuda. Organizational intelligence: Coordination of human intelligence and machine intelligence. In <em>Economics and Cognitive Science</em>, pages 171&ndash;180. Pergamon Press, 1992. doi: 10.1016/B978-0-08-041050-0.50021-2.</li>
+<li id="ref-mendelson1999">Haim Mendelson and Johannes Ziegler. <em>Survival of the Smartest: Managing Information for Rapid Action and World-Class Performance</em>. John Wiley and Sons, 1999.</li>
+<li id="ref-metz2024openailevels">Rachel Metz. OpenAI sets levels to track progress toward superintelligent AI. Bloomberg news report, 2024. URL <a href="https://www.bloomberg.com/news/articles/2024-07-11/openai-sets-levels-to-track-progress-toward-superintelligent-ai">https://www.bloomberg.com/news/articles/2024-07-11/openai-sets-levels-to-track-progress-toward-superintelligent-ai</a>. Reports OpenAI's internal five-level framework for tracking progress toward AGI; Level 5 (&ldquo;Organizations&rdquo;) is described as AI that can do the work of an organization. Accessed 2026-06-08.</li>
+<li id="ref-ning2026codeharness">Xuying Ning, Katherine Tieu, Dongqi Fu, et al. Code as agent harness. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2605.18747">https://arxiv.org/abs/2605.18747</a>.</li>
+<li id="ref-nonaka1995">Ikujiro Nonaka and Hirotaka Takeuchi. <em>The Knowledge-Creating Company</em>. Oxford University Press, 1995.</li>
+<li id="ref-ouyang2022instructgpt">Long Ouyang, Jeff Wu, Xu Jiang, et al. Training language models to follow instructions with human feedback. In <em>Advances in Neural Information Processing Systems</em>, 2022.</li>
+<li id="ref-packer2023memgpt">Charles Packer, Sarah Wooders, Kevin Lin, et al. MemGPT: Towards LLMs as operating systems. <em>arXiv preprint</em>, 2023. URL <a href="https://arxiv.org/abs/2310.08560">https://arxiv.org/abs/2310.08560</a>.</li>
+<li id="ref-pan2026nlah">Linyue Pan, Lexiao Zou, Shuo Guo, Jingchen Ni, and Hai-Tao Zheng. Natural-language agent harnesses. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2603.25723">https://arxiv.org/abs/2603.25723</a>.</li>
+<li id="ref-panickssery2024llmselfpref">Arjun Panickssery, Samuel R. Bowman, and Shi Feng. LLM evaluators recognize and favor their own generations. In <em>Advances in Neural Information Processing Systems</em>, 2024. URL <a href="http://papers.nips.cc/paper_files/paper/2024/hash/7f1f0218e45f5414c79c0679633e47bc-Abstract-Conference.html">http://papers.nips.cc/paper_files/paper/2024/hash/7f1f0218e45f5414c79c0679633e47bc-Abstract-Conference.html</a>.</li>
+<li id="ref-park2023generative">Joon Sung Park, Joseph C. O'Brien, Carrie J. Cai, Meredith Ringel Morris, Percy Liang, and Michael S. Bernstein. Generative agents: Interactive simulacra of human behavior. In <em>Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology</em>, 2023. doi: 10.1145/3586183.3606763.</li>
+<li id="ref-pysklo2026agentdiff">Hubert M. Pysklo, Artem Zhuravel, and Patrick D. Watson. Agent-Diff: Benchmarking LLM agents on enterprise API tasks via code execution with state-diff-based evaluation. <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2602.11224">https://arxiv.org/abs/2602.11224</a>.</li>
+<li id="ref-qian2024chatdev">Chen Qian, Wei Liu, Hongzhang Liu, Nuo Chen, Yufan Dang, Jiahao Li, Cheng Yang, Weize Chen, Yusheng Su, Xin Cong, Juyuan Xu, Dahai Li, Zhiyuan Liu, and Maosong Sun. ChatDev: Communicative agents for software development. In <em>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics</em>, pages 15174&ndash;15186. Association for Computational Linguistics, 2024. doi: 10.18653/v1/2024.acl-long.810. URL <a href="https://aclanthology.org/2024.acl-long.810/">https://aclanthology.org/2024.acl-long.810/</a>.</li>
+<li id="ref-schick2023toolformer">Timo Schick, Jane Dwivedi-Yu, Roberto Dess&igrave;, et al. Toolformer: Language models can teach themselves to use tools. In <em>Advances in Neural Information Processing Systems</em>, 2023. URL <a href="http://papers.nips.cc/paper_files/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html">http://papers.nips.cc/paper_files/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html</a>.</li>
+<li id="ref-senge1990">Peter M. Senge. <em>The Fifth Discipline: The Art and Practice of the Learning Organization</em>. Doubleday/Currency, 1990.</li>
+<li id="ref-shinn2023reflexion">Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. Reflexion: Language agents with verbal reinforcement learning. In <em>Advances in Neural Information Processing Systems</em>, 2023. URL <a href="http://papers.nips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html">http://papers.nips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html</a>.</li>
+<li id="ref-singh2025agenticrag">Aditi Singh, Abul Ehtesham, Saket Kumar, and Tala Talaei Khoei. Agentic retrieval-augmented generation: A survey on agentic RAG. <em>arXiv preprint</em>, 2025. URL <a href="https://arxiv.org/abs/2501.09136">https://arxiv.org/abs/2501.09136</a>.</li>
+<li id="ref-sotasync2026companybrain">SOTA Sync. PolyDAO: Company brain. Online reader note, 2026. URL <a href="https://sotasync.com/reader/2026-06-04-polydao-company-brain/">https://sotasync.com/reader/2026-06-04-polydao-company-brain/</a>. Accessed 2026-06-08.</li>
+<li id="ref-srnicek2017">Nick Srnicek. <em>Platform Capitalism</em>. Polity Press, 2017.</li>
+<li id="ref-sumers2024coala">Theodore R. Sumers, Shunyu Yao, Karthik Narasimhan, and Thomas L. Griffiths. Cognitive architectures for language agents. <em>Transactions on Machine Learning Research</em>, 2024. URL <a href="https://openreview.net/forum?id=1i6ZCvflQJ">https://openreview.net/forum?id=1i6ZCvflQJ</a>.</li>
+<li id="ref-surowiecki2004">James Surowiecki. <em>The Wisdom of Crowds</em>. Doubleday, 2004.</li>
+<li id="ref-trinh2026hilbench">Tu Trinh, Mohamed Elfeki, Guangze Luo, et al. HiL-Bench (human-in-loop benchmark): Do agents know when to ask for help? <em>arXiv preprint</em>, 2026. URL <a href="https://arxiv.org/abs/2604.09408">https://arxiv.org/abs/2604.09408</a>.</li>
+<li id="ref-trivedi2024appworld">Harsh Trivedi, Tushar Khot, Mareike Hartmann, Ruskin Manku, Vinty Dong, Edward Li, Shashank Gupta, Ashish Sabharwal, and Niranjan Balasubramanian. Appworld: A controllable world of apps and people for benchmarking interactive coding agents. In <em>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics</em>, pages 16022&ndash;16076. Association for Computational Linguistics, 2024. doi: 10.18653/v1/2024.acl-long.850. URL <a href="https://aclanthology.org/2024.acl-long.850/">https://aclanthology.org/2024.acl-long.850/</a>.</li>
+<li id="ref-vanderAalst2018rpa">Wil M. P. van der Aalst, Martin Bichler, and Armin Heinzl. Robotic process automation. <em>Business and Information Systems Engineering</em>, 60(4):269&ndash;272, 2018. doi: 10.1007/s12599-018-0542-4.</li>
+<li id="ref-vishwakarma2025enterprisebench">Harsh Vishwakarma, Ankush Agarwal, Ojas Patil, Chaitanya Devaguptapu, and Mahesh Chandran. Can LLMs help you at work? a sandbox for evaluating LLM agents in enterprise environments. In <em>Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing</em>, pages 9167&ndash;9201, Suzhou, China, 2025. Association for Computational Linguistics. doi: 10.18653/v1/2025.emnlp-main.466. URL <a href="https://aclanthology.org/2025.emnlp-main.466/">https://aclanthology.org/2025.emnlp-main.466/</a>.</li>
+<li id="ref-walsh1991">James P. Walsh and Gerardo Rivera Ungson. Organizational memory. <em>Academy of Management Review</em>, 16(1):57&ndash;91, 1991. doi: 10.2307/258607.</li>
+<li id="ref-wang2024voyager">Guanzhi Wang, Yuqi Xie, Yunfan Jiang, et al. Voyager: An open-ended embodied agent with large language models. <em>Transactions on Machine Learning Research</em>, 2024.</li>
+<li id="ref-wei2022cot">Jason Wei, Xuezhi Wang, Dale Schuurmans, et al. Chain-of-thought prompting elicits reasoning in large language models. In <em>Advances in Neural Information Processing Systems</em>, 2022. URL <a href="http://papers.nips.cc/paper_files/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html">http://papers.nips.cc/paper_files/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html</a>.</li>
+<li id="ref-wilensky1967">Harold L. Wilensky. <em>Organizational Intelligence: Knowledge and Policy in Government and Industry</em>. Basic Books, 1967.</li>
+<li id="ref-williamson1975">Oliver E. Williamson. <em>Markets and Hierarchies: Analysis and Antitrust Implications</em>. The Free Press, 1975.</li>
+<li id="ref-wooldridge2009">Michael Wooldridge. <em>An Introduction to MultiAgent Systems</em>. John Wiley and Sons, 2 edition, 2009.</li>
+<li id="ref-woolley2010">Anita Williams Woolley, Christopher F. Chabris, Alex Pentland, Nada Hashmi, and Thomas W. Malone. Evidence for a collective intelligence factor in the performance of human groups. <em>Science</em>, 330(6004):686&ndash;688, 2010. doi: 10.1126/science.1193147.</li>
+<li id="ref-wu2023autogen">Qingyun Wu, Gagan Bansal, Jieyu Zhang, et al. AutoGen: Enabling next-gen LLM applications via multi-agent conversation. In <em>Proceedings of the First Conference on Language Modeling</em>, 2024.</li>
+<li id="ref-xi2023agents">Zhiheng Xi, Wenxiang Chen, Xin Guo, et al. The rise and potential of large language model based agents: A survey. <em>arXiv preprint</em>, 2023. URL <a href="https://arxiv.org/abs/2309.07864">https://arxiv.org/abs/2309.07864</a>.</li>
+<li id="ref-xie2024osworld">Tianbao Xie, Danyang Zhang, Jixuan Chen, Xiaochuan Li, Siheng Zhao, Ruisheng Cao, et al. Osworld: Benchmarking multimodal agents for open-ended tasks in real computer environments. In <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, 2024. doi: 10.52202/079017-1650. URL <a href="https://doi.org/10.52202/079017-1650">https://doi.org/10.52202/079017-1650</a>.</li>
+<li id="ref-xu2024agentcompany">Frank F. Xu, Yufan Song, Boxuan Li, et al. TheAgentCompany: Benchmarking LLM agents on consequential real world tasks. <em>arXiv preprint</em>, 2024. URL <a href="https://arxiv.org/abs/2412.14161">https://arxiv.org/abs/2412.14161</a>.</li>
+<li id="ref-xu2025amem">Wujiang Xu, Zujie Liang, Kai Mei, Hang Gao, Juntao Tan, and Yongfeng Zhang. A-MEM: Agentic memory for LLM agents. <em>arXiv preprint</em>, 2025. URL <a href="https://arxiv.org/abs/2502.12110">https://arxiv.org/abs/2502.12110</a>.</li>
+<li id="ref-yao2023react">Shunyu Yao, Jeffrey Zhao, Dian Yu, et al. ReAct: Synergizing reasoning and acting in language models. In <em>International Conference on Learning Representations</em>, 2023. URL <a href="https://openreview.net/forum?id=WE_vluYUL-X">https://openreview.net/forum?id=WE_vluYUL-X</a>.</li>
+<li id="ref-yao2024taubench">Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. &tau;-bench: A benchmark for tool-agent-user interaction in real-world domains. <em>arXiv preprint</em>, 2024. URL <a href="https://arxiv.org/abs/2406.12045">https://arxiv.org/abs/2406.12045</a>.</li>
+<li id="ref-ye2023proagent">Yining Ye, Xin Cong, Shizuo Tian, et al. ProAgent: From robotic process automation to agentic process automation. <em>arXiv preprint</em>, 2023. URL <a href="https://arxiv.org/abs/2311.10751">https://arxiv.org/abs/2311.10751</a>.</li>
+<li id="ref-zelikman2022star">Eric Zelikman, Yuhuai Wu, Jesse Mu, and Noah D. Goodman. STaR: Bootstrapping reasoning with reasoning. In <em>Advances in Neural Information Processing Systems</em>, 2022.</li>
+<li id="ref-zheng2023judging">Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, et al. Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. In <em>Advances in Neural Information Processing Systems</em>, 2023.</li>
+<li id="ref-zhong2024memorybank">Wanjun Zhong, Lianghong Guo, Qiqi Gao, He Ye, and Yanlin Wang. MemoryBank: Enhancing large language models with long-term memory. In <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, 2024. doi: 10.1609/aaai.v38i17.29946.</li>
+<li id="ref-zuboff2019">Shoshana Zuboff. <em>The Age of Surveillance Capitalism: The Fight for a Human Future at the New Frontier of Power</em>. PublicAffairs, 2019.</li>
+</ol>
+  </d-article>
+
+  <d-appendix>
+    <h3>About</h3>
+    <p class="resource-list">
+      This essay is based on a working paper, <em>Organizational Intelligence: Governing Agentic AI at the Level of the Organization</em>, by Xipeng Qiu (OpenMOSS Team, Shanghai Innovation Institute, Fudan University). It develops the full treatment—theoretical provenance, the capability map, deployment archetypes, and the detailed risk and evaluation discussion.<br>
+      Contact: <a href="mailto:xpqiu@fudan.edu.cn">xpqiu@fudan.edu.cn</a>
+    </p>
+  
+    <h3>Cite as</h3>
+    <p class="cite-text">Xipeng Qiu. &ldquo;Organizational Intelligence: Governing Agentic AI at the Level of the Organization.&rdquo; OpenMOSS, 2026. <a href="https://openmoss.ai/blog/en/organizational-intelligence/">openmoss.ai/blog/en/organizational-intelligence</a></p>
+    <pre class="cite-bib">@misc{qiu2026oi,
+  title        = {Organizational Intelligence: Governing Agentic AI at the Level of the Organization},
+  author       = {Qiu, Xipeng},
+  year         = {2026},
+  howpublished = {OpenMOSS Blog},
+  url          = {https://openmoss.ai/blog/en/organizational-intelligence/}
+}</pre>
+  </d-appendix>
+</body>

@@ -5,3 +5,5 @@ scripts/.fontcache/
 # Python bytecode cache
 __pycache__/
 *.pyc
+# Local working guide for Claude / contributors (not published)
+CLAUDE.md

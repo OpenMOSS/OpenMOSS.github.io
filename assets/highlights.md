@@ -15,6 +15,18 @@
 -->
 
 date: 2026.6
+标题: 组织智能：在组织层面治理智能体 AI
+title: Organizational Intelligence: Governing Agentic AI at the Level of the Organization
+描述: 当 AI 从「模型」走向「自主智能体」，真正的瓶颈从模型转移到它所处的组织。本文主张：组织——而非孤立的模型或任务——才是设计、评估与治理智能体 AI 的正确单位，并给出八要素组织状态形式化、三层嵌套反馈循环，以及以治理为准入条件的 L0–L5 成熟度模型。
+desc: As AI moves from capable models to autonomous agents, the binding constraint shifts from the model to the organization around it. This essay argues the organization—not the isolated model or task—is the right unit for designing, evaluating, and governing agentic AI, with an eight-element state formalization, three nested feedback loops, and a governance-as-entry-condition L0–L5 maturity model.
+标签: AI4AI, 智能体
+tags: AI4AI, Agents
+图: assets/img/highlights/organizational-intelligence.png
+链接: /blog/en/organizational-intelligence/
+
+---
+
+date: 2026.6
 标题: Thinking with Video：用视频生成做多模态推理
 title: Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm
 描述: 提出“用视频思考”范式——让 Sora-2 等视频生成模型以视频帧为统一媒介进行多模态推理，弥补文字/图像难以刻画动态过程的不足；配套 VideoThinkBench 上视觉与文本推理均表现强劲，视觉谜题超越 GPT-5。
