@@ -11,6 +11,21 @@
 
   let currentLang = 'zh';
 
+  // 内联 SVG 图标（替代 Font Awesome CDN —— 去掉一个渲染阻塞请求）
+  // stroke 图标 currentColor，尺寸由 CSS 控制；品牌图标为实心。
+  const ICONS = {
+    microscope: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>',
+    cpu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2"/><path d="M15 2v2"/><path d="M9 20v2"/><path d="M15 20v2"/><path d="M20 9h2"/><path d="M20 14h2"/><path d="M2 9h2"/><path d="M2 14h2"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    'git-branch': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+    'graduation-cap': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/><path d="M22 10v6"/></svg>',
+    github: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>',
+    'x-twitter': '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>',
+    envelope: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>'
+  };
+  function icon(name) { return ICONS[name] || ''; }
+
   // 研究方向支柱（首页与研究页共用）
   const PILLARS = [
     { key: 'reasoning', titleKey: 'pillar.reasoning.title', descKey: 'pillar.reasoning.desc' },
@@ -196,7 +211,7 @@
               <h4>${t('footer.contact')}</h4>
               <ul>
                 ${SPA_DATA.footer.contactLinks.map(link => `
-                  <li><a href="${link.url}" ${link.url.startsWith('http') ? 'target="_blank"' : ''}><i class="${link.icon}"></i> ${link.label}</a></li>
+                  <li><a class="footer-contact-link" href="${link.url}" ${link.url.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}><span class="footer-contact-icon">${icon(link.icon)}</span> ${link.label}</a></li>
                 `).join('')}
               </ul>
             </div>
@@ -232,6 +247,7 @@
     if (route === 'resources') hydrateProjectStars();
     if (route === 'home') initHomeReveal();
     updateNav(route);
+    updateDocumentTitle(route);
 
     // 滚动到页面顶部
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -276,10 +292,26 @@
     return { route: route || 'home', params: paramObj };
   }
 
+  // 按路由/语言设置 document.title（利于 SEO 与浏览器历史/标签）
+  function updateDocumentTitle(route) {
+    var navKey = { people: 'nav.people', alumni: 'nav.alumni', resources: 'nav.resources', positions: 'nav.positions', blog: 'nav.blog' }[route];
+    var title;
+    if (route === 'webmaster') {
+      title = t('webmaster.title') + ' · OpenMOSS';
+    } else if (navKey) {
+      title = t(navKey) + ' · OpenMOSS';
+    } else {
+      title = currentLang === 'zh' ? 'OpenMOSS · 开源大模型与通用人工智能研究' : 'OpenMOSS · Open-Source Large Models & AGI Research';
+    }
+    document.title = title;
+  }
+
   function updateNav(active) {
     document.querySelectorAll('.nav-links a').forEach(link => {
       const isActive = link.dataset.route === active || (!active && link.dataset.route === 'home');
       link.classList.toggle('active', isActive);
+      if (isActive) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
     });
   }
 
@@ -440,7 +472,7 @@
     ];
 
     const tocLinks = sections.map(sec =>
-      `<a href="javascript:void(0)" onclick="scrollToId('${sec.id}'); return false;">${t(sec.titleKey)}</a>`
+      `<button type="button" class="toc-link" onclick="scrollToId('${sec.id}')">${t(sec.titleKey)}</button>`
     ).join('');
 
     return `
@@ -484,7 +516,7 @@
       const year = member.year
         ? `<p class="member-title member-year">${currentLang === 'en' ? 'Class of ' + member.year : member.year + '级'}</p>`
         : '';
-      const photo = member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo">` : '';
+      const photo = member.photo ? `<img src="${member.photo}" alt="${name}" class="member-photo" width="140" height="140" loading="lazy" decoding="async">` : '';
       const meta = showTitle && title ? `<p class="member-title">${title}</p>` : '';
       const content = `
           ${photo}
@@ -508,7 +540,7 @@
     ];
 
     const tocLinks = categories.map(cat =>
-      `<a href="javascript:void(0)" onclick="scrollToId('${cat.id}'); return false;">${t(cat.titleKey)}</a>`
+      `<button type="button" class="toc-link" onclick="scrollToId('${cat.id}')">${t(cat.titleKey)}</button>`
     ).join('');
 
     return `
@@ -779,7 +811,7 @@
             <article class="resource-card">
               <h3>${card.title}</h3>
               <p>${card.desc}</p>
-              <a class="btn btn-inline" href="javascript:void(0)" onclick="scrollToSection('${card.id}')">${t('positions.detail.link')}</a>
+              <button class="btn btn-inline" type="button" onclick="scrollToSection('${card.id}')">${t('positions.detail.link')}</button>
             </article>
           `).join('')}
         </div>
@@ -789,7 +821,7 @@
         <div class="why-join-grid">
           ${whyUs.map(item => `
             <div class="why-join-card">
-              <div class="why-join-icon">${item.icon}</div>
+              <div class="why-join-icon">${icon(item.icon)}</div>
               <h4>${item.title}</h4>
               <p>${item.desc}</p>
             </div>

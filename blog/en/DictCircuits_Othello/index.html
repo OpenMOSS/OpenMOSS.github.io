@@ -19,7 +19,7 @@
   <script src="/blog/template.v2.js?v=3"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf8">
-<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=7"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=8"><script defer src="/blog/blog-chrome.js?v=4"></script></head>
 
 <body>
   
@@ -250,7 +250,7 @@
     <figure><img src="pics/Dictionary.jpg" style="width:100%; border: None;" /></figure>
 
     <h3>Where Should We Train Dictionary on?</h3>
-    <figure><img src="pics/decomposition_choice.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/decomposition_choice.jpg" style="width:100%; border: None;" /></figure>
     <p>
       Viewing the residual stream as the memory management center of transformer, and each Attention and MLP module read
       from and write to it, is an important concept for understanding how information flows in transformers.
@@ -299,7 +299,7 @@
     </p>
 
     <h3>Module Input Decomposition</h3>
-    <figure><img src="pics/decomposition_residual_stream.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/decomposition_residual_stream.jpg" style="width:100%; border: None;" /></figure>
     <p>
       As shown above, the input of any Attention or MLP block <d-math>x</d-math> can be linearized as the sum of all
       outputs of its lower module. For example, the input of L1M (MLP block in layer 1) can be decomposed into 4 parts:
@@ -339,7 +339,7 @@
     </p>
 
     <h3>Dissecting OV Circuits</h3>
-    <figure><img src="pics/OV.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/OV.webp" style="width:100%; border: None;" /></figure>
     <p>Each attention head needs to transfer the input of token <d-math>j</d-math> to token <d-math>i</d-math> through
       the following process:</p>
     <d-math block>
@@ -399,7 +399,7 @@
     </p>
 
     <h3>Attributing Attention Patterns to Dictionary Features</h3>
-    <figure><img src="pics/QK.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/QK.webp" style="width:100%; border: None;" /></figure>
     <p>
       In LXA, each head determines how much proportion of its attention from token <d-math>i</d-math> be assigned to
       token <d-math>j</d-math> through the following process:
@@ -447,7 +447,7 @@
     </p>
 
     <h3>Attributing MLP features</h3>
-    <figure><img src="pics/MLP.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/MLP.jpg" style="width:100%; border: None;" /></figure>
     <p>
       The MLP module accounts for over half of the parameters in Transformer models, yet research on interpreting MLPs
       is significantly less than for attention modules in the field.
@@ -729,7 +729,7 @@
       For each feature, we examine the samples that activate it the most. The figure below shows an example of the 64
       inputs that activate L0A622 the most:
     </p>
-    <figure style="grid-column: page; margin: 1rem 0;"><img src="pics/L0A622_ta.png"
+    <figure style="grid-column: page; margin: 1rem 0;"><img loading="lazy" decoding="async" src="pics/L0A622_ta.webp"
         style="width:100%; border: None;" /></figure>
     <p>
       It is difficult to directly observe patterns from such images, and it is very prone to visual illusions.
@@ -863,7 +863,7 @@
     </p>
 
     <h3>Understanding MLP Feature Activations Through Approximate Direct Contributions</h3>
-    <figure><img src="pics/MLP_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/MLP_example.jpg" style="width:100%; border: None;" /></figure>
     <p>In the previous section, we established a connection between the model output and the features of the highest MLP
       layer. A natural follow-up question is: how are these MLP features computed?</p>
     <p>We randomly select a board state again, as shown below:</p>
@@ -899,7 +899,7 @@
       features.</p>
 
     <h3>Understanding Information Transfer in the OV Circuit</h3>
-    <figure><img src="pics/OV_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/OV_example.jpg" style="width:100%; border: None;" /></figure>
     <p>We again randomly sample a board state:</p>
     <iframe src="pics/board_state_4_3.html" height="400" style="border:none;"></iframe>
     <p>We find that L2A474 primarily describes a specific board state centered around c-2, which corresponds well to the
@@ -941,7 +941,7 @@
       chance of comprehending these complex information flows.</p>
 
     <h3>Understanding the Formation of Attention Strengths</h3>
-    <figure><img src="pics/QK_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img loading="lazy" decoding="async" src="pics/QK_example.jpg" style="width:100%; border: None;" /></figure>
     <p>Attention strength is one of the most accessible entry points for interpretability research. Through attention
       distribution heatmaps, we can easily recognize how much attention each token pays to other tokens. In this
       section, we analyze one of the most prevalent attention patterns in this model, which takes the following

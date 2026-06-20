@@ -113,6 +113,15 @@ a:focus {
   text-decoration: underline;
 }
 
+/* Visible keyboard focus for interactive elements (mouse clicks unaffected) */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--fudan-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 ul {
   margin: 0 0 16px 20px;
   padding: 0;
@@ -327,6 +336,8 @@ nav.navbar {
   font-weight: 500;
   border-radius: 24px;
   border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -1862,18 +1873,27 @@ html[lang="zh-CN"] .footer-grid {
   gap: 4px;
 }
 
-.toc-links a {
+.toc-links a,
+.toc-links .toc-link {
   display: block;
+  width: 100%;
   text-align: left;
   padding: 8px 12px;
   color: var(--fudan-blue);
   font-weight: 400;
   font-size: 14px;
+  font-family: inherit;
+  line-height: 1.5;
+  background: none;
+  border: none;
   border-radius: 6px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.toc-links a:hover {
+.toc-links a:hover,
+.toc-links .toc-link:hover,
+.toc-links .toc-link:focus-visible {
   background: var(--mist);
   text-decoration: none;
   padding-left: 16px;
@@ -2028,10 +2048,38 @@ h3.year-badge {
 }
 
 .why-join-icon {
-  font-size: 26px;
   margin-bottom: 16px;
   line-height: 1;
   color: var(--fudan-blue);
+}
+
+.why-join-icon svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+/* Footer contact links: inline SVG icon (replaces Font Awesome) */
+.footer-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-contact-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--fudan-blue);
+}
+
+.footer-contact-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.footer-contact-link:hover .footer-contact-icon {
+  color: var(--fudan-blue-80);
 }
 
 .why-join-card h4 {
@@ -2066,7 +2114,11 @@ h3.year-badge {
   }
   
   .why-join-icon {
-    font-size: 24px;
     margin-bottom: 14px;
+  }
+
+  .why-join-icon svg {
+    width: 27px;
+    height: 27px;
   }
 }

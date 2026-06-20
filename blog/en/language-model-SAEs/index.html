@@ -19,7 +19,7 @@
   <script src="/blog/template.v2.js?v=3"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf8" />
-<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=7"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=8"><script defer src="/blog/blog-chrome.js?v=4"></script></head>
 
 <body>
   
@@ -917,7 +917,7 @@
     </p>
 
     <figure>
-      <img src="pics/pruning-ev.png" />
+      <img loading="lazy" decoding="async" src="pics/pruning-ev.png" />
       <figcaption>
         <b>
           Explained variance change after pruning for SAEs trained on GPT-2
@@ -968,7 +968,7 @@
     </p>
 
     <figure>
-      <img src="pics/finetuning-l2-ratio.png" />
+      <img loading="lazy" decoding="async" src="pics/finetuning-l2-ratio.png" />
       <figcaption>
         <b>
           L2 norm ratio change after finetuning for SAEs trained on GPT-2 Small.
@@ -980,7 +980,7 @@
     </figure>
 
     <figure>
-      <img src="pics/finetuning-ce-score.png" />
+      <img loading="lazy" decoding="async" src="pics/finetuning-ce-score.png" />
       <figcaption>
         <b>
           Cross-entropy score change after finetuning for SAEs trained on GPT-2
@@ -1058,10 +1058,10 @@
 
     <figure role="group">
       <figure>
-        <img src="pics/training-dynamics-ev.png" />
+        <img loading="lazy" decoding="async" src="pics/training-dynamics-ev.webp" />
       </figure>
       <figure>
-        <img src="pics/training-dynamics-l0.png" />
+        <img loading="lazy" decoding="async" src="pics/training-dynamics-l0.png" />
       </figure>
 
       <figcaption>
@@ -1078,7 +1078,7 @@
 
   <h2 id="Interface">Interface for Interpretability</h2>
     <figure class="l-screen-inset">
-      <img src="pics/interp-interface.png" />
+      <img loading="lazy" decoding="async" src="pics/interp-interface.webp" />
     </figure>
     <p>
       We are mainly inspired by <a href="https://transformer-circuits.pub/2023/monosemantic-features/vis/a1.html">
@@ -1138,7 +1138,7 @@
     </p>
 
     <figure>
-      <img src="pics/ates-feature.png" />
+      <img loading="lazy" decoding="async" src="pics/ates-feature.png" />
     </figure>
 
     <p>
@@ -1155,7 +1155,7 @@
     </p>  
 
     <figure>
-      <img src="pics/contextual-variation.png" />
+      <img loading="lazy" decoding="async" src="pics/contextual-variation.png" />
     </figure>
 
     <p>
@@ -1179,7 +1179,7 @@
     </p>
 
     <figure>
-      <img src="pics/in-bracket-feature.png" />
+      <img loading="lazy" decoding="async" src="pics/in-bracket-feature.webp" />
     </figure>
 
     <p>
@@ -1210,7 +1210,7 @@
     </p>
 
     <figure>
-      <img src="pics/start-adj-clauses-feature.png" />
+      <img loading="lazy" decoding="async" src="pics/start-adj-clauses-feature.png" />
     </figure>
 
   <h3 id="induction-features">Induction Features</h3>
@@ -1231,7 +1231,7 @@
       performs induction to enhance the logits of upper-case letters.
     </p>
     <figure>
-      <img src="pics/induction-feature.jpg" />
+      <img loading="lazy" decoding="async" src="pics/induction-feature.jpg" />
 
       <figcaption>
         <b>L5A20004</b> fires on the second and the rest 'Open's and copies from the first 'M' to predict the second and the rest 'M's.
@@ -1264,7 +1264,7 @@
       , which may be of use in larger scale mech interp research for safety.
     </p>
     <figure>
-      <img src="pics/crime-feature.jpg" />
+      <img loading="lazy" decoding="async" src="pics/crime-feature.jpg" />
       <figcaption>
         <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=23556"><b>L4A23556</b></a>
         identifies descriptions of criminal charges or illegal activities.
@@ -1279,7 +1279,7 @@
     </p>
     
     <figure>
-      <img src="pics/future-feature.jpeg" />
+      <img loading="lazy" decoding="async" src="pics/future-feature.jpeg" />
       <figcaption>
         <b>L6A6184</b> seems to know when it is trained and fires at years after 2018.
       </figcaption>
@@ -1337,7 +1337,7 @@
       </p>
 
       <figure>
-        <img src="pics/KL-guided-training-hypothesis.png"/>
+        <img loading="lazy" decoding="async" src="pics/KL-guided-training-hypothesis.png"/>
       </figure>
 
       <p>
@@ -1386,7 +1386,7 @@
         We believe the following explanation also holds even if we do not do the normalization.
       </p>
       <figure>
-        <img src="pics/geometric-suppression.png"/>
+        <img loading="lazy" decoding="async" src="pics/geometric-suppression.png"/>
       </figure>
       <p>
         It is possible that a fundamental motivation for SAEs to reconstruct <i>inside of the hypersphere</i> is 

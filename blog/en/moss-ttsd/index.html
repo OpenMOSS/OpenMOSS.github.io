@@ -251,7 +251,7 @@ d-figure.full-width {
       };
     });
     </script>
-<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=7"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=8"><script defer src="/blog/blog-chrome.js?v=4"></script></head>
 
 <body>
   
@@ -321,7 +321,7 @@ d-figure.full-width {
     <h2 id="overview">Model Overview</h2>
 
     <figure id="model_overview_figure">
-      <img src="images/model_overview.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img src="images/model_overview.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#model_overview_figure" class="figure-number">1</a>
           Model overview: The model is trained based on Qwen3-1.7B-base, uses an 8-layer RVQ codebook for speech discretization, employs autoregressive modeling with Delay Pattern for speech token generation, and finally uses the Tokenizer's decoder to reconstruct speech from speech tokens.
@@ -342,7 +342,7 @@ d-figure.full-width {
     </p>
 
     <figure id="xy_tokenizer_figure">
-      <img src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#xy_tokenizer_figure" class="figure-number">2</a>
           XY-Tokenizer uses two-stage multi-task learning to train. The first stage (upper part) is trained with an ASR task and a reconstruction task, allowing the encoder to retain coarse acoustic information while encoding semantic information.
@@ -432,7 +432,7 @@ d-figure.full-width {
     </p>
 
     <figure id="data_pipeline_figure">
-      <img src="images/data_pipeline.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/data_pipeline.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#data_pipeline_figure" class="figure-number">3</a>
           Data pipeline overview: We split single-person speech and multi-person dialogue speech from massive original audio and use internal tool models for annotation.

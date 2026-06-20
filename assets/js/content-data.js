@@ -9,28 +9,28 @@
         title: { zh: 'Thinking with Video：用视频生成做多模态推理', en: 'Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm' },
         desc: { zh: '提出“用视频思考”范式：让 Sora-2 等视频生成模型以视频帧为统一媒介进行多模态推理，弥补文字/图像难以刻画动态过程的不足。', en: 'A “Thinking with Video” paradigm where video-generation models like Sora-2 reason over generated video frames as a unified medium for dynamic multimodal reasoning.' },
         date: '2026.6',
-        image: 'assets/img/highlights/thinking-with-video.png',
+        image: 'assets/img/highlights/thinking-with-video.webp',
         url: '/blog/cn/thinking-with-video/'
       },
       {
         title: { zh: 'MOSS-TTS 技术报告', en: 'MOSS-TTS Technical Report' },
         desc: { zh: '可扩展的语音生成基座模型，支持零样本音色克隆、时长与发音控制、流畅中英混说与长语音生成。', en: 'A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.' },
         date: '2026.3',
-        image: 'assets/img/highlights/moss-tts.png',
+        image: 'assets/img/highlights/moss-tts.webp',
         url: '/blog/cn/moss-tts/'
       },
       {
         title: { zh: 'AI 也能学会“科学品味”', en: 'AI Can Learn Scientific Taste' },
         desc: { zh: '提出“社区反馈强化学习”(RLCF)：用大规模引用信号训练 Scientific Judge，并对齐 Scientific Thinker 提出高影响力研究构想。', en: 'Introduces Reinforcement Learning from Community Feedback (RLCF), training a Scientific Judge and Scientific Thinker from large-scale scientific community signals.' },
         date: '2026.3',
-        image: 'assets/img/highlights/scientific-taste.png',
+        image: 'assets/img/highlights/scientific-taste.webp',
         url: '/blog/cn/scientific-taste/'
       },
       {
         title: { zh: 'MOVA：可扩展的同步视频-音频生成', en: 'MOVA: Towards Scalable and Synchronized Video-Audio Generation' },
         desc: { zh: '开源视频-音频联合生成模型，可同步生成高质量画面与声音，覆盖唇形同步语音、环境音效与内容匹配的音乐。', en: 'An open-source joint video-audio generation model producing high-quality, synchronized visuals and audio, including lip-synced speech, environmental sound effects, and content-aligned music.' },
         date: '2026.2',
-        image: 'assets/img/highlights/mova.jpg',
+        image: 'assets/img/highlights/mova.webp',
         url: '/blog/cn/mova/'
       },
       {
@@ -137,12 +137,12 @@
       { id: 'visiting', titleKey: 'positions.card.visiting', descKey: 'positions.card.visiting.desc' }
     ],
     whyUs: [
-      { icon: '<i class="fas fa-microscope"></i>', titleKey: 'positions.why.research', descKey: 'positions.why.research.desc' },
-      { icon: '<i class="fas fa-microchip"></i>', titleKey: 'positions.why.resources', descKey: 'positions.why.resources.desc' },
-      { icon: '<i class="fas fa-users"></i>', titleKey: 'positions.why.team', descKey: 'positions.why.team.desc' },
-      { icon: '<i class="fas fa-code-branch"></i>', titleKey: 'positions.why.opensource', descKey: 'positions.why.opensource.desc' },
-      { icon: '<i class="fas fa-earth-asia"></i>', titleKey: 'positions.why.collaboration', descKey: 'positions.why.collaboration.desc' },
-      { icon: '<i class="fas fa-graduation-cap"></i>', titleKey: 'positions.why.career', descKey: 'positions.why.career.desc' }
+      { icon: 'microscope', titleKey: 'positions.why.research', descKey: 'positions.why.research.desc' },
+      { icon: 'cpu', titleKey: 'positions.why.resources', descKey: 'positions.why.resources.desc' },
+      { icon: 'users', titleKey: 'positions.why.team', descKey: 'positions.why.team.desc' },
+      { icon: 'git-branch', titleKey: 'positions.why.opensource', descKey: 'positions.why.opensource.desc' },
+      { icon: 'globe', titleKey: 'positions.why.collaboration', descKey: 'positions.why.collaboration.desc' },
+      { icon: 'graduation-cap', titleKey: 'positions.why.career', descKey: 'positions.why.career.desc' }
     ],
     positions: {
       // 职位详情（双语支持）
@@ -322,9 +322,9 @@
     },
     footer: {
       contactLinks: [
-        { label: 'GitHub', icon: 'fa-brands fa-github', url: 'https://github.com/OpenMOSS' },
-        { label: 'Twitter', icon: 'fa-brands fa-x-twitter', url: 'https://x.com/Open_MOSS' },
-        { label: 'Email', icon: 'fa-solid fa-envelope', url: 'mailto:llm@fudan.edu.cn' }
+        { label: 'GitHub', icon: 'github', url: 'https://github.com/OpenMOSS' },
+        { label: 'Twitter', icon: 'x-twitter', url: 'https://x.com/Open_MOSS' },
+        { label: 'Email', icon: 'envelope', url: 'mailto:llm@fudan.edu.cn' }
       ]
     },
     publications: {

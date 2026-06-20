@@ -251,7 +251,7 @@ d-figure.full-width {
       };
     });
     </script>
-<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=7"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=8"><script defer src="/blog/blog-chrome.js?v=4"></script></head>
 
 <body>
   
@@ -321,7 +321,7 @@ d-figure.full-width {
     <h2 id="overview">模型概览</h2>
 
     <figure id="model_overview_figure">
-      <img src="images/model_overview.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img src="images/model_overview.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#model_overview_figure" class="figure-number">1</a>
           模型结构概览：基于Qwen3-1.7B-base模型进行训练，使用八层RVQ码本进行语音离散化，使用自回归加Delay Pattern进行语音token生成，最后使用Tokenizer的解码器将语音token还原为语音。
@@ -341,7 +341,7 @@ d-figure.full-width {
     </p>
 
     <figure id="xy_tokenizer_figure">
-      <img src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#xy_tokenizer_figure" class="figure-number">2</a>
           XY-Tokenizer 采用了两阶段多任务学习的方式进行训练。第一阶段（上半部分）训练ASR任务和重建任务，让编码器在编码语义信息的同时保留粗粒度的声学信息。第二阶段（下半部分）我们固定住编码器和量化层部分，只训练解码器部分。通过重建损失和 GAN 损失，利用生成式模型的能力补充细粒度声学信息。
@@ -426,7 +426,7 @@ d-figure.full-width {
     </p>
 
     <figure id="data_pipeline_figure">
-      <img src="images/data_pipeline.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/data_pipeline.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#data_pipeline_figure" class="figure-number">3</a>
           数据清洗流水线概览: 我们从海量原始音频中筛选出单人语音和多人对话语音，并使用内部工具模型进行标注

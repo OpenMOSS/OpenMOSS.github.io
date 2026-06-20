@@ -21,7 +21,7 @@ title: Organizational Intelligence: Governing Agentic AI at the Level of the Org
 desc: As AI moves from capable models to autonomous agents, the binding constraint shifts from the model to the organization around it. This essay argues the organization—not the isolated model or task—is the right unit for designing, evaluating, and governing agentic AI, with an eight-element state formalization, three nested feedback loops, and a governance-as-entry-condition L0–L5 maturity model.
 标签: AI4AI, 智能体
 tags: AI4AI, Agents
-图: assets/img/highlights/organizational-intelligence.png
+图: assets/img/highlights/organizational-intelligence.webp
 链接: /blog/en/organizational-intelligence/
 
 ---
@@ -33,7 +33,7 @@ title: Thinking with Video: Video Generation as a Promising Multimodal Reasoning
 desc: A “Thinking with Video” paradigm—video-generation models like Sora-2 reason over generated video frames as a unified medium, capturing the dynamic processes that text/image “thinking” cannot. On the new VideoThinkBench it rivals top VLMs and surpasses GPT-5 on visual puzzles.
 标签: 多模态, 视频
 tags: Multimodal, Video
-图: assets/img/highlights/thinking-with-video.png
+图: assets/img/highlights/thinking-with-video.webp
 链接: /blog/cn/thinking-with-video/
 
 ---
@@ -45,7 +45,7 @@ title: MOSS-TTS Technical Report
 desc: A scalable speech-generation foundation model supporting zero-shot voice cloning, duration and pronunciation control, smooth code-switching, and stable long-form generation.
 标签: 语音
 tags: Speech
-图: assets/img/highlights/moss-tts.png
+图: assets/img/highlights/moss-tts.webp
 链接: /blog/cn/moss-tts/
 
 ---
@@ -57,7 +57,7 @@ title: AI Can Learn Scientific Taste
 desc: Introduces Reinforcement Learning from Community Feedback (RLCF): a "Scientific Judge" trained on large-scale citation signals to assess idea quality, and a "Scientific Thinker" aligned to propose high-impact research ideas—surpassing frontier models like GPT-5.2 and Gemini 3 Pro.
 标签: AI4AI
 tags: AI4AI
-图: assets/img/highlights/scientific-taste.png
+图: assets/img/highlights/scientific-taste.webp
 链接: /blog/cn/scientific-taste/
 
 ---
@@ -69,7 +69,7 @@ title: MOVA: Towards Scalable and Synchronized Video-Audio Generation
 desc: An open-source joint video-audio generation model producing high-quality, synchronized visuals and audio—lip-synced speech, environment-aware sound effects, and content-aligned music—built on a MoE architecture (32B total / 18B active).
 标签: 视频, 语音
 tags: Video, Speech
-图: assets/img/highlights/mova.jpg
+图: assets/img/highlights/mova.webp
 链接: /blog/cn/mova/
 
 ---
@@ -81,7 +81,7 @@ title: MOSS-Speech: True Speech-to-Speech Generation
 desc: Native end-to-end speech interaction without any intermediate text guidance
 标签: 语音
 tags: Speech
-图: assets/img/highlights/moss-speech.png
+图: assets/img/highlights/moss-speech.webp
 链接: https://arxiv.org/abs/2510.00499
 
 ---
@@ -93,5 +93,5 @@ title: XY-Tokenizer: Low-Bitrate Unified Acoustic-Semantic Encoding
 desc: State-of-the-art 1kbps unified acoustic-semantic encoding and discretization tool
 标签: 语音
 tags: Speech
-图: assets/img/highlights/xy-tokenizer.png
+图: assets/img/highlights/xy-tokenizer.webp
 链接: https://arxiv.org/abs/2506.23325

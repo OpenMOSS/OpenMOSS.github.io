@@ -47,7 +47,7 @@
     }
   </style>
   <script src="/blog/template.v2.js?v=3"></script>
-<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=7"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"><script defer src="/blog/blog-chrome.js?v=3"></script></head>
+<link rel="stylesheet" href="/blog/blog-fonts.css?v=5"><link rel="stylesheet" href="/blog/blog-chrome.css?v=8"><script defer src="/blog/blog-chrome.js?v=4"></script></head>
 
 <body>
   
@@ -118,7 +118,7 @@
       Loss在这些序列上进行训练。在推理过程中，多模态token通过对应的生成器解码回原始的表示形式。为了提高生成的质量，可以使用多模态增强模块来对生成的结果进行后处理，如声音克隆或图像超分辨率等。在接下来的部分，我们将介绍每个模块的详细信息。
     </p>
     <figure id="model_jpg">
-      <img src="images/model1.jpg"
+      <img src="images/model1.webp"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">图1</a>
@@ -177,7 +177,7 @@
     </p>
 
     <figure id="data_mix_table">
-      <img src="images/data_table.png"
+      <img loading="lazy" decoding="async" src="images/data_table.webp"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_table" class="figure-number">表1</a>
@@ -186,7 +186,7 @@
     </figure>
 
     <figure id="data_mix_figure">
-      <img src="images/mix.jpg"
+      <img loading="lazy" decoding="async" src="images/mix.webp"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">图2</a>
@@ -214,7 +214,7 @@
       Azure的语音合成API<d-cite key="Azure_text2speech"></d-cite>将文本对话内容转换为语音。
     </p>
     <figure id="data_construct">
-      <img src="images/data.jpeg"
+      <img loading="lazy" decoding="async" src="images/data.webp"
         style="display: block; margin: auto; width: 700px; height: auto; margin-top: auto; margin-bottom: auto;">
       <figcaption style="grid-column: kicker; ">
         <a href="#data_construct" class="figure-number">图3</a>
@@ -241,7 +241,7 @@
     由于大多数图像和音乐数据来源于网络，存在一定的噪声，这可能影响多模态生成的质量。因此，在第一阶段预训练之后，我们选择性地使用高质量数据集——JourneyDB和LAION-Aesthetics进行文本到图像生成，以及LAION-COCO进行图像到文本生成。对于音乐数据，我们整合了AnyInstruct-108k数据集中的音乐-描述对。剩余的数据保持不变，我们继续对模型进行额外的4000步预训练。
     <p><a href="#training">表2</a>报告了AnyGPT的详细训练设置和超参数。</p>
     <figure id="training">
-      <img src="images/training_params.png"
+      <img loading="lazy" decoding="async" src="images/training_params.png"
         style="display: block; margin: auto; width: 600px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#training" class="figure-number">表2</a>
@@ -259,7 +259,7 @@
         key="Li2023BLIP2BL,Tang2023AnytoAnyGV"></d-cite>使用Karpathy式测试集划分</p>
 
     <figure id="image_understanding">
-      <img src="images/results1.png"
+      <img loading="lazy" decoding="async" src="images/results1.png"
         style="display: block; margin: auto; width: 450px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_understanding" class="figure-number">表3</a>
@@ -273,7 +273,7 @@
         key="Radford2021LearningTV"></d-cite>计算生成的图片及其对应的真实图片文本描述的相似度分数。</p>
 
     <figure id="image_generation">
-      <img src="images/results2.png"
+      <img loading="lazy" decoding="async" src="images/results2.png"
         style="display: block; margin: auto; width: 350px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_generation" class="figure-number">表4</a>
@@ -286,7 +286,7 @@
       Rate, WER）来评估语音识别能力，结果如<a href="speech_understanding">表5</a>所示。</p>
 
     <figure id="speech_understanding">
-      <img src="images/results3.png"
+      <img loading="lazy" decoding="async" src="images/results3.png"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#speech_understanding" class="figure-number">表5</a>
@@ -299,7 +299,7 @@
           href="https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py">https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py</a></d-footnote>和词错误率（WER）作为指标，其中后者着重于语音质量。
     </p>
     <figure id="speech_generation">
-      <img src="images/results4.png"
+      <img loading="lazy" decoding="async" src="images/results4.png"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#sspeech_generation" class="figure-number">表6</a>
@@ -317,7 +317,7 @@
       real caption&gt;对和&lt;music, generated caption&gt;对的CLAP Score进行比较。</p>
 
     <figure id="music_result">
-      <img src="images/results5.png"
+      <img loading="lazy" decoding="async" src="images/results5.png"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#music_result" class="figure-number">表7</a>
