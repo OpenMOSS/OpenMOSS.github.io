@@ -2048,6 +2048,8 @@ h3.year-badge {
 }
 
 .why-join-icon {
+  display: flex;
+  justify-content: center;
   margin-bottom: 16px;
   line-height: 1;
   color: var(--fudan-blue);
