@@ -405,7 +405,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
   </d-title>
 
   <d-article>
-<figure class="article-hero" style="width:750px;max-width:100%">
+<figure class="article-hero" style="width:100%;max-width:750px">
   <img src="images/fig-regime-shift.png" alt="智能单元的迁移：模型、应用、组织">
 </figure>
 
@@ -516,7 +516,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
 
 <p>下图概括了主要的动力学。<strong>任务动力学</strong>是组织事务的生命周期。设 <em>T<sub>t</sub></em> 为时刻 <em>t</em> 处于活动状态的事务集合；每一项事务都带有一个状态、一个目标、若干约束、证据、依赖关系与一个负责人，并在被创建、路由、阻塞、上升、完成、重新打开和审计的过程中穿行于网络之中。<strong>状态动力学</strong>是那些持续漂移的条件，首先是知识 <em>K<sub>t</sub></em> 与数据 <em>D<sub>t</sub></em>——从库存与项目状态，到人员负荷、系统健康度与客户情况。<strong>事件动力学</strong>是那些要求响应的触发器：一笔到账的款项、一次审批、一个阈值被越过，或一起服务事故。<strong>反馈动力学</strong>则闭合了回路：经过核验的结果会更新共享状态、经过策展的记忆条目、本地操作手册（playbooks）、可复用的技能，并且在治理之下，更新系统自身的变更。</p>
 
-<figure class="fig" style="width:750px;max-width:100%"><img loading="lazy" decoding="async" src="images/fig-dynamic-network.png" alt="组织作为动态信息与决策网络"><figcaption>组织作为一张动态的信息与决策网络。组织事务在人、岗位、AI 智能体与软件系统之间循环流转；经过授权的决策与行动更新共享状态，经过核验的结果则作为新的信号、在标有 <em>G</em> 的治理关卡之下重新进入网络。</figcaption></figure>
+<figure class="fig" style="width:100%;max-width:750px"><img loading="lazy" decoding="async" src="images/fig-dynamic-network.png" alt="组织作为动态信息与决策网络"><figcaption>组织作为一张动态的信息与决策网络。组织事务在人、岗位、AI 智能体与软件系统之间循环流转；经过授权的决策与行动更新共享状态，经过核验的结果则作为新的信号、在标有 <em>G</em> 的治理关卡之下重新进入网络。</figcaption></figure>
 
 <p><strong>分析性的推论。</strong>下文把这一表述当作一组约束来使用，而不仅仅是记号。第一，一项能力只有在它读取或更新了一个受治理的 <em>O<sub>t</sub></em> 表征——即任务状态、记忆、权限与证据的一份局部的、可审计的快照——时，才算得上是组织性的，而不是仅仅产出一个孤立的答案。第二，一个行动只有在它经由一个经过授权的渠道（由 <em>A</em> 与 <em>G</em> 决定）流转、在 <em>D<sub>t</sub></em> 中留下可审计的证据，并被一个核验关卡所接受时，才算得上是一次组织状态迁移。第三，学习与演化按它们所改变的对象加以区分：对记忆条目、任务状态表征、技能与操作手册的更新，是既有规则之下的反思性学习（reflective learning）；而对流程、权威边界、岗位接口、校验关卡或系统连接器的变更，则改变了组织未来的运行条件，因而属于演化回路。这三条约束，构成了本文后续展开的能力图谱、嵌套回路（nested-loop）治理模型、重构论证与成熟度等级的脊柱。</p>
 
@@ -589,7 +589,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
 
 <p>OI 系统先跑一轮组织工作的循环，再用两个更慢的循环把这一轮包裹起来。第一个循环在当前系统内部学习；第二个循环改变未来工作运行的条件。这三层循环是本节的脊柱：它们区分了「闭合工作循环」「在既有规则下改进工作」与「改变制定这些规则的系统」三件事。绝大部分治理论证都落在这一区分上。</p>
 
-<figure class="fig" style="width:715px;max-width:100%"><img loading="lazy" decoding="async" src="images/fig-three-loops.png" alt="OI 系统的三层嵌套反馈循环"><figcaption>OI 系统中的三层嵌套反馈循环。内层循环是组织工作循环，而不是单智能体的推理循环：事务被感知、路由、解读、决策、提交、执行、核验，再折返回共享状态。外层循环先改进记忆、技能与本地行动手册，再在逐级加强的治理闸门下改变系统的规则、接口与流水线。</figcaption></figure>
+<figure class="fig" style="width:100%;max-width:715px"><img loading="lazy" decoding="async" src="images/fig-three-loops.png" alt="OI 系统的三层嵌套反馈循环"><figcaption>OI 系统中的三层嵌套反馈循环。内层循环是组织工作循环，而不是单智能体的推理循环：事务被感知、路由、解读、决策、提交、执行、核验，再折返回共享状态。外层循环先改进记忆、技能与本地行动手册，再在逐级加强的治理闸门下改变系统的规则、接口与流水线。</figcaption></figure>
 
 <p>最内层循环是<strong>运营性</strong>的（这里的「运营」取其宽泛的组织含义，即感知、解读、决策与执行，而不仅是工具自动化）：它是组织决策与执行网络的一次完整推进，读取可观测的轨迹和一份对 O<sub>t</sub> 的维护表征，据此生成对 O<sub>t+1</sub> 中一个或多个组件的更新。这些是网络层面的功能，而不是某个智能体执行的步骤；不同的人、AI 智能体、软件系统与负责人可以参与循环的不同环节，而且大量事务并发推进。</p>
 
@@ -705,7 +705,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
 
 <p>这八项能力——区别于八个状态要素，后者是系统所<em>作用于</em>的——描述的是一个 OI 系统必须<em>做</em>什么；而一个实现还必须说明它是由什么<em>构成</em>的。OI 能力核心置身于一个决策网络之内；下面的架构图把那个核心分解为六个实现组件，由它们来实现这些能力，并被一个由权限、审计、核验与人类治理构成的控制平面贯穿其中。该图把各项能力归拢到实现它们的组件里。如果说动态网络把组织建模为研究对象，那么这些组件实例化的是在这样一个网络内运行的 OI 能力核心。感知与状态把组织信号转化为被追踪的任务状态；记忆与知识持有可检索的经验、任务历史与对组织知识 K<sub>t</sub> 的接地访问，使接地与回忆共享同一底座；连接通过带权限、可审计、回滚感知的工具与系统调用来执行行动；认知与规划承载规划与核验的推理一侧；协同编排协调人机角色、工作流与交接；学习与演化实现两个外层循环——对记忆、技能与行动手册的反思式学习，以及对运行支架、策略、闸门与模型更新流水线的受治理演化。</p>
 
-<figure class="fig" style="width:565px;max-width:100%"><img loading="lazy" decoding="async" src="images/fig-architecture.png" alt="受治理的 OI 系统的实现组件"><figcaption>受治理的 OI 系统的实现组件：能力表中的八项能力（系统所做的事），由六个能力核心组件（系统的构成）来实现，置身于一个强制执行权限、审计、核验与人类控制的控制平面之内。</figcaption></figure>
+<figure class="fig" style="width:100%;max-width:565px"><img loading="lazy" decoding="async" src="images/fig-architecture.png" alt="受治理的 OI 系统的实现组件"><figcaption>受治理的 OI 系统的实现组件：能力表中的八项能力（系统所做的事），由六个能力核心组件（系统的构成）来实现，置身于一个强制执行权限、审计、核验与人类控制的控制平面之内。</figcaption></figure>
 
 <p>横切所有这些组件的，是一个<strong>控制平面</strong>：权限、审计、隐私、人类控制、核验与回滚。之所以把它画成一个控制平面，是因为这些约束必须在行动被授权、检查、提交并从中学习的地方就地强制执行；它们不能被下放给某个单一的下游合规模块。这种映射是有意为之的多对一：接地与记忆共享知识底座，而核验与人机协同则各自既作为核心能力出现、又作为控制平面条件出现。在 OI 中，检查与治理是能力的内在构成，而不是事后才栓上去的。</p>
 
