@@ -15,9 +15,9 @@
 -->
 
 date: 2026.6
-标题: 组织智能：在组织层面治理智能体 AI
+标题: 组织智能：在组织层面治理 Agentic AI
 title: Organizational Intelligence: Governing Agentic AI at the Level of the Organization
-描述: 当 AI 从「模型」走向「自主智能体」，真正的瓶颈从模型转移到它所处的组织。本文主张：组织——而非孤立的模型或任务——才是设计、评估与治理智能体 AI 的正确单位，并给出八要素组织状态形式化、三层嵌套反馈循环，以及以治理为准入条件的 L0–L5 成熟度模型。
+描述: 当 AI 从「模型」走向「自主智能体」，真正的瓶颈从模型转移到它所处的组织。本文主张：组织——而非孤立的模型或任务——才是设计、评估与治理 Agentic AI 的正确单位，并给出八要素组织状态形式化、三层嵌套反馈循环，以及以治理为准入条件的 L0–L5 成熟度模型。
 desc: As AI moves from capable models to autonomous agents, the binding constraint shifts from the model to the organization around it. This essay argues the organization—not the isolated model or task—is the right unit for designing, evaluating, and governing agentic AI, with an eight-element state formalization, three nested feedback loops, and a governance-as-entry-condition L0–L5 maturity model.
 标签: AI4AI, 智能体
 tags: AI4AI, Agents
