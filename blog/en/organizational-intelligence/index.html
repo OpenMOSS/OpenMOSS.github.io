@@ -107,6 +107,7 @@ d-article a:hover{
 d-article strong{font-weight:650;color:var(--oi-ink)}
 
 /* ---- Headings: single brand accent tick on h2 (no double rule) ---- */
+d-article{ counter-reset:oi-h2 oi-h3; }
 d-article h2{
   margin:2.5em 0 .7em;
   font-size:30px;
@@ -114,16 +115,16 @@ d-article h2{
   font-weight:680;
   letter-spacing:-.016em;
   color:var(--oi-ink);
+  padding-top:.95em;
+  background-image:linear-gradient(var(--oi-blue),var(--oi-blue));
+  background-repeat:no-repeat;
+  background-size:40px 3px;
+  background-position:left top;
 }
-d-article h2::before{
-  content:"";
-  display:block;
-  width:40px;
-  height:3px;
-  margin-bottom:.7em;
-  background:var(--oi-blue);
-  border-radius:2px;
-}
+d-article h2:not(.no-num){ counter-increment:oi-h2; counter-reset:oi-h3; }
+d-article h2:not(.no-num)::before{ content:counter(oi-h2) ". "; color:var(--oi-blue); }
+d-article h3{ counter-increment:oi-h3; }
+d-article h3::before{ content:counter(oi-h2) "." counter(oi-h3) " "; color:var(--oi-soft); font-weight:650; }
 d-article h3{
   margin:1.8em 0 .5em;
   font-size:21px;
@@ -916,7 +917,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
 
 <p>The positive claim is that LLM agents provide a substrate for synthesizing older organizational, collective-intelligence, and multi-agent traditions into organization-level systems. But capability and governance must co-evolve. Whether this synthesis augments human capability or concentrates power remains an institutional choice, not a technical inevitability. The paper's central argument is that governance must be part of the capability itself, not an external compliance layer applied after autonomy is granted.</p>
 
-<h2>References</h2>
+<h2 class="no-num">References</h2>
 <ol class="ref-list">
 <li id="ref-acemoglu2018race">Daron Acemoglu and Pascual Restrepo. The race between man and machine: Implications of technology for growth, factor shares, and employment. <em>American Economic Review</em>, 108(6):1488&ndash;1542, 2018. doi: 10.1257/aer.20160696.</li>
 <li id="ref-acemoglu2019automation">Daron Acemoglu and Pascual Restrepo. Automation and new tasks: How technology displaces and reinstates labor. <em>Journal of Economic Perspectives</em>, 33(2):3&ndash;30, 2019. doi: 10.1257/jep.33.2.3.</li>

@@ -107,6 +107,7 @@ d-article a:hover{
 d-article strong{font-weight:650;color:var(--oi-ink)}
 
 /* ---- Headings: single brand accent tick on h2 (no double rule) ---- */
+d-article{ counter-reset:oi-h2 oi-h3; }
 d-article h2{
   margin:2.5em 0 .7em;
   font-size:30px;
@@ -114,16 +115,16 @@ d-article h2{
   font-weight:680;
   letter-spacing:-.016em;
   color:var(--oi-ink);
+  padding-top:.95em;
+  background-image:linear-gradient(var(--oi-blue),var(--oi-blue));
+  background-repeat:no-repeat;
+  background-size:40px 3px;
+  background-position:left top;
 }
-d-article h2::before{
-  content:"";
-  display:block;
-  width:40px;
-  height:3px;
-  margin-bottom:.7em;
-  background:var(--oi-blue);
-  border-radius:2px;
-}
+d-article h2:not(.no-num){ counter-increment:oi-h2; counter-reset:oi-h3; }
+d-article h2:not(.no-num)::before{ content:counter(oi-h2) ". "; color:var(--oi-blue); }
+d-article h3{ counter-increment:oi-h3; }
+d-article h3::before{ content:counter(oi-h2) "." counter(oi-h3) " "; color:var(--oi-soft); font-weight:650; }
 d-article h3{
   margin:1.8em 0 .5em;
   font-size:21px;
@@ -926,7 +927,7 @@ d-appendix pre.cite-bib{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,m
 
 <p>本文的正面主张是：LLM 智能体让一种新的<strong>底层基座（substrate）</strong>成为可能——它足以把更早期的组织理论、集体智能与多智能体三条传统，综合进组织层面的系统。但是，<strong>能力与治理必须协同演化</strong>。这一综合究竟是<em>增强</em>人的能力，还是<em>集中</em>权力，仍是一个制度选择，而非技术上的必然。本文的核心论点正在于此：<strong>治理必须成为能力本身的一部分，而不是在授予自主性之后，才外挂上去的一层合规外壳。</strong></p>
 
-<h2>参考文献</h2>
+<h2 class="no-num">参考文献</h2>
 <ol class="ref-list">
 <li id="ref-acemoglu2018race">Daron Acemoglu and Pascual Restrepo. The race between man and machine: Implications of technology for growth, factor shares, and employment. <em>American Economic Review</em>, 108(6):1488&ndash;1542, 2018. doi: 10.1257/aer.20160696.</li>
 <li id="ref-acemoglu2019automation">Daron Acemoglu and Pascual Restrepo. Automation and new tasks: How technology displaces and reinstates labor. <em>Journal of Economic Perspectives</em>, 33(2):3&ndash;30, 2019. doi: 10.1257/jep.33.2.3.</li>
