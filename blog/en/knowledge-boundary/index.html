@@ -228,6 +228,7 @@
     <h2 id="knowledge_quadrants">Knowledge Quadrants: Partitioning the Different Knowledges of AI Assistants</h2>
     <figure id="knowledge_quadrants_figure">
       <img src="images/Knowledge_quadrants_new.png"
+        alt="2x2 knowledge quadrant: Known/Unknown (what AI believes) by Knowns/Unknowns (what AI actually knows), giving Known Knowns, Known Unknowns, Unknown Knowns, Unknown Unknowns."
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#knowledge_quadrants_figure" class="figure-number">1</a>
@@ -260,6 +261,7 @@
 
     <figure id="construct_idk_dataset_figure">
       <img loading="lazy" decoding="async" src="images/construct_idk_and_preference_data.webp"
+        alt="Pipeline: sample 10 responses per question; accuracy above the Ik threshold labels a question Known (keep answer), else 'I don't know'; correct/wrong responses form chosen/rejected preference pairs."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#construct_idk_dataset_figure" class="figure-number">2</a>
@@ -344,6 +346,7 @@
 
     <figure id="combined_quadrants_change_figure">
       <img loading="lazy" decoding="async" src="images/combined_quadrants_change.png"
+        alt="Four quadrant plots comparing Llama-2-7b-chat, Idk-Prompting, Idk-SFT and Idk-DPO: alignment shifts wrong IDK-IDK answers into correct IK-IDK refusals, with DPO preserving more IK-IK."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#combined_quadrants_change_figure" class="figure-number">3</a>
@@ -375,6 +378,7 @@
 
     <figure id="main_results_figure">
       <img loading="lazy" decoding="async" src="images/main_result.png"
+        alt="Results table: IK-IK, IK-IDK and TRUTHFUL rates for Idk-Prompting/SFT/DPO/BoN/PPO/HIR on TriviaQA, Natural Questions and ALCUNA; all alignment methods raise TRUTHFUL over prompting."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#main_results_figure" class="figure-number">4</a>
@@ -437,6 +441,7 @@
 
     <figure id="ablation_results_figure">
       <img loading="lazy" decoding="async" src="images/ablation_results.png"
+        alt="Ablation table: larger models (Llama-2-70b reaches 80.55 TRUTHFUL) help, while non-model-specific Idk-Mistral and Idk-Baichuan datasets lower TRUTHFUL versus the 7B baseline."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#ablation_results_figure" class="figure-number">5</a>
@@ -488,6 +493,7 @@
     <h3 id="effect_of_Ik_threshold">Effect of Ik threshold</h3>
     <figure id="label_train_distribution_and_f1_figure">
       <img loading="lazy" decoding="async" src="images/label_train_distribution_and_f1.png"
+        alt="Two charts vs Ik threshold (0.1-1.0): left, higher threshold means more Idk-labeled questions; right, IK-IK falls while IK-IDK and overall TRUTHFUL rise."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#label_train_distribution_and_f1_figure" class="figure-number">6</a>
@@ -519,6 +525,7 @@
 
     <figure id="all_knowledge_quadrants_figure">
       <img loading="lazy" decoding="async" src="images/all_knowledge_quadrants.png"
+        alt="Grid of nine knowledge-quadrant plots for Ik thresholds 0.1 to 0.9 after Idk-SFT: as the threshold rises, IK-IK shrinks and IK-IDK grows, raising the TRUTHFUL rate."
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#all_knowledge_quadrants_figure" class="figure-number">Figure 7</a>

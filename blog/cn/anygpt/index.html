@@ -137,7 +137,7 @@
       Loss在这些序列上进行训练。在推理过程中，多模态token通过对应的生成器解码回原始的表示形式。为了提高生成的质量，可以使用多模态增强模块来对生成的结果进行后处理，如声音克隆或图像超分辨率等。在接下来的部分，我们将介绍每个模块的详细信息。
     </p>
     <figure id="model_jpg">
-      <img src="images/model1.webp"
+      <img src="images/model1.webp" alt="AnyGPT架构图：语音、文本、图像、音乐经分词器转为统一的离散token序列由LLM自回归建模，再经生成器解码回各模态"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">图1</a>
@@ -196,7 +196,7 @@
     </p>
 
     <figure id="data_mix_table">
-      <img loading="lazy" decoding="async" src="images/data_table.webp"
+      <img loading="lazy" decoding="async" src="images/data_table.webp" alt="预训练数据集表格：按图文、语音-文本、音乐-文本等模态分组，列出各数据集的描述与采样率"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_table" class="figure-number">表1</a>
@@ -205,7 +205,7 @@
     </figure>
 
     <figure id="data_mix_figure">
-      <img loading="lazy" decoding="async" src="images/mix.webp"
+      <img loading="lazy" decoding="async" src="images/mix.webp" alt="按token数划分的预训练数据旭日图：内、中、外环分别为模态、数据类型、数据集，语音与图像占比最大"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">图2</a>
@@ -233,7 +233,7 @@
       Azure的语音合成API<d-cite key="Azure_text2speech"></d-cite>将文本对话内容转换为语音。
     </p>
     <figure id="data_construct">
-      <img loading="lazy" decoding="async" src="images/data.webp"
+      <img loading="lazy" decoding="async" src="images/data.webp" alt="AnyInstruct-108k四步构建流程：话题池、构造场景、撰写文本对话，再将文本转为图像、语音和音乐"
         style="display: block; margin: auto; width: 700px; height: auto; margin-top: auto; margin-bottom: auto;">
       <figcaption style="grid-column: kicker; ">
         <a href="#data_construct" class="figure-number">图3</a>
@@ -260,7 +260,7 @@
     由于大多数图像和音乐数据来源于网络，存在一定的噪声，这可能影响多模态生成的质量。因此，在第一阶段预训练之后，我们选择性地使用高质量数据集——JourneyDB和LAION-Aesthetics进行文本到图像生成，以及LAION-COCO进行图像到文本生成。对于音乐数据，我们整合了AnyInstruct-108k数据集中的音乐-描述对。剩余的数据保持不变，我们继续对模型进行额外的4000步预训练。
     <p><a href="#training">表2</a>报告了AnyGPT的详细训练设置和超参数。</p>
     <figure id="training">
-      <img loading="lazy" decoding="async" src="images/training_params.png"
+      <img loading="lazy" decoding="async" src="images/training_params.png" alt="AnyGPT预训练与微调超参数对比表：批大小、最大长度、训练步数、学习率、优化器及A100 GPU"
         style="display: block; margin: auto; width: 600px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#training" class="figure-number">表2</a>
@@ -278,7 +278,7 @@
         key="Li2023BLIP2BL,Tang2023AnytoAnyGV"></d-cite>使用Karpathy式测试集划分</p>
 
     <figure id="image_understanding">
-      <img loading="lazy" decoding="async" src="images/results1.png"
+      <img loading="lazy" decoding="async" src="images/results1.png" alt="图像标注CIDEr结果表：AnyGPT（8B）达107.5，与Flamingo、Emu、DreamLLM、SEED-LLaMA等基线相当"
         style="display: block; margin: auto; width: 450px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_understanding" class="figure-number">表3</a>
@@ -292,7 +292,7 @@
         key="Radford2021LearningTV"></d-cite>计算生成的图片及其对应的真实图片文本描述的相似度分数。</p>
 
     <figure id="image_generation">
-      <img loading="lazy" decoding="async" src="images/results2.png"
+      <img loading="lazy" decoding="async" src="images/results2.png" alt="文生图CLIP Score结果表：AnyGPT得0.65，接近GILL（0.67）、Emu（0.66）与SEED-LLaMA（0.69）"
         style="display: block; margin: auto; width: 350px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_generation" class="figure-number">表4</a>
@@ -305,7 +305,7 @@
       Rate, WER）来评估语音识别能力，结果如<a href="speech_understanding">表5</a>所示。</p>
 
     <figure id="speech_understanding">
-      <img loading="lazy" decoding="async" src="images/results3.png"
+      <img loading="lazy" decoding="async" src="images/results3.png" alt="语音识别词错误率表：AnyGPT为8.5 WER，对比Wav2vec 2.0与Whisper Large V2的2.7及人类水平5.8"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#speech_understanding" class="figure-number">表5</a>
@@ -318,7 +318,7 @@
           href="https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py">https://github.com/yangdongchao/UniAudio/blob/main/UniAudio/tools/evaluation/compute_similarity_vc.py</a></d-footnote>和词错误率（WER）作为指标，其中后者着重于语音质量。
     </p>
     <figure id="speech_generation">
-      <img loading="lazy" decoding="async" src="images/results4.png"
+      <img loading="lazy" decoding="async" src="images/results4.png" alt="零样本语音合成结果表：AnyGPT得8.5 WER、0.77说话人相似度，接近VALL-E与USLM基线"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#sspeech_generation" class="figure-number">表6</a>
@@ -336,7 +336,7 @@
       real caption&gt;对和&lt;music, generated caption&gt;对的CLAP Score进行比较。</p>
 
     <figure id="music_result">
-      <img loading="lazy" decoding="async" src="images/results5.png"
+      <img loading="lazy" decoding="async" src="images/results5.png" alt="音乐CLAP Score结果表：AnyGPT生成得0.14，对比Riffusion 0.19与Mousai 0.23；理解部分对比真实与生成标注"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#music_result" class="figure-number">表7</a>

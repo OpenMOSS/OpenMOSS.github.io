@@ -276,7 +276,7 @@
     <h2 id="Results">Sparse Auto Encoders for the GPT-2 Attention & MLP Output</h2>
 
     <figure>
-      <img src="pics/training-position.png" />
+      <img src="pics/training-position.png" alt="Diagram of a GPT-2 residual stream showing where attention output and MLP output activations are tapped for SAE training" />
     </figure>
 
     <h3>Why Attention & MLP Output?</h3>
@@ -935,7 +935,7 @@
     </p>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/pruning-ev.png" />
+      <img loading="lazy" decoding="async" src="pics/pruning-ev.png" alt="Bar chart of variance explained per layer before vs after pruning, attention and MLP hooks; values stay nearly unchanged" />
       <figcaption>
         <b>
           Explained variance change after pruning for SAEs trained on GPT-2
@@ -986,7 +986,7 @@
     </p>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/finetuning-l2-ratio.png" />
+      <img loading="lazy" decoding="async" src="pics/finetuning-l2-ratio.png" alt="Bar chart of reconstructed-to-original L2 norm ratio per layer; finetuning raises every layer's ratio, easing feature suppression" />
       <figcaption>
         <b>
           L2 norm ratio change after finetuning for SAEs trained on GPT-2 Small.
@@ -998,7 +998,7 @@
     </figure>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/finetuning-ce-score.png" />
+      <img loading="lazy" decoding="async" src="pics/finetuning-ce-score.png" alt="Bar chart of cross-entropy recovery score per layer before vs after finetuning; finetuning improves the score in most layers" />
       <figcaption>
         <b>
           Cross-entropy score change after finetuning for SAEs trained on GPT-2
@@ -1076,10 +1076,10 @@
 
     <figure role="group">
       <figure>
-        <img loading="lazy" decoding="async" src="pics/training-dynamics-ev.webp" />
+        <img loading="lazy" decoding="async" src="pics/training-dynamics-ev.webp" alt="Line chart of explained variance over training steps for L4M; the ghost-grads run keeps rising past 200k steps, the no-ghost-grads run plateaus lower" />
       </figure>
       <figure>
-        <img loading="lazy" decoding="async" src="pics/training-dynamics-l0.png" />
+        <img loading="lazy" decoding="async" src="pics/training-dynamics-l0.png" alt="Line chart of L0 sparsity over training steps for L4M; the ghost-grads run bumps up to ~285 around 200k steps before dropping back near 120" />
       </figure>
 
       <figcaption>
@@ -1096,7 +1096,7 @@
 
   <h2 id="Interface">Interface for Interpretability</h2>
     <figure class="l-screen-inset">
-      <img loading="lazy" decoding="async" src="pics/interp-interface.webp" />
+      <img loading="lazy" decoding="async" src="pics/interp-interface.webp" alt="Screenshot of the OpenMOSS feature interpretability interface: activation histogram, top positive/negative logit tokens, and highlighted activating text samples" />
     </figure>
     <p>
       We are mainly inspired by <a href="https://transformer-circuits.pub/2023/monosemantic-features/vis/a1.html">
@@ -1156,7 +1156,7 @@
     </p>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/ates-feature.png" />
+      <img loading="lazy" decoding="async" src="pics/ates-feature.png" alt="Text samples with the 'ates' substring highlighted across contexts like 'Oates' and 'Bureaucratese', showing feature L0M13637 firing on 'ates'" />
     </figure>
 
     <p>
@@ -1173,7 +1173,7 @@
     </p>  
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/contextual-variation.png" />
+      <img loading="lazy" decoding="async" src="pics/contextual-variation.png" alt="Text samples showing feature L0M3903 firing strongest on the word 'process' and weaker on variants like 'Process' and 'no-process'" />
     </figure>
 
     <p>
@@ -1197,7 +1197,7 @@
     </p>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/in-bracket-feature.webp" />
+      <img loading="lazy" decoding="async" src="pics/in-bracket-feature.webp" alt="Bracketed inputs showing the in-bracket feature L1A11421 behaving like a stack: its firing range shrinks as more closing brackets are added" />
     </figure>
 
     <p>
@@ -1228,7 +1228,7 @@
     </p>
 
     <figure>
-      <img loading="lazy" decoding="async" src="pics/start-adj-clauses-feature.png" />
+      <img loading="lazy" decoding="async" src="pics/start-adj-clauses-feature.png" alt="Text samples with conjunctions like 'from', 'where', 'involving', 'around' highlighted, showing a feature firing at the start of descriptive clauses or prepositional phrases" />
     </figure>
 
   <h3 id="induction-features">Induction Features</h3>
@@ -1249,7 +1249,7 @@
       performs induction to enhance the logits of upper-case letters.
     </p>
     <figure>
-      <img loading="lazy" decoding="async" src="pics/induction-feature.jpg" />
+      <img loading="lazy" decoding="async" src="pics/induction-feature.jpg" alt="Custom input 'OpenMoss! OpenMoss! Open Moss! OpenMoss!' with induction feature L5A20004 firing on repeated 'Open' tokens, max activation 8.023" />
 
       <figcaption>
         <b>L5A20004</b> fires on the second and the rest 'Open's and copies from the first 'M' to predict the second and the rest 'M's.
@@ -1282,7 +1282,7 @@
       , which may be of use in larger scale mech interp research for safety.
     </p>
     <figure>
-      <img loading="lazy" decoding="async" src="pics/crime-feature.jpg" />
+      <img loading="lazy" decoding="async" src="pics/crime-feature.jpg" alt="Text samples about felony charges with terms like arson, sexual battery, assault and robbery highlighted, showing crime feature L4A23556 firing" />
       <figcaption>
         <a href="https://mech-interp.open-moss.com/features?dictionary=ft-L4A-bs-4096-lr-8e-5-32x&featureIndex=23556"><b>L4A23556</b></a>
         identifies descriptions of criminal charges or illegal activities.
@@ -1297,7 +1297,7 @@
     </p>
     
     <figure>
-      <img loading="lazy" decoding="async" src="pics/future-feature.jpeg" />
+      <img loading="lazy" decoding="async" src="pics/future-feature.jpeg" alt="'The year of YYYY' inputs where future feature L6A6184 fires only on years after 2018, GPT-2's training cutoff, and not on earlier years" />
       <figcaption>
         <b>L6A6184</b> seems to know when it is trained and fires at years after 2018.
       </figcaption>
@@ -1355,7 +1355,7 @@
       </p>
 
       <figure>
-        <img loading="lazy" decoding="async" src="pics/KL-guided-training-hypothesis.png"/>
+        <img loading="lazy" decoding="async" src="pics/KL-guided-training-hypothesis.png" alt="Vector diagram decomposing SAE reconstruction error into suppressional and pathological components, with MSE and KL gradients pointing in different directions" />
       </figure>
 
       <p>
@@ -1404,7 +1404,7 @@
         We believe the following explanation also holds even if we do not do the normalization.
       </p>
       <figure>
-        <img loading="lazy" decoding="async" src="pics/geometric-suppression.png"/>
+        <img loading="lazy" decoding="async" src="pics/geometric-suppression.png" alt="Geometric explanation of feature suppression: points inside the activation hypersphere have convex distance to it while outside points have concave distance" />
       </figure>
       <p>
         It is possible that a fundamental motivation for SAEs to reconstruct <i>inside of the hypersphere</i> is 

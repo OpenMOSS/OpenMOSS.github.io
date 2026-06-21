@@ -205,6 +205,7 @@
     <h2 id="knowledge_quadrants">知识象限：划分AI助手的不同知识</h2>
     <figure id="knowledge_quadrants_figure">
       <img src="images/Knowledge_quadrants_new.png"
+        alt="2×2知识象限：纵轴为AI认为自己知道/不知道，横轴为AI实际知道/不知道，组成已知已知、已知未知、未知已知、未知未知四类。"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#knowledge_quadrants_figure" class="figure-number">1</a>
@@ -228,6 +229,7 @@
 
     <figure id="construct_idk_dataset_figure">
       <img loading="lazy" decoding="async" src="images/construct_idk_and_preference_data.webp"
+        alt="构建流程：每题采样10个回复，准确率高于Ik阈值则标为已知并保留答案，否则标为“我不知道”；正确与错误回复构成chosen/rejected偏好对。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#construct_idk_dataset_figure" class="figure-number">2</a>
@@ -280,6 +282,7 @@
 
     <figure id="combined_quadrants_change_figure">
       <img loading="lazy" decoding="async" src="images/combined_quadrants_change.png"
+        alt="四个象限图对比Llama-2-7b-chat、Idk-Prompting、Idk-SFT与Idk-DPO：对齐将错误的IDK-IDK转为正确拒答IK-IDK，DPO保留更多IK-IK。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#combined_quadrants_change_figure" class="figure-number">3</a>
@@ -301,6 +304,7 @@
 
     <figure id="main_results_figure">
       <img loading="lazy" decoding="async" src="images/main_result.png"
+        alt="结果表：Idk-Prompting/SFT/DPO/BoN/PPO/HIR在TriviaQA、Natural Questions与ALCUNA上的IK-IK、IK-IDK与TRUTHFUL率，各对齐方法的TRUTHFUL均高于仅提示。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#main_results_figure" class="figure-number">4</a>
@@ -341,6 +345,7 @@
 
     <figure id="ablation_results_figure">
       <img loading="lazy" decoding="async" src="images/ablation_results.png"
+        alt="消融表：更大模型有益（Llama-2-70b的TRUTHFUL达80.55），而非模型专属的Idk-Mistral与Idk-Baichuan数据集使TRUTHFUL低于7B基线。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#ablation_results_figure" class="figure-number">5</a>
@@ -378,6 +383,7 @@
     <h3 id="effect_of_Ik_threshold">Ik threshold的影响</h3>
     <figure id="label_train_distribution_and_f1_figure">
       <img loading="lazy" decoding="async" src="images/label_train_distribution_and_f1.png"
+        alt="两张随Ik阈值（0.1-1.0）变化的图：左图阈值越高被标为Idk的问题越多；右图IK-IK下降，IK-IDK与整体TRUTHFUL上升。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#label_train_distribution_and_f1_figure" class="figure-number">6</a>
@@ -400,6 +406,7 @@
 
     <figure id="all_knowledge_quadrants_figure">
       <img loading="lazy" decoding="async" src="images/all_knowledge_quadrants.png"
+        alt="Idk-SFT后Ik阈值0.1至0.9的九个知识象限图：阈值越高，IK-IK缩小、IK-IDK增大，TRUTHFUL率随之升高。"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <a href="#all_knowledge_quadrants_figure" class="figure-number">Figure 7</a>

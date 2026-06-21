@@ -283,11 +283,11 @@
     <p>
       如下图所示，对于给定模块的某处表征，我们可以用字典学习将其（尽可能无损地）分解为若干可解释特征的带权和：
     </p>
-    <figure><img src="pics/Dictionary.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="自编码器示意图：稠密的输入激活被编码为稀疏且大多为零的可解释字典特征，再解码重建" src="pics/Dictionary.jpg" style="width:100%; border: None;" /></figure>
     <p>
 
     <h3>字典学习应从何处提取特征？</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/decomposition_choice.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="Transformer 模块图，标出训练字典的候选位置：词嵌入、注意力输出、MLP 输出、MLP 激活以及残差流" loading="lazy" decoding="async" src="pics/decomposition_choice.jpg" style="width:100%; border: None;" /></figure>
     <p>
       Transformer的可解释性架构已经在<a href="https://transformer-circuits.pub/2021/framework/index.html">A Mathematical Framework
         of Transformer Circuits</a><d-cite
@@ -397,7 +397,7 @@
     <p>
       针对每个特征，我们分别考察它们激活程度最高的样本。下图是一个例子，展示了L0A622被激活的程度最高的64个输入：
     </p>
-    <figure style="grid-column: page; margin: 1rem 0;"><img loading="lazy" decoding="async" src="pics/L0A622_ta.webp"
+    <figure style="grid-column: page; margin: 1rem 0;"><img alt="由 64 个奥赛罗棋盘小热力图组成的网格，展示最能激活特征 L0A622 的输入，肉眼难以直接看出规律" loading="lazy" decoding="async" src="pics/L0A622_ta.webp"
         style="width:100%; border: None;" /></figure>
     <p>
       直接观察这样的图像比较难以寻找规律，极容易造成幻觉。因此，我们设计了以下的解释接口：
@@ -489,7 +489,7 @@
     <p>为了方便理解，我们按照以下顺序介绍我们的理论框架：残差流的一个重要数学性质，OV回路的可解释性，QK回路的可解释性与MLP的可解释性。</p>
 
     <h3>残差流中的重要性质</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/decomposition_residual_stream.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="残差流示意图：每个注意力和 MLP 层从残差流读取此前所有层输出之和，并写回其结果的线性投影" loading="lazy" decoding="async" src="pics/decomposition_residual_stream.jpg" style="width:100%; border: None;" /></figure>
     <p>
       如上图所示，在残差流中，任何模块的输入<d-math>x</d-math>可线性表示为其底部所有模块的输出之和，例如：
     </p>
@@ -516,7 +516,7 @@
     </p>
 
     <h3>OV回路分析理论</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/MLP.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="MLP 电路示意图：MLP 输出特征被分解为下层字典特征的近似直接贡献（ADC）" loading="lazy" decoding="async" src="pics/MLP.jpg" style="width:100%; border: None;" /></figure>
     <p>Transformer内部的每个注意力头需要通过如下过程将token <d-math>j</d-math>的输入迁移至token <d-math>i</d-math>：</p>
     <d-math block>
       \textbf{OV}^h_{i \gets j} = \textbf{AttnPattern}^h_{ij}W_O^hW^h_Vx_j
@@ -569,7 +569,7 @@
     </p>
 
     <h3>QK回路分析理论</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/QK.webp" style="width:100%; border: None;" /></figure>
+    <figure><img alt="QK 电路示意图：注意力分数被分解为两个 token 字典特征对之间的 QK 双线性组合" loading="lazy" decoding="async" src="pics/QK.webp" style="width:100%; border: None;" /></figure>
     <p>
       对于QK回路的理解与记号可以很大程度借鉴上一部分。Transformer内部的每个注意力头通过如下过程决定token <d-math>i</d-math>需要对token
       <d-math>j</d-math>分配多少比例的注意力：
@@ -617,7 +617,7 @@
     </p>
 
     <h3>MLP分析理论</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/OV.webp" style="width:100%; border: None;" /></figure>
+    <figure><img alt="OV 电路示意图：注意力输出特征被分解为来自先前 token 残差流、经 OV 电路传递的字典特征" loading="lazy" decoding="async" src="pics/OV.webp" style="width:100%; border: None;" /></figure>
     <p>
       MLP模块占据了Transformer模型中的逾半数参数，然而领域内对MLP的可解释性研究相比于注意力模块显著较少。这可能是因为MLP本身形式较简单，而基于神经元的研究又存在一定的局限。在字典学习的框架下，我们似乎可以理解更多有关MLP的内部特征，于是我们提出一个问题：<b>这些特征是如何通过MLP计算得到的？</b>
     </p>
@@ -733,7 +733,7 @@
     </p>
 
     <h3>用近似直接贡献理解MLP特征的激活</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/MLP_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="特征分解树：MLP 特征 L2M845（翻转 c-4）由下层特征 L0A837、L1M280、L1M49 及词嵌入计算得到" loading="lazy" decoding="async" src="pics/MLP_example.jpg" style="width:100%; border: None;" /></figure>
     <p>上一部分我们已经将模型输出与最高层的MLP特征建立了联系，接下来一个较为自然的问题就是，每个MLP特征是如何计算出来的？</p>
     <p>我们再次随机选取一个棋盘状态，如下所示：</p>
     <iframe src="pics/board_state_4_2.html" height="400" style="border:none;"></iframe>
@@ -759,7 +759,7 @@
     <p>这四个特征的共同之处在于：它们均描述了列4的翻转情况，从人类可理解的角度来看，这些特征均是{L2M845：c-4被翻转}的充分条件，我们有一定的信心相信这揭示了模型从底部特征得出高级特征的一种模式。</p>
 
     <h3>理解OV回路的信息迁移</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/OV_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="OV 传递示例：棋盘状态特征 L2A474 接收来自前序 token 的 L1M179、L1M755、L1M379 贡献，奇数步时己方/对方颜色翻转" loading="lazy" decoding="async" src="pics/OV_example.jpg" style="width:100%; border: None;" /></figure>
     <p>我们仍然随机采样一个棋盘状态：</p>
     <iframe src="pics/board_state_4_3.html" height="400" style="border:none;"></iframe>
     <p>我们发现L2A474重点描述了以c-2为中心的某种特定棋盘状态，与当前的棋盘状态有较好的对应，在当前棋盘状态的激活值是0.70：</p>
@@ -789,7 +789,7 @@
     </p>
 
     <h3>理解注意力强度的形成</h3>
-    <figure><img loading="lazy" decoding="async" src="pics/QK_example.jpg" style="width:100%; border: None;" /></figure>
+    <figure><img alt="QK 注意力示例：token 13 与 14 的位置编码及落子方颜色特征（L0M1015、L0A195）驱动 token 14 注意 token 13" loading="lazy" decoding="async" src="pics/QK_example.jpg" style="width:100%; border: None;" /></figure>
     <p>注意力强度是可解释性研究中最容易入手的点之一，通过注意力分布的热力图，我们很容易认识到每个token对其它的token倾注了多少注意力。在本章节中，我们对该模型中最广泛的一类注意力模式做分析，它们形如以下的交错式注意结构：
     </p>
     <iframe src="pics/example_attn_pattern.html" height="400" style="border:none;"></iframe>

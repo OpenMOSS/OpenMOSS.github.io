@@ -208,7 +208,7 @@
 
     <h3>语义-声学联合建模的超低比特率流式语音 Codec</h3>
     <figure id="codec">
-      <img src="images/codec.webp"
+      <img src="images/codec.webp" alt="流式语音 Codec 架构图：24kHz 音频经因果编码器到 RVQ-3 量化器（25hz），再经解码器与 HiFiGAN 还原为 24kHz 语音"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
     </figure>
     <li>24khz语音输入</li>
@@ -219,7 +219,7 @@
     <h3>基于Codec Patchify的语音-文本混合建模模型架构</h3>
 
     <figure id="lm">
-      <img loading="lazy" decoding="async" src="images/lm.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/lm.webp" alt="语音-文本混合建模架构图：Codec patchify 经 patch projector 将 RVQ token 聚合输入 speech-text LLM，再由多解码头 patch decoder 生成语音" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
     </figure>
 
     <li>Codec patchify

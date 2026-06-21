@@ -159,7 +159,7 @@
     </p>
 
     <figure id="model_jpg">
-      <img src="images/model1.webp"
+      <img src="images/model1.webp" alt="AnyGPT architecture: speech, text, image and music are tokenized into one discrete sequence the LLM models, then de-tokenized back to each modality"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">Figure 1</a>
@@ -261,7 +261,7 @@
 
 
     <figure id="data_mix_table">
-      <img loading="lazy" decoding="async" src="images/data_table.webp"
+      <img loading="lazy" decoding="async" src="images/data_table.webp" alt="Table of pretraining datasets grouped by modality (image-text, speech-text, music-text) with descriptions and sampling rates"
         style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_table" class="figure-number">Table 1</a>
@@ -270,7 +270,7 @@
     </figure>
 
     <figure id="data_mix_figure">
-      <img loading="lazy" decoding="async" src="images/mix.webp"
+      <img loading="lazy" decoding="async" src="images/mix.webp" alt="Sunburst chart of pretraining token shares by modality (speech, image, music, text), data type, and dataset; speech and image dominate"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#data_mix_figure" class="figure-number">Figure 2</a>
@@ -315,7 +315,7 @@
     </p>
 
     <figure id="data_construct">
-      <img loading="lazy" decoding="async" src="images/data.webp"
+      <img loading="lazy" decoding="async" src="images/data.webp" alt="Four-step AnyInstruct-108k pipeline: topic pool, scenario construction, writing text chats, then converting text to image, speech and music"
         style="display: block; margin: auto; width: 700px; height: auto; margin-top: auto; margin-bottom: auto;">
       <figcaption style="grid-column: kicker; ">
         <a href="#data_construct" class="figure-number">Figure 3</a>
@@ -359,7 +359,7 @@
 
     <p><a href="#training">Table 2</a> reports the detailed training settings and hyperparameters of AnyGPT.</p>
     <figure id="training">
-      <img loading="lazy" decoding="async" src="images/training_params.png"
+      <img loading="lazy" decoding="async" src="images/training_params.png" alt="Table of AnyGPT pretraining vs fine-tuning hyperparameters: batch size, max length, training steps, learning rate, optimizer and A100 GPUs"
         style="display: block; margin: auto; width: 600px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#training" class="figure-number">Table 2</a>
@@ -384,7 +384,7 @@
       dataset and follow previous work's Karpathy-style test set split.</p>
 
     <figure id="image_understanding">
-      <img loading="lazy" decoding="async" src="images/results1.png"
+      <img loading="lazy" decoding="async" src="images/results1.png" alt="Image captioning CIDEr scores: AnyGPT (8B) reaches 107.5, competitive with Flamingo, Emu, DreamLLM and SEED-LLaMA baselines"
         style="display: block; margin: auto; width: 450px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_understanding" class="figure-number">Table 3</a>
@@ -399,7 +399,7 @@
       generated image and its corresponding real image text description using CLIP-ViTL.</p>
 
     <figure id="image_generation">
-      <img loading="lazy" decoding="async" src="images/results2.png"
+      <img loading="lazy" decoding="async" src="images/results2.png" alt="Text-to-image CLIP score: AnyGPT scores 0.65, close to GILL (0.67), Emu (0.66) and SEED-LLaMA (0.69)"
         style="display: block; margin: auto; width: 350px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#image_generation" class="figure-number">Table 4</a>
@@ -413,7 +413,7 @@
         href="#speech_understanding">Table 5</a>.</p>
 
     <figure id="speech_understanding">
-      <img loading="lazy" decoding="async" src="images/results3.png"
+      <img loading="lazy" decoding="async" src="images/results3.png" alt="Speech recognition word error rate: AnyGPT reaches 8.5 WER versus 2.7 for Wav2vec 2.0 and Whisper Large V2 and 5.8 human-level"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#speech_understanding" class="figure-number">Table 5</a>
@@ -426,7 +426,7 @@
       shown in <a href="#speech_generation">Table 6</a>.</p>
 
     <figure id="speech_generation">
-      <img loading="lazy" decoding="async" src="images/results4.png"
+      <img loading="lazy" decoding="async" src="images/results4.png" alt="Zero-shot TTS results: AnyGPT scores 8.5 WER and 0.77 speaker similarity, close to VALL-E and USLM baselines"
         style="display: block; margin: auto; width: 400px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#speech_generation" class="figure-number">Table 6</a>
@@ -443,7 +443,7 @@
       &lt;music, generated caption&gt; pairs.</p>
 
     <figure id="music_result">
-      <img loading="lazy" decoding="async" src="images/results5.png"
+      <img loading="lazy" decoding="async" src="images/results5.png" alt="Music CLAP scores: AnyGPT generation reaches 0.14 versus Riffusion 0.19 and Mousai 0.23; captioning compares real vs generated captions"
         style="display: block; margin: auto; width: 500px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
         <center><a href="#music_result" class="figure-number">Table 7</a>

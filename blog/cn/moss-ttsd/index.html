@@ -340,7 +340,7 @@ d-figure.full-width {
     <h2 id="overview">模型概览</h2>
 
     <figure id="model_overview_figure">
-      <img src="images/model_overview.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img src="images/model_overview.webp" alt="MOSS-TTSD 模型结构：大语言模型以提示文本和语音为输入，用 Delay Pattern 自回归生成八层 RVQ 码本的语音 token" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#model_overview_figure" class="figure-number">1</a>
           模型结构概览：基于Qwen3-1.7B-base模型进行训练，使用八层RVQ码本进行语音离散化，使用自回归加Delay Pattern进行语音token生成，最后使用Tokenizer的解码器将语音token还原为语音。
@@ -360,7 +360,7 @@ d-figure.full-width {
     </p>
 
     <figure id="xy_tokenizer_figure">
-      <img loading="lazy" decoding="async" src="images/xy_tokenizer.png" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/xy_tokenizer.png" alt="XY-Tokenizer 两阶段训练：第一阶段用 ASR 与重建损失训练编码器和 RVQ，第二阶段冻结二者、用重建与 GAN 损失训练解码器" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#xy_tokenizer_figure" class="figure-number">2</a>
           XY-Tokenizer 采用了两阶段多任务学习的方式进行训练。第一阶段（上半部分）训练ASR任务和重建任务，让编码器在编码语义信息的同时保留粗粒度的声学信息。第二阶段（下半部分）我们固定住编码器和量化层部分，只训练解码器部分。通过重建损失和 GAN 损失，利用生成式模型的能力补充细粒度声学信息。
@@ -445,7 +445,7 @@ d-figure.full-width {
     </p>
 
     <figure id="data_pipeline_figure">
-      <img loading="lazy" decoding="async" src="images/data_pipeline.webp" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
+      <img loading="lazy" decoding="async" src="images/data_pipeline.webp" alt="数据流水线：原始语音经标准化、说话人分离、DNSMOS 过滤，再经单人 ASR 与对话 ASR，产出带转录的语音和对话片段" style="display: block; margin: auto; width: 700px; height: auto; margin-bottom: 20px;" />
       <figcaption style="grid-column: kicker">
           <a href="#data_pipeline_figure" class="figure-number">3</a>
           数据清洗流水线概览: 我们从海量原始音频中筛选出单人语音和多人对话语音，并使用内部工具模型进行标注
