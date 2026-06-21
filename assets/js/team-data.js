@@ -95,8 +95,8 @@ const teamData = {
                 en: 'Shuang Chen'
             },
             title: {
-                zh: '副研究员',
-                en: 'Associate Research Fellow'
+                zh: '专任副研究员',
+                en: 'Associate Researcher'
             },
             photo: 'assets/img/Shuang Chen.jpg',
             homepage: 'https://scholar.google.com/citations?user=epJpBtYAAAAJ&hl=zh-CN'
@@ -108,8 +108,8 @@ const teamData = {
                 en: 'Yining Zheng'
             },
             title: {
-                zh: '副研究员',
-                en: 'Associate Research Fellow'
+                zh: '专任副研究员',
+                en: 'Associate Researcher'
             },
             photo: 'assets/img/Yining Zheng.jpeg',
             homepage: 'https://github.com/WillQvQ'
@@ -340,7 +340,7 @@ const teamData = {
 const alumniData = {
     // 博士后校友
     postdocs: [
-        { name: { zh: '陈爽', en: 'Shuang Chen' }, destination: { zh: '复旦大学 副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://scholar.google.com/citations?user=epJpBtYAAAAJ&hl=zh-CN' }
+        { name: { zh: '陈爽', en: 'Shuang Chen' }, destination: { zh: '复旦大学 专任副研究员', en: 'Associate Researcher, Fudan University' }, homepage: 'https://scholar.google.com/citations?user=epJpBtYAAAAJ&hl=zh-CN' }
     ],
 
     // 博士生校友
@@ -353,7 +353,7 @@ const alumniData = {
         { name: { zh: '邵云帆', en: 'Yunfan Shao' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: 'https://scholar.google.com/citations?user=pw5QEtoAAAAJ&hl=zh-CN', year: '2019' },
         { name: { zh: '孙天祥', en: 'Tianxiang Sun' }, destination: { zh: '日行迹 CEO、上海创智学院 助理教授', en: 'CEO of Analemma, Assistant Professor at SII' }, homepage: 'https://txsun1997.github.io/', year: '2019' },
         { name: { zh: '颜航', en: 'Hang Yan' }, destination: { zh: '奇绩智峰', en: 'Qiji Zhifeng' }, homepage: 'https://dl.acm.org/profile/99659996992', year: '2019' },
-        { name: { zh: '郑逸宁', en: 'Yining Zheng' }, destination: { zh: '复旦大学 副研究员', en: 'Associate Research Fellow, Fudan University' }, homepage: 'https://github.com/WillQvQ', year: '2019' },
+        { name: { zh: '郑逸宁', en: 'Yining Zheng' }, destination: { zh: '复旦大学 专任副研究员', en: 'Associate Researcher, Fudan University' }, homepage: 'https://github.com/WillQvQ', year: '2019' },
         { name: { zh: '李世民', en: 'Shimin Li' }, destination: { zh: '模思智能 CEO', en: 'CEO, MOSI Intelligence' }, homepage: 'https://openreview.net/profile?id=~Shimin_Li1', year: '2020' },
         { name: { zh: '李孝男', en: 'Xiaonan Li' }, destination: { zh: '苹果（美国）', en: 'Apple, USA' }, homepage: null, year: '2020' },
         { name: { zh: '刘向阳', en: 'Xiangyang Liu' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: 'https://scholar.google.com/citations?user=U8QD9mwAAAAJ&hl=en', year: '2020' },
