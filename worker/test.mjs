@@ -66,6 +66,22 @@ async function main() {
     ok("second hit count = 2", b.count === 2);
   }
 
+  // EN and CN versions of the same post share one merged count
+  {
+    const env = mockEnv();
+    let r = await worker.fetch(req("POST", "/hit", { body: { path: "/blog/en/mova/" }, origin: ORIGIN }), env);
+    ok("en hit -> 1", (await jbody(r)).count === 1);
+    r = await worker.fetch(req("POST", "/hit", { body: { path: "/blog/cn/mova/" }, origin: ORIGIN }), env);
+    ok("cn hit merges -> 2", (await jbody(r)).count === 2);
+    r = await worker.fetch(req("GET", "/count?path=" + encodeURIComponent("/blog/en/mova/"), { origin: ORIGIN }), env);
+    ok("en count reads merged 2", (await jbody(r)).count === 2);
+    r = await worker.fetch(req("GET", "/count?path=" + encodeURIComponent("/blog/cn/mova/"), { origin: ORIGIN }), env);
+    ok("cn count reads merged 2", (await jbody(r)).count === 2);
+    r = await worker.fetch(req("GET", "/counts?paths=" + encodeURIComponent("/blog/en/mova/,/blog/cn/mova/"), { origin: ORIGIN }), env);
+    const b = await jbody(r);
+    ok("batch returns merged value per requested path", b.counts["/blog/en/mova/"] === 2 && b.counts["/blog/cn/mova/"] === 2);
+  }
+
   // bot UA does not increment
   {
     const env = mockEnv();

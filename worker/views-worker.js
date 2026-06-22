@@ -1,8 +1,10 @@
 /**
  * OpenMOSS blog — view-counter Worker (Cloudflare Workers + KV).
  *
- * Stores one integer per blog post under KV key `v:<path>`, where <path> is the
- * canonical post path, e.g. `v:/blog/en/scientific-taste/`.
+ * Stores one integer per blog post under KV key `v:<slug>`. The language segment
+ * is intentionally dropped so the EN and CN versions of a post share one merged
+ * count, e.g. both /blog/en/scientific-taste/ and /blog/cn/scientific-taste/
+ * read and write `v:scientific-taste`.
  *
  * Routes (all JSON, CORS-guarded):
  *   POST /hit     body {"path":"/blog/en/<slug>/"}        -> increment, returns {path,count}
@@ -66,8 +68,16 @@ function normalize(p) {
   return PATH_RE.test(p) ? p : null;
 }
 
+// Lang-merged count key: EN and CN versions of a post share one counter, keyed
+// by slug. e.g. /blog/en/scientific-taste/ and /blog/cn/scientific-taste/ both
+// map to "v:scientific-taste".
+function countKey(path) {
+  const m = path.match(/^\/blog\/(?:en|cn)\/([A-Za-z0-9._-]+)\/$/);
+  return "v:" + (m ? m[1] : path);
+}
+
 async function readCount(env, path) {
-  const v = await env.VIEWS.get("v:" + path);
+  const v = await env.VIEWS.get(countKey(path));
   const n = parseInt(v || "0", 10);
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
@@ -109,7 +119,7 @@ async function handle(request, env, origin) {
       return json({ path, count: await readCount(env, path), bot: true }, origin);
     }
     const count = (await readCount(env, path)) + 1;
-    await env.VIEWS.put("v:" + path, String(count));
+    await env.VIEWS.put(countKey(path), String(count));
     return json({ path, count }, origin);
   }
 
