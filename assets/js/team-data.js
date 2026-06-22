@@ -226,16 +226,6 @@ const teamData = {
 
     // 硕士研究生
     masterStudents: [
-        { id: 'ruifan-deng', name: { zh: '邓瑞凡', en: 'Ruifan Deng' }, photo: 'assets/img/邓瑞凡.jpg', year: '2023' },
-        { id: 'yiran-guo', name: { zh: '郭一然', en: 'Yiran Guo' }, photo: 'assets/img/郭一然.jpg', year: '2023' },
-        { id: 'mianqiu-huang', name: { zh: '黄绵秋', en: 'Mianqiu Huang' }, photo: 'assets/img/黄绵秋.jpg', year: '2023' },
-        { id: 'xingyu-lu', name: { zh: '陆星宇', en: 'Xingyu Lu' }, photo: 'assets/img/陆星宇.jpg', year: '2023' },
-        { id: 'qian-tu', name: { zh: '涂倩', en: 'Qian Tu' }, photo: 'assets/img/涂倩.jpg', year: '2023' },
-        { id: 'haiyang-wei', name: { zh: '魏海洋', en: 'Haiyang Wei' }, photo: 'assets/img/魏海洋.jpg', year: '2023' },
-        { id: 'shuhao-xing', name: { zh: '邢书豪', en: 'Shuhao Xing' }, photo: 'assets/img/邢书豪.jpg', year: '2023' },
-        { id: 'jiasheng-ye', name: { zh: '叶家升', en: 'Jiasheng Ye' }, photo: 'assets/img/叶家升.jpg', year: '2023' },
-        { id: 'shiduo-zhang', name: { zh: '张世铎', en: 'Shiduo Zhang' }, photo: 'assets/img/张世铎.jpg', homepage: 'https://shiduo-zhang.github.io/', year: '2023' },
-        { id: 'changtai-zhu', name: { zh: '朱长泰', en: 'Changtai Zhu' }, photo: 'assets/img/朱长泰.jpg', year: '2023' },
         { id: 'shuo-chen', name: { zh: '陈硕', en: 'Shuo Chen' }, photo: 'assets/img/陈硕.jpg', year: '2024' },
         { id: 'liwei-fan', name: { zh: '范力玮', en: 'Liwei Fan' }, photo: 'assets/img/范力玮.jpg', year: '2024' },
         { id: 'xuyang-ge', name: { zh: '葛煦旸', en: 'Xuyang Ge' }, photo: 'assets/img/葛煦旸.jpg', year: '2024' },
@@ -428,7 +418,17 @@ const alumniData = {
         { name: { zh: '张硕闻', en: 'Shuowen Zhang' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2022' },
         { name: { zh: '张鑫', en: 'Xin Zhang' }, destination: { zh: '小米 MiMo', en: 'MiMo, Xiaomi' }, homepage: null, year: '2022' },
         { name: { zh: '朱秦', en: 'Qin Zhu' }, destination: { zh: '阿里巴巴 千问', en: 'Qwen, Alibaba' }, homepage: null, year: '2022' },
-        { name: { zh: '宗一', en: 'Yi Zong' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2022' }
+        { name: { zh: '宗一', en: 'Yi Zong' }, destination: { zh: '蚂蚁集团', en: 'Ant Group' }, homepage: null, year: '2022' },
+        { name: { zh: '邓瑞凡', en: 'Ruifan Deng' }, destination: { zh: '华为', en: 'Huawei' }, homepage: null, year: '2023' },
+        { name: { zh: '郭一然', en: 'Yiran Guo' }, destination: { zh: '上海联通', en: 'China Unicom, Shanghai' }, homepage: null, year: '2023' },
+        { name: { zh: '黄绵秋', en: 'Mianqiu Huang' }, destination: { zh: '阿里巴巴 千问', en: 'Qwen, Alibaba' }, homepage: null, year: '2023' },
+        { name: { zh: '陆星宇', en: 'Xingyu Lu' }, destination: { zh: '阿里云', en: 'Alibaba Cloud' }, homepage: null, year: '2023' },
+        { name: { zh: '涂倩', en: 'Qian Tu' }, destination: { zh: '小米', en: 'Xiaomi' }, homepage: null, year: '2023' },
+        { name: { zh: '魏海洋', en: 'Haiyang Wei' }, destination: { zh: '衔远科技', en: 'Xianyuan Technology' }, homepage: null, year: '2023' },
+        { name: { zh: '邢书豪', en: 'Shuhao Xing' }, destination: { zh: '上海人工智能实验室', en: 'Shanghai AI Laboratory' }, homepage: null, year: '2023' },
+        { name: { zh: '叶家升', en: 'Jiasheng Ye' }, destination: { zh: 'DeepSeek', en: 'DeepSeek' }, homepage: null, year: '2023' },
+        { name: { zh: '张世铎', en: 'Shiduo Zhang' }, destination: { zh: '星海图', en: 'Galbot' }, homepage: 'https://shiduo-zhang.github.io/', year: '2023' },
+        { name: { zh: '朱长泰', en: 'Changtai Zhu' }, destination: { zh: '模思智能', en: 'MOSI Intelligence' }, homepage: null, year: '2023' }
     ],
 
     // 本科生校友

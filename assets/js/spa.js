@@ -5,7 +5,7 @@
     people: renderPeople,
     alumni: renderAlumni,
     resources: renderResources,
-    positions: renderPositions,
+    joinus: renderPositions,
     webmaster: renderWebmaster
   };
 
@@ -135,7 +135,7 @@
       { id: 'people', key: 'nav.people' },
       { id: 'alumni', key: 'nav.alumni' },
       { id: 'resources', key: 'nav.resources' },
-      { id: 'positions', key: 'nav.positions' },
+      { id: 'joinus', key: 'nav.positions' },
       { id: 'blog', key: 'nav.blog' }
     ];
 
@@ -253,7 +253,7 @@
     window.scrollTo({ top: 0, behavior: 'instant' });
 
     // 处理特定页面的锚点跳转
-    if (route === 'positions' && params.section) {
+    if (route === 'joinus' && params.section) {
       setTimeout(() => scrollToId(params.section, 120), 50);
     }
   }
@@ -289,12 +289,14 @@
     const params = new URLSearchParams(query || '');
     const paramObj = {};
     params.forEach((value, key) => { paramObj[key] = value; });
-    return { route: route || 'home', params: paramObj };
+    // 兼容旧链接 #positions → #joinus
+    const normalizedRoute = route === 'positions' ? 'joinus' : route;
+    return { route: normalizedRoute || 'home', params: paramObj };
   }
 
   // 按路由/语言设置 document.title（利于 SEO 与浏览器历史/标签）
   function updateDocumentTitle(route) {
-    var navKey = { people: 'nav.people', alumni: 'nav.alumni', resources: 'nav.resources', positions: 'nav.positions', blog: 'nav.blog' }[route];
+    var navKey = { people: 'nav.people', alumni: 'nav.alumni', resources: 'nav.resources', joinus: 'nav.positions', blog: 'nav.blog' }[route];
     var title;
     if (route === 'webmaster') {
       title = t('webmaster.title') + ' · OpenMOSS';
