@@ -79,7 +79,9 @@
       ".om-views-num{font-variant-numeric:tabular-nums;}" +
       ".om-views-label{opacity:.85;}" +
       "d-title .om-views{grid-column:text;margin-top:1.15rem;}" +
-      ".om-views-byline{margin-top:.45rem;}" +
+      ".om-views-field .om-views{margin-top:.2em;}" +
+      "d-byline .byline.om-byline-3{grid-template-columns:1fr 1fr 1fr;}" +
+      "d-byline .byline.om-byline-3 .authors-affiliations{grid-column:1 / -1;}" +
       ".om-views-row{font-size:.8rem;margin-top:8px;}" +
       ".om-views--pending{display:none !important;}";
     var s = document.createElement("style");
@@ -94,7 +96,7 @@
     if (!path || !document.querySelector("d-article")) return; // not a post page
     var zh = location.pathname.indexOf("/blog/en/") === -1;
 
-    function build(n) {
+    function build(n, withLabel) {
       var el = document.createElement("div");
       el.className = "om-views";
       el.setAttribute("role", "img");
@@ -102,24 +104,28 @@
       el.innerHTML =
         EYE +
         '<span class="om-views-num">' + fmt(n) + "</span>" +
-        '<span class="om-views-label">' + (zh ? "次阅读" : "reads") + "</span>";
+        (withLabel ? '<span class="om-views-label">' + (zh ? "次阅读" : "reads") + "</span>" : "");
       return el;
     }
 
-    // Place the counter as a byline field right after the DOI column. The byline
-    // is rendered asynchronously by the Distill template, so poll briefly for it;
-    // fall back to the (static) d-title if it never appears.
+    // Add the counter as a labeled byline field (a peer of Published / DOI), and
+    // switch the byline to a 3-up row so it sits next to them with no dead space.
+    // The byline renders asynchronously, so poll briefly; fall back to d-title.
     function show(n) {
       if (typeof n !== "number") return;
       var tries = 0;
       (function place() {
         var byline = document.querySelector("d-byline .byline");
         if (byline) {
-          if (!byline.querySelector(".om-views")) {
-            var doiCol = byline.lastElementChild; // the DOI column is the last one
-            var el = build(n);
-            el.className += " om-views-byline";
-            (doiCol || byline).appendChild(el); // right after the DOI
+          if (!byline.querySelector(".om-views-field")) {
+            var field = document.createElement("div");
+            field.className = "om-views-field";
+            var h = document.createElement("h3");
+            h.textContent = zh ? "阅读量" : "Reads";
+            field.appendChild(h);
+            field.appendChild(build(n, false)); // the h3 is the label, value = eye + number
+            byline.appendChild(field); // peer field after Published / DOI
+            byline.classList.add("om-byline-3");
           }
           return;
         }
@@ -128,7 +134,7 @@
           return;
         }
         var title = document.querySelector("d-title"); // fallback
-        if (title && !title.querySelector(".om-views")) title.appendChild(build(n));
+        if (title && !title.querySelector(".om-views")) title.appendChild(build(n, true));
       })();
     }
 
