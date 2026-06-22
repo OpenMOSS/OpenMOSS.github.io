@@ -80,8 +80,10 @@
       ".om-views-label{opacity:.85;}" +
       "d-title .om-views{grid-column:text;margin-top:1.15rem;}" +
       ".om-views-field .om-views{margin-top:.2em;}" +
-      "d-byline .byline.om-byline-3{grid-template-columns:1fr 1fr 1fr;}" +
-      "d-byline .byline.om-byline-3 .authors-affiliations{grid-column:1 / -1;}" +
+      "d-byline .byline.om-byline-inline{grid-template-columns:repeat(5,1fr);}" +
+      "d-byline .byline.om-byline-inline .authors-affiliations{grid-column:span 2;}" +
+      "@media(max-width:768px){d-byline .byline.om-byline-inline{grid-template-columns:1fr 1fr;}" +
+      "d-byline .byline.om-byline-inline .authors-affiliations{grid-column:1 / -1;}}" +
       ".om-views-row{font-size:.8rem;margin-top:8px;}" +
       ".om-views--pending{display:none !important;}";
     var s = document.createElement("style");
@@ -125,7 +127,7 @@
             field.appendChild(h);
             field.appendChild(build(n, false)); // the h3 is the label, value = eye + number
             byline.appendChild(field); // peer field after Published / DOI
-            byline.classList.add("om-byline-3");
+            byline.classList.add("om-byline-inline");
           }
           return;
         }

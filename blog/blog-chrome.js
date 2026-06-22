@@ -49,7 +49,7 @@
           '<li><a href="' + S + '#people">' + T.people + "</a></li>" +
           '<li><a href="' + S + '#alumni">' + T.alumni + "</a></li>" +
           '<li><a href="' + S + '#resources">' + T.resources + "</a></li>" +
-          '<li><a href="' + S + '#positions">' + T.positions + "</a></li>" +
+          '<li><a href="' + S + '#joinus">' + T.positions + "</a></li>" +
           '<li><a class="active" href="' + S + '#blog">' + T.blog + "</a></li>" +
           '<li><button class="lang-btn" type="button"><span class="lang-text' + (lang === "zh" ? " active" : "") + '">中</span><span class="lang-separator">|</span><span class="lang-text' + (lang === "en" ? " active" : "") + '">EN</span></button></li>' +
         "</ul>" +
@@ -117,7 +117,7 @@
   // It is a no-op until its Worker URL is configured — see /worker/README.md.
   if (!document.querySelector("script[data-om-views]")) {
     var vs = document.createElement("script");
-    vs.src = "/assets/js/views.js?v=3";
+    vs.src = "/assets/js/views.js?v=4";
     vs.defer = true;
     vs.setAttribute("data-om-views", "");
     (document.head || document.documentElement).appendChild(vs);
