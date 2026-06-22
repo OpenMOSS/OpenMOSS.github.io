@@ -112,4 +112,14 @@
 
   if (document.body) init();
   else document.addEventListener("DOMContentLoaded", init);
+
+  // Load the shared view-counter module (covers every post + the CN listing).
+  // It is a no-op until its Worker URL is configured — see /worker/README.md.
+  if (!document.querySelector("script[data-om-views]")) {
+    var vs = document.createElement("script");
+    vs.src = "/assets/js/views.js?v=1";
+    vs.defer = true;
+    vs.setAttribute("data-om-views", "");
+    (document.head || document.documentElement).appendChild(vs);
+  }
 })();

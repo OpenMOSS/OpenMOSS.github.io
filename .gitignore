@@ -7,3 +7,5 @@ __pycache__/
 *.pyc
 # Local working guide for Claude / contributors (not published)
 CLAUDE.md
+# Cloudflare Wrangler local state/cache (never commit)
+.wrangler/

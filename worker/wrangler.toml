@@ -1,0 +1,13 @@
+# Cloudflare Worker config for the OpenMOSS blog view counter.
+# See README.md in this folder for the full deploy walkthrough.
+
+name = "openmoss-views"
+main = "views-worker.js"
+compatibility_date = "2024-11-12"
+
+# KV namespace that stores the per-post counts.
+# Create it once with:  npx wrangler kv namespace create VIEWS
+# then paste the printed id below (replace the placeholder).
+[[kv_namespaces]]
+binding = "VIEWS"
+id = "40526a9d5635450497fa6806bcb9e3c0"
