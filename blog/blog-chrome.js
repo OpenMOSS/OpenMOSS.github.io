@@ -117,7 +117,7 @@
   // It is a no-op until its Worker URL is configured — see /worker/README.md.
   if (!document.querySelector("script[data-om-views]")) {
     var vs = document.createElement("script");
-    vs.src = "/assets/js/views.js?v=1";
+    vs.src = "/assets/js/views.js?v=2";
     vs.defer = true;
     vs.setAttribute("data-om-views", "");
     (document.head || document.documentElement).appendChild(vs);
