@@ -6,8 +6,13 @@ The site is bilingual: Latin text uses Roboto (the site's original Latin face);
 Chinese text uses Noto Sans SC (思源黑体). The full Chinese font is ~17 MB, so we
 ship a SUBSET containing only the CJK characters that actually appear in the
 site's own text sources — typically a few hundred KB. Each output is a single
-VARIABLE woff2 spanning weights 300–700 (the weight axis is preserved; Roboto's
-width axis is pinned to 100).
+VARIABLE woff2: Roboto keeps weights 300–700 (its width axis pinned to 100);
+Noto Sans SC is CLAMPED to weights 400–700 — the source ships a 100–900 axis,
+but the site only uses 400 (body) … 700 (bold headings), and dropping the unused
+100–300 / 800–900 masters roughly halves the CJK file (~326 KB → ~270 KB) while
+keeping true Regular→Bold weights (no browser faux-bold). The clamp is the single
+biggest first-paint win for slow / no-proxy (China) connections, where this is
+the largest asset.
 
 Outputs (committed to the repo, served by GitHub Pages):
     assets/fonts/roboto-subset.woff2          (Latin, weight 300..700)
@@ -61,8 +66,7 @@ LATIN_UNICODES = (
     "U+2122,U+00D7,U+00B7,U+2212"  # ™ × · −
 )
 
-SUBSET_COMMON = ["--flavor=woff2", "--layout-features=*", "--no-hinting",
-                 "--desubroutinize", "--name-IDs=*"]
+SUBSET_COMMON = ["--flavor=woff2", "--no-hinting", "--desubroutinize"]
 
 
 def fetch(url, dst):
@@ -92,9 +96,17 @@ def collect_cjk():
     return chars
 
 
-def run_subset(src, out, *, text=None, unicodes=None):
+def run_subset(src, out, *, text=None, unicodes=None,
+               layout_features="*", name_ids="*"):
+    # layout_features/name_ids: "*" keeps everything (Roboto needs its Latin
+    # kerning/ligatures). The Chinese subset passes layout_features="" and a
+    # minimal name set: its unicode-range makes it CJK-only and it renders
+    # horizontally with default SC glyphs, so vert/palt/locl/etc. are never
+    # applied at paint time — dropping them + the bulky name records is the
+    # bulk of the size win (~310 KB → ~265 KB) with no visible change.
     cmd = [sys.executable, "-m", "fontTools.subset", str(src),
-           f"--output-file={out}"] + SUBSET_COMMON
+           f"--output-file={out}", f"--layout-features={layout_features}",
+           f"--name-IDs={name_ids}"] + SUBSET_COMMON
     if unicodes:
         cmd.append(f"--unicodes={unicodes}")
     if text is not None:
@@ -120,9 +132,12 @@ def main():
     pin_axis(SOURCES["roboto"][1], roboto_wght, {"wdth": 100})
     run_subset(roboto_wght, FONTS / "roboto-subset.woff2", unicodes=LATIN_UNICODES)
 
-    print("4) subset Noto Sans SC (Chinese, variable)")
-    run_subset(SOURCES["noto"][1], FONTS / "noto-sans-sc-subset.woff2",
-               text=cjk, unicodes="U+0020-007E,U+00B7,U+2014,U+2018-201D,U+2026,U+2192")
+    print("4) subset Noto Sans SC (Chinese) — clamp weight axis to 400:700, drop unused features")
+    noto_clamped = CACHE / "NotoSansSC-wght400-700.ttf"
+    pin_axis(SOURCES["noto"][1], noto_clamped, {"wght": "400:700"})
+    run_subset(noto_clamped, FONTS / "noto-sans-sc-subset.woff2",
+               text=cjk, unicodes="U+0020-007E,U+00B7,U+2014,U+2018-201D,U+2026,U+2192",
+               layout_features="", name_ids="0,1,2,3,4,5,6")
 
     print("done.")
 

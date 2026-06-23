@@ -35,9 +35,12 @@
   <meta name="twitter:description" content="An open research team from the Shanghai Innovation Institute, Fudan University NLP Lab, and MOSI Intelligence — building open-source large language, speech, and multimodal models toward general AI.">
   <meta name="twitter:image" content="https://openmoss.ai/assets/img/og-image.png">
 
+  <!-- Preload only the small Latin face. The larger CJK subset is NOT preloaded:
+       the page is JS-rendered (#app is empty until spa.js runs), and a high-priority
+       font preload would starve the render-critical scripts on slow connections.
+       font-display:swap shows a CJK system fallback until the subset arrives. -->
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/roboto-subset.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/noto-sans-sc-subset.woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=20260620123000">
+  <link rel="stylesheet" href="/assets/css/style.css?v=20260623121255">
 
   <script type="application/ld+json">
   {
@@ -81,11 +84,11 @@
     </div>
   </noscript>
 
-  <script defer src="/assets/js/i18n.js?v=20260606103000"></script>
-  <script defer src="/assets/js/content-data.js?v=20260620123000"></script>
-  <script defer src="/assets/js/gh-stars-data.js?v=20260605172641"></script>
-  <script defer src="/assets/js/team-data.js?v=20260605172641"></script>
-  <script defer src="/assets/js/spa.js?v=20260622000000"></script>
-  <script defer src="/assets/js/views.js?v=20260620123000"></script>
+  <script defer src="/assets/js/i18n.js?v=20260623121255"></script>
+  <script defer src="/assets/js/content-data.js?v=20260623121255"></script>
+  <script defer src="/assets/js/gh-stars-data.js?v=20260623121255"></script>
+  <script defer src="/assets/js/team-data.js?v=20260623121255"></script>
+  <script defer src="/assets/js/spa.js?v=20260623121255"></script>
+  <script defer src="/assets/js/views.js?v=20260623121255"></script>
 </body>
 </html>

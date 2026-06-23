@@ -11,9 +11,11 @@
 @font-face {
   font-family: "Noto Sans SC";
   font-style: normal;
-  font-weight: 300 700;
+  font-weight: 400 700;
   font-display: swap;
-  src: url("/assets/fonts/noto-sans-sc-subset.woff2") format("woff2");
+  /* ?v bumps the CDN cache key when the subset is rebuilt — the SII/EdgeOne
+     mirror freezes bare-path objects for weeks, so a fresh query is required. */
+  src: url("/assets/fonts/noto-sans-sc-subset.woff2?v=20260623") format("woff2");
   /* restrict to CJK so Latin/punctuation always render from Roboto */
   unicode-range: U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
 }
