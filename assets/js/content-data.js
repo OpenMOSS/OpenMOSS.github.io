@@ -67,7 +67,7 @@
       {
         name: 'MOSS', url: 'https://github.com/OpenMOSS', org: 'OpenMOSS',
         feature: true,
-        featured: ['MOSS', 'MOSS-VL', 'MOSS-Audio', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA'],
+        featured: ['MOSS', 'MOSS-VL', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA'],
         badgeKey: 'series.moss.badge', descKey: 'series.moss.desc'
       },
       {
@@ -82,7 +82,7 @@
       },
       {
         name: 'NEX', url: 'https://github.com/nex-agi', org: 'nex-agi',
-        featured: ['Nex-N1', 'NexRL', 'NexAU'],
+        featured: ['Nex-N2', 'Nex-N1', 'NexRL', 'NexAU'],
         badgeKey: 'series.nex.badge', descKey: 'series.nex.desc'
       }
     ],
