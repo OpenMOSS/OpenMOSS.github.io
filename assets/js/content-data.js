@@ -67,22 +67,22 @@
       {
         name: 'MOSS', url: 'https://github.com/OpenMOSS', org: 'OpenMOSS',
         feature: true,
-        featured: ['MOSS', 'MOSS-VL', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA'],
+        featured: ['MOSS', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-VL'],
         badgeKey: 'series.moss.badge', descKey: 'series.moss.desc'
       },
       {
         name: 'NNDL', url: 'https://github.com/nndl', org: 'nndl',
-        featured: ['nndl', 'llm-beginner', 'nndl-practice'],
+        featured: ['nndl', 'llm-beginner', 'nndl-practice', 'practice-in-paddle'],
         badgeKey: 'series.nndl.badge', descKey: 'series.nndl.desc'
       },
       {
         name: 'FudanNLP', url: 'https://github.com/FudanNLP', org: 'FudanNLP',
-        featured: ['fastNLP', 'fnlp', 'fitlog'],
+        featured: ['fastNLP', 'fnlp', 'fitlog', 'fastHan'],
         badgeKey: 'series.fudannlp.badge', descKey: 'series.fudannlp.desc'
       },
       {
         name: 'NEX', url: 'https://github.com/nex-agi', org: 'nex-agi',
-        featured: ['Nex-N2', 'Nex-N1', 'NexRL', 'NexAU'],
+        featured: ['Nex-N2', 'NexAU', 'Nex-N1', 'NexRL'],
         badgeKey: 'series.nex.badge', descKey: 'series.nex.desc'
       }
     ],
