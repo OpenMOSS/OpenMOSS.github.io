@@ -409,7 +409,7 @@ const alumniData = {
         { name: { zh: '陈云涛', en: 'Yuntao Chen' }, destination: { zh: '上海电网', en: 'Shanghai Electric Grid' }, homepage: null, year: '2022' },
         { name: { zh: '范子越', en: 'Ziyue Fan' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
         { name: { zh: '何俊亮', en: 'Junliang He' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
-        { name: { zh: '彭润宇', en: 'Runyu Peng' }, destination: { zh: ' ', en: ' ' }, homepage: null, year: '2022' },
+        { name: { zh: '彭润宇', en: 'Runyu Peng' }, destination: { zh: '纽约大学 博士研究生', en: 'PhD Student, NYU' }, homepage: null, year: '2022' },
         { name: { zh: '任可', en: 'Ke Ren' }, destination: { zh: '字节跳动', en: 'ByteDance' }, homepage: null, year: '2022' },
         { name: { zh: '汤琼', en: 'Qiong Tang' }, destination: { zh: '日行迹', en: 'Analemma' }, homepage: null, year: '2022' },
         { name: { zh: '张栋', en: 'Dong Zhang' }, destination: { zh: '小米 MiMo', en: 'MiMo, Xiaomi' }, homepage: null, year: '2022' },
