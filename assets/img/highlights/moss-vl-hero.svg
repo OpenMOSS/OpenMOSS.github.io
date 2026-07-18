@@ -48,6 +48,12 @@
   <rect x="24" y="24" width="1152" height="582" rx="28" fill="url(#grid)"/>
   <ellipse cx="630" cy="315" rx="330" ry="300" fill="url(#halo)"/>
 
+  <!-- product identity -->
+  <g text-anchor="middle">
+    <text x="600" y="76" fill="#e4fbff" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" letter-spacing="1.4">MOSS-VL-Realtime</text>
+    <path d="M475 94H725" stroke="url(#cyanLine)" stroke-width="2"/>
+  </g>
+
   <!-- faint temporal traces -->
   <g fill="none" stroke-linecap="round">
     <path d="M44 466 C160 414 214 490 324 440 S470 392 562 432" stroke="url(#cyanLine)" stroke-width="3" opacity=".8"/>
