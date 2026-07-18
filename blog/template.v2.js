@@ -1375,7 +1375,30 @@ ${math}
 
   // Copyright 2018 The Distill Template Authors
 
-  const styles = base + layout + title + byline + article + math + print;
+  // OpenMOSS blog-wide width tune: keep Distill's responsive breakpoints,
+  // but give desktop long-form articles a more comfortable reading measure.
+  const width = `
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 72px [middle-start] 72px [text-start kicker-end] 72px 72px 72px 72px 72px 72px 72px 72px [text-end gutter-start] 72px [middle-end] 72px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 24px;
+  }
+
+  .grid { grid-column-gap: 24px; }
+}
+`;
+
+  const styles = base + layout + title + byline + article + math + print + width;
 
   function makeStyleTag(dom) {
 
