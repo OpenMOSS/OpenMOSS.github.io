@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://openmoss.ai/blog/en/moss-vl/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OpenMOSS">
+  <meta property="og:url" content="https://openmoss.ai/blog/en/moss-vl/">
+  <meta property="og:title" content="MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams">
+  <meta property="og:description" content="MOSS-VL covers real-time video-stream interaction, offline long-video understanding, and domain fine-tuning. This post explains its architecture and positioning against GPT-4o, Gemini, Qwen2.5-VL, InternVL3, and LLaVA-OneVision.">
+  <meta property="og:image" content="https://openmoss.ai/assets/img/highlights/moss-vl.svg">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-07-18">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams">
+  <meta name="twitter:description" content="From continuous video streams to offline long-video understanding: a practical guide to MOSS-VL and its model-selection trade-offs.">
+  <meta name="twitter:image" content="https://openmoss.ai/assets/img/highlights/moss-vl.svg">
+  <title>MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams</title>
+  <meta name="description" content="MOSS-VL covers real-time video-stream interaction, offline long-video understanding, and domain fine-tuning. This post explains its architecture and positioning against GPT-4o, Gemini, Qwen2.5-VL, InternVL3, and LLaVA-OneVision.">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"TechArticle",
+    "headline":"MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams",
+    "description":"MOSS-VL covers real-time video-stream interaction, offline long-video understanding, and domain fine-tuning.",
+    "datePublished":"2026-07-18",
+    "dateModified":"2026-07-18",
+    "inLanguage":"en",
+    "author":{"@type":"Organization","name":"OpenMOSS Team","url":"https://github.com/OpenMOSS"},
+    "publisher":{"@type":"Organization","name":"OpenMOSS","url":"https://openmoss.ai/"},
+    "mainEntityOfPage":"https://openmoss.ai/blog/en/moss-vl/",
+    "image":"https://openmoss.ai/assets/img/highlights/moss-vl.svg"
+  }
+  </script>
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=8">
+  <script defer src="/blog/blog-chrome.js?v=4"></script>
+  <style>
+    d-article { color:rgba(0,0,0,.84); }
+    d-article h2 { margin-top:2.2em; }
+    .article-hero { grid-column:page; margin:1.5rem 0 2rem; }
+    .article-hero img { width:100%; display:block; border-radius:12px; border:1px solid rgba(0,0,0,.1); }
+    .summary-grid { grid-column:page; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:1.6rem 0 2rem; }
+    .summary-card { border:1px solid rgba(14,65,156,.18); border-radius:10px; padding:16px 18px; background:#f8fbff; }
+    .summary-card h3 { color:#0e419c; margin:0 0 8px; font-size:1rem; }
+    .summary-card p { margin:0; font-size:.95rem; line-height:1.58; }
+    .compare-table { grid-column:page; width:100%; border-collapse:separate; border-spacing:0; margin:1.5rem 0 2rem; font-size:.9rem; border:1px solid #dbe3f2; border-radius:10px; overflow:hidden; }
+    .compare-table th,.compare-table td { padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid #e7edf6; line-height:1.5; }
+    .compare-table th { background:#eef3fb; color:#08306f; }
+    .compare-table tr:last-child td { border-bottom:0; }
+    @media (max-width:760px) { .summary-grid { grid-template-columns:1fr; } .compare-table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+  <d-front-matter><script type="text/json">{"title":"MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams","description":"MOSS-VL covers real-time video-stream interaction, offline long-video understanding, and domain fine-tuning.","authors":[{"author":"OpenMOSS Team","authorURL":"https://github.com/OpenMOSS","affiliation":"SII and Fudan","affiliationURL":"https://github.com/OpenMOSS"}],"doi":"","publishedDate":"2026-07-18"}</script></d-front-matter>
+  <d-title>
+    <h1>MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams</h1>
+    <p>Moving from “watch first, answer later” to continuous perception, interruption, proactive silence, and dynamic correction.</p>
+  </d-title>
+  <d-article>
+    <figure class="article-hero"><img src="/assets/img/highlights/moss-vl.svg" alt="MOSS-VL real-time video understanding"></figure>
+    <p><strong>Short answer:</strong> MOSS-VL is OpenMOSS’s open-weight vision-language model family. <strong>MOSS-VL-Realtime</strong> is designed for continuous video streams: it consumes timestamped frames incrementally, accepts questions at any moment, can stay silent when context is insufficient, and updates an earlier answer when the scene changes.</p>
+    <div class="summary-grid">
+      <div class="summary-card"><h3>MOSS-VL-Realtime</h3><p>Real-time interaction over cameras, screens, live streams, and continuous video sources.</p></div>
+      <div class="summary-card"><h3>MOSS-VL-Instruct-0708</h3><p>Offline image/video understanding, long-video analysis, and deep dialogue.</p></div>
+      <div class="summary-card"><h3>MOSS-VL-Base-0708</h3><p>An open foundation for continued pre-training, SFT, and LoRA adaptation.</p></div>
+      <div class="summary-card"><h3>Shared scale</h3><p>All three current models are 11B with a 256K context and are available through Hugging Face and ModelScope.</p></div>
+    </div>
+    <h2>What makes real-time video different?</h2>
+    <p>Offline video QA can wait for the full recording. A camera assistant, robot, screen monitor, or live production tool cannot. MOSS-VL-Realtime treats the video timeline as an active input: visual perception and text generation run together, new questions can arrive while frames continue to stream, and the model can decide whether an event deserves a response.</p>
+    <h2>Architecture in three ideas</h2>
+    <p><strong>Cross-Attention</strong> separates visual encoding from language reasoning for dynamic streams and interleaved image/video/text input. <strong>Absolute timestamps</strong> anchor every sampled frame to a precise point in time. <strong>XRoPE</strong> maps text tokens and video patches into a shared <code>(t, h, w)</code> space for fine-grained temporal and spatial grounding.</p>
+    <p>The project README reports leading results on the proactive evaluations of OmniMMI, StreamingBench, and ProactiveVideoQA. Those claims should be read together with the official <a href="https://openmoss.ai/MOSS-VL/">technical blog</a> and paper; the comparison below is a positioning guide, not a single cross-model leaderboard.</p>
+    <h2>How does MOSS-VL compare with well-known models?</h2>
+    <table class="compare-table"><thead><tr><th>Model / family</th><th>Primary positioning</th><th>Continuous stream</th><th>Weights and fine-tuning</th><th>Choose it when…</th></tr></thead><tbody>
+      <tr><td>MOSS-VL</td><td>Real-time video + offline long video + open base</td><td><strong>Native goal</strong>: incremental frames, proactive silence, dynamic correction</td><td>Open weights; Base, SFT, LoRA, and SGLang paths</td><td>You want an open model built around “watch while answering”</td></tr>
+      <tr><td>GPT-4o</td><td>Closed general-purpose multimodal assistant</td><td>Depends on product/API integration</td><td>Hosted API; no downloadable weights</td><td>You prefer a managed general multimodal service</td></tr>
+      <tr><td>Gemini 2.5 Pro</td><td>Closed long-context multimodal model</td><td>Service-defined multimodal input and deployment boundary</td><td>Hosted API; no downloadable weights</td><td>You need a managed long-context model</td></tr>
+      <tr><td>Qwen2.5-VL</td><td>Open image/video understanding and VQA</td><td>Streaming requires application-level scheduling</td><td>Open weights; local deployment and fine-tuning</td><td>You need a strong open offline VLM baseline</td></tr>
+      <tr><td>InternVL3</td><td>Open large-scale vision-language family</td><td>Usually needs application-level stream/state management</td><td>Open research ecosystem</td><td>You care about high-resolution VLM research</td></tr>
+      <tr><td>LLaVA-OneVision</td><td>Open vision-instruction community baseline</td><td>Sampling, caching, and scheduling live in the application</td><td>Open ecosystem for experiments</td><td>You need a widely used vision-instruction baseline</td></tr>
+    </tbody></table>
+    <p>In other words, GPT-4o and Gemini 2.5 Pro are hosted reference points; Qwen2.5-VL, InternVL3, and LLaVA-OneVision are open VLM reference points; MOSS-VL’s distinctive bet is to make continuous video interaction a first-class model objective while keeping offline and fine-tuning variants in the same family.</p>
+    <h2>Quick start</h2>
+    <pre><code>conda create -n moss_vl python=3.12 pip -y
+conda activate moss_vl
+pip install -i https://pypi.org/simple --no-build-isolation -r requirements.txt
+
+CUDA_VISIBLE_DEVICES=0 python realtime_inference/run_online_inference.py \
+  --checkpoint OpenMOSS-Team/MOSS-VL-Realtime \
+  --source video --video path/to/example.mp4 \
+  --sample-fps 1 --playback-speed 1 --max-frames 256</code></pre>
+    <p>Use <code>model.create_realtime_session(...)</code> for direct frame/prompt/output control, <code>model.online_generate(...)</code> for queue-based workers, or <code>--serve</code> for a FastAPI WebSocket service.</p>
+    <h2>Resources</h2>
+    <ul>
+      <li><a href="https://github.com/OpenMOSS/MOSS-VL">GitHub: OpenMOSS/MOSS-VL</a> · <a href="https://huggingface.co/collections/OpenMOSS-Team/moss-vl">Hugging Face</a> · <a href="https://modelscope.cn/collections/openmoss/MOSS-VL">ModelScope</a></li>
+      <li><a href="https://arxiv.org/abs/2606.07639">Paper</a> · <a href="https://openmoss.ai/MOSS-VL/">Technical blog</a> · <a href="https://github.com/OpenMOSS/MOSS-VL/blob/main/LICENSE">Apache-2.0 License</a></li>
+      <li>Reference projects: <a href="https://github.com/QwenLM/Qwen2.5-VL">Qwen2.5-VL</a>, <a href="https://github.com/OpenGVLab/InternVL">InternVL</a>, <a href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-OneVision</a>, <a href="https://platform.openai.com/docs/models/gpt-4o">GPT-4o</a>, and <a href="https://ai.google.dev/gemini-api/docs/models/gemini">Gemini</a>.</li>
+    </ul>
+    <p><strong><a href="https://github.com/OpenMOSS/MOSS-VL">Star OpenMOSS/MOSS-VL</a> if you are building or studying real-time video understanding.</strong></p>
+  </d-article>
+  <d-appendix><h3>Note</h3><p class="resource-list">The model facts and performance language follow the official OpenMOSS repository, model pages, technical blog, and paper. The model table compares product and engineering positioning; it is not a unified benchmark ranking.</p></d-appendix>
+</body>
+</html>

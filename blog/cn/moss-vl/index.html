@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://openmoss.ai/blog/cn/moss-vl/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OpenMOSS">
+  <meta property="og:url" content="https://openmoss.ai/blog/cn/moss-vl/">
+  <meta property="og:title" content="MOSS-VL：面向实时视频流的开源视觉语言模型">
+  <meta property="og:description" content="MOSS-VL 是 OpenMOSS 的开放权重视觉语言模型系列，覆盖实时视频流交互、离线长视频理解与领域微调。本文介绍 MOSS-VL-Realtime 的架构、模型选择和与 GPT-4o、Gemini、Qwen2.5-VL、InternVL3、LLaVA-OneVision 的定位差异。">
+  <meta property="og:image" content="https://openmoss.ai/assets/img/highlights/moss-vl.svg">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="article:published_time" content="2026-07-18">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Open_MOSS">
+  <meta name="twitter:title" content="MOSS-VL：面向实时视频流的开源视觉语言模型">
+  <meta name="twitter:description" content="从实时视频流到离线长视频理解：MOSS-VL-Realtime、Instruct 与 Base 的定位、架构和模型选型对比。">
+  <meta name="twitter:image" content="https://openmoss.ai/assets/img/highlights/moss-vl.svg">
+  <meta name="keywords" content="MOSS-VL,MOSS-VL-Realtime,实时视频理解,视觉语言模型,多模态模型,Qwen2.5-VL,InternVL3,LLaVA-OneVision,GPT-4o,Gemini,开源模型">
+  <title>MOSS-VL：面向实时视频流的开源视觉语言模型</title>
+  <meta name="description" content="MOSS-VL 是 OpenMOSS 的开放权重视觉语言模型系列，覆盖实时视频流交互、离线长视频理解与领域微调。本文介绍其架构、快速上手方式，以及与 GPT-4o、Gemini、Qwen2.5-VL、InternVL3、LLaVA-OneVision 的定位差异。">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"TechArticle",
+    "headline":"MOSS-VL：面向实时视频流的开源视觉语言模型",
+    "description":"MOSS-VL 覆盖实时视频流交互、离线长视频理解与领域微调。",
+    "datePublished":"2026-07-18",
+    "dateModified":"2026-07-18",
+    "inLanguage":"zh-CN",
+    "author":{"@type":"Organization","name":"OpenMOSS Team","url":"https://github.com/OpenMOSS"},
+    "publisher":{"@type":"Organization","name":"OpenMOSS","url":"https://openmoss.ai/"},
+    "mainEntityOfPage":"https://openmoss.ai/blog/cn/moss-vl/",
+    "image":"https://openmoss.ai/assets/img/highlights/moss-vl.svg"
+  }
+  </script>
+  <script src="/blog/template.v2.js?v=3"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=8">
+  <script defer src="/blog/blog-chrome.js?v=4"></script>
+  <style>
+    d-article { color: rgba(0,0,0,.84); }
+    d-article h2 { margin-top: 2.2em; }
+    d-article h3 { margin-top: 1.6em; }
+    .article-hero { grid-column: page; margin: 1.5rem 0 2rem; }
+    .article-hero img { width:100%; display:block; border-radius:12px; border:1px solid rgba(0,0,0,.1); }
+    .summary-grid, .metric-strip, .compare-table { grid-column: page; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:1.6rem 0 2rem; }
+    .summary-card { border:1px solid rgba(14,65,156,.18); border-radius:10px; padding:16px 18px; background:#f8fbff; }
+    .summary-card h3 { color:#0e419c; margin:0 0 8px; font-size:1rem; }
+    .summary-card p { margin:0; font-size:.95rem; line-height:1.58; }
+    .metric-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:1.5rem 0 2rem; }
+    .metric { border-top:2px solid #1d4f91; padding-top:10px; font-size:.95rem; }
+    .metric strong { display:block; font-size:1.25rem; margin-bottom:4px; color:#0e419c; }
+    .compare-table { width:100%; border-collapse:separate; border-spacing:0; margin:1.5rem 0 2rem; font-size:.9rem; border:1px solid #dbe3f2; border-radius:10px; overflow:hidden; }
+    .compare-table th, .compare-table td { padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid #e7edf6; line-height:1.5; }
+    .compare-table th { background:#eef3fb; color:#08306f; font-weight:700; }
+    .compare-table tr:last-child td { border-bottom:0; }
+    .compare-table td:first-child { font-weight:650; white-space:nowrap; color:#0e419c; }
+    .note { padding:14px 16px; border-left:3px solid #0e419c; background:#f4f7fc; color:#51607a; font-size:.94rem; line-height:1.65; }
+    .resource-list a { word-break:break-word; }
+    @media (max-width:760px) { .summary-grid, .metric-strip { grid-template-columns:1fr; } .compare-table { display:block; overflow-x:auto; white-space:normal; } }
+  </style>
+</head>
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {
+        "title":"MOSS-VL：面向实时视频流的开源视觉语言模型",
+        "description":"MOSS-VL 是 OpenMOSS 的开放权重视觉语言模型系列，覆盖实时视频流交互、离线长视频理解与领域微调。",
+        "authors":[{"author":"OpenMOSS Team","authorURL":"https://github.com/OpenMOSS","affiliation":"SII and Fudan","affiliationURL":"https://github.com/OpenMOSS"}],
+        "doi":"",
+        "publishedDate":"2026-07-18"
+      }
+    </script>
+  </d-front-matter>
+
+  <d-title>
+    <h1>MOSS-VL：面向实时视频流的开源视觉语言模型</h1>
+    <p>从“看完视频再回答”到“边看边理解”：MOSS-VL-Realtime、Instruct 与 Base 的模型定位、架构和选型指南。</p>
+  </d-title>
+
+  <d-article>
+    <figure class="article-hero">
+      <img src="/assets/img/highlights/moss-vl.svg" alt="MOSS-VL 实时视频理解模型">
+    </figure>
+
+    <p><strong>一句话结论：</strong> MOSS-VL 是 OpenMOSS 发布的开放权重视觉语言模型（Vision-Language Model, VLM）系列。它的差异化重点不是单纯把视频压缩后离线问答，而是让 <strong>MOSS-VL-Realtime</strong> 在持续到来的视频流上并行感知和生成：用户可以随时打断提问，模型可以主动保持沉默，并在新画面出现后动态修正判断。</p>
+
+    <div class="summary-grid">
+      <div class="summary-card"><h3>MOSS-VL-Realtime</h3><p>面向摄像头、屏幕、直播和连续视频流的实时交互，支持增量帧、流式输出、多轮对话和 WebSocket 服务。</p></div>
+      <div class="summary-card"><h3>MOSS-VL-Instruct-0708</h3><p>面向离线图像/视频问答、复杂长视频理解和深度对话，适合作为通用推理入口。</p></div>
+      <div class="summary-card"><h3>MOSS-VL-Base-0708</h3><p>开放预训练基座，用于继续预训练、领域适配、全参数 SFT 和 LoRA 微调。</p></div>
+      <div class="summary-card"><h3>统一技术底座</h3><p>三款当前模型均为 11B 参数、256K 上下文，并提供 Hugging Face 与 ModelScope 下载入口。</p></div>
+    </div>
+
+    <h2>为什么实时视频理解需要新的模型范式？</h2>
+    <p>传统视频问答通常是“先读完整段视频，再生成答案”。这适合录像总结，却不适合机器人观察、屏幕监控、实验过程、直播助手和需要即时提醒的场景。实时系统必须处理三个连续问题：当前画面发生了什么、现在是否值得打断用户、后续帧到来后是否需要改口。</p>
+    <p>MOSS-VL-Realtime 以持续视频流为输入，让视觉感知与文本生成并行运行。它可以在任意时间戳接受新问题；当上下文不足或没有关键事件时主动沉默；当场景状态变化时更新先前输出。这里的“实时”指模型按时间轴增量接收带时间戳的帧，而不只是把一段视频切成小片段后分别离线处理。</p>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>11B</strong>当前三款模型的参数规模</div>
+      <div class="metric"><strong>256K</strong>上下文长度</div>
+      <div class="metric"><strong>XRoPE</strong>统一 (t, h, w) 时空坐标</div>
+      <div class="metric"><strong>3 层入口</strong>Session、Queue、WebSocket</div>
+    </div>
+
+    <h2>核心架构：Cross-Attention、时间戳与 XRoPE</h2>
+    <p><strong>Cross-Attention（交叉注意力）</strong>将视觉编码和语言推理解耦，减少动态视频流中的响应等待，并支持图像、视频和文本交错输入。每个采样帧通过专用 token 绑定到绝对时间戳，使模型可以推理事件先后、节奏和持续时间。<strong>XRoPE（Cross-Attention Rotary Position Embedding）</strong>则将文本 token 与视频 patch 放进统一的三维 <code>(t, h, w)</code> 坐标空间，支持从整段视频到局部时刻和局部 patch 的细粒度 grounding。</p>
+    <p>项目 README 报告称，MOSS-VL-Realtime 在 OmniMMI 的 Proactive Alerting、StreamingBench 的 Proactive Output 和 ProactiveVideoQA 三项主动性评测上取得领先。这里的性能表述以<a href="https://openmoss.ai/MOSS-VL/index_zh.html">官方技术博客</a>和论文为准；本文不把不同模型、不同版本、不同硬件上的分数混成一张“绝对排行榜”。</p>
+
+    <h2>与 GPT-4o、Gemini、Qwen2.5-VL 等模型怎么选？</h2>
+    <p>下面是面向实际选型的定位对比。它比较的是开放性、交互范式和工程入口，不是同一数据集、同一硬件、同一推理参数下的统一 benchmark 排名。将这些模型名称写清楚，也方便读者搜索“实时视频理解模型”“开源 VLM”“Qwen2.5-VL 替代方案”等问题时找到对应入口。</p>
+
+    <table class="compare-table">
+      <thead><tr><th>模型/系列</th><th>主要定位</th><th>连续视频流</th><th>开放权重与本地微调</th><th>更适合的选择理由</th></tr></thead>
+      <tbody>
+        <tr><td>MOSS-VL</td><td>实时视频流 + 离线长视频 + 开放基座</td><td><strong>原生设计</strong>：增量帧、主动沉默、动态纠正</td><td>开放权重；提供 Base、SFT、LoRA 与 SGLang 入口</td><td>希望研究或部署“边看边回答”的开放模型</td></tr>
+        <tr><td>GPT-4o</td><td>闭源通用多模态助手</td><td>取决于产品/API 集成方式，不等同于本地连续流模型</td><td>闭源 API，不提供可下载权重</td><td>优先追求托管服务的通用交互体验</td></tr>
+        <tr><td>Gemini 2.5 Pro</td><td>闭源长上下文多模态模型</td><td>可通过 Google AI 服务接入多模态输入；部署边界由服务决定</td><td>闭源 API，不提供可下载权重</td><td>需要托管长上下文和通用推理能力</td></tr>
+        <tr><td>Qwen2.5-VL</td><td>开源图像/视频理解与视觉问答</td><td>可通过工程层实现流式方案，但项目定位主要是通用离线 VLM</td><td>开放权重，适合研究、部署和微调</td><td>寻找成熟开源 VLM 基线和离线视频能力</td></tr>
+        <tr><td>InternVL3</td><td>开源大视觉语言模型系列</td><td>通常需要在模型推理之上自行组织视频流与状态管理</td><td>开放研究生态，可用于本地实验</td><td>关注高分辨率视觉理解和开源 VLM 研究</td></tr>
+        <tr><td>LLaVA-OneVision</td><td>开源视觉指令模型与社区基线</td><td>视频输入需要由应用层负责采样、缓存和交互调度</td><td>开放生态，便于作为实验基线</td><td>需要快速搭建视觉指令微调和对比实验</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>如何理解这张表：</strong> GPT-4o 和 Gemini 2.5 Pro 是闭源托管模型的参考点；Qwen2.5-VL、InternVL3 和 LLaVA-OneVision 是常见开源 VLM 参考点；MOSS-VL 的核心差异是把“连续视频流中的时序交互”作为 Realtime 模型的一等目标，并同时提供 Instruct 与 Base 供离线使用和二次训练。</p>
+
+    <h2>模型选择速查</h2>
+    <table class="compare-table">
+      <thead><tr><th>你的问题</th><th>建议入口</th><th>为什么</th></tr></thead>
+      <tbody>
+        <tr><td>我想让模型观察摄像头并随时回答</td><td><a href="https://github.com/OpenMOSS/MOSS-VL/tree/main/realtime_inference">MOSS-VL-Realtime</a></td><td>原生支持时间轴上的增量帧、问题插入和流式响应</td></tr>
+        <tr><td>我想做长视频离线问答</td><td>MOSS-VL-Instruct-0708</td><td>面向完整视频理解和多轮深度对话</td></tr>
+        <tr><td>我想用自己的数据训练</td><td>MOSS-VL-Base-0708</td><td>提供继续预训练、全参数 SFT 和 LoRA 路径</td></tr>
+        <tr><td>我只需要托管 API，不关心权重</td><td>GPT-4o / Gemini 2.5 Pro</td><td>更适合直接调用云服务，但无法像开放权重模型一样本地改造</td></tr>
+        <tr><td>我需要开源离线 VLM 基线</td><td>Qwen2.5-VL / InternVL3 / LLaVA-OneVision</td><td>社区资料丰富，适合作为离线视觉语言模型的对照组</td></tr>
+      </tbody>
+    </table>
+
+    <h2>快速上手：从本地视频到 WebSocket</h2>
+    <pre><code>conda create -n moss_vl python=3.12 pip -y
+conda activate moss_vl
+pip install -i https://pypi.org/simple --no-build-isolation -r requirements.txt
+
+CUDA_VISIBLE_DEVICES=0 python realtime_inference/run_online_inference.py \
+  --checkpoint OpenMOSS-Team/MOSS-VL-Realtime \
+  --source video \
+  --video path/to/example.mp4 \
+  --sample-fps 1 \
+  --playback-speed 1 \
+  --max-frames 256</code></pre>
+    <p>实时运行时建议保持 <code>--playback-speed 1</code>，让帧按照原始时间轴到达。需要更深度集成时，可以直接使用 <code>model.create_realtime_session(...)</code> 控制帧和输出，使用 <code>model.online_generate(...)</code> 接入队列式工作线程，或通过 <code>--serve</code> 启动 FastAPI WebSocket 服务。</p>
+
+    <h2>常见问题</h2>
+    <h3>MOSS-VL 是图像模型还是视频模型？</h3>
+    <p>两者都支持。它是视觉语言模型系列，支持图像、视频与文本的交错输入；其中 MOSS-VL-Realtime 专门强化了连续视频流上的实时交互。</p>
+    <h3>MOSS-VL 和 Qwen2.5-VL 的主要区别是什么？</h3>
+    <p>两者都是开放视觉语言模型，但定位不同：Qwen2.5-VL 更适合作为通用图像/视频理解基线；MOSS-VL-Realtime 将连续视频流、主动沉默、动态纠正和时间轴交互作为核心设计，同时用 Instruct 和 Base 覆盖离线推理与微调。</p>
+    <h3>它能替代 GPT-4o 或 Gemini 2.5 Pro 吗？</h3>
+    <p>不能用一句“全面替代”概括。闭源模型适合直接调用托管服务；MOSS-VL 适合希望掌握权重、数据、部署和微调边界的团队。应根据隐私、成本、延迟、硬件和是否需要本地改造来选择。</p>
+    <h3>是否支持微调和 SGLang？</h3>
+    <p>支持。仓库提供基于 Hugging Face <code>transformers.Trainer</code> 的 SFT 框架，支持全参数训练与 LoRA；同时提供 SGLang 推理支持。具体显存需求会随精度、帧数、并发和后端变化，建议先按官方 README 运行最小样例。</p>
+
+    <h2>资源与下一步</h2>
+    <p>如果你正在做视频智能体、视觉助手、机器人感知、屏幕理解或多模态研究，建议直接运行一次 Realtime Demo，再根据需求选择 Instruct 或 Base：</p>
+    <ul>
+      <li><a href="https://github.com/OpenMOSS/MOSS-VL">GitHub：OpenMOSS/MOSS-VL</a></li>
+      <li><a href="https://github.com/OpenMOSS/MOSS-VL/blob/main/README_zh.md">中文 README</a></li>
+      <li><a href="https://huggingface.co/collections/OpenMOSS-Team/moss-vl">Hugging Face 模型集合</a> · <a href="https://modelscope.cn/collections/openmoss/MOSS-VL">ModelScope 模型集合</a></li>
+      <li><a href="https://openmoss.ai/MOSS-VL/index_zh.html">官方技术博客</a> · <a href="https://arxiv.org/abs/2606.07639">论文</a> · <a href="https://github.com/OpenMOSS/MOSS-VL/blob/main/LICENSE">Apache-2.0 License</a></li>
+      <li>对照项目：<a href="https://github.com/QwenLM/Qwen2.5-VL">Qwen2.5-VL</a>、<a href="https://github.com/OpenGVLab/InternVL">InternVL</a>、<a href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-OneVision</a>、<a href="https://platform.openai.com/docs/models/gpt-4o">GPT-4o</a>、<a href="https://ai.google.dev/gemini-api/docs/models/gemini">Gemini</a></li>
+    </ul>
+    <p><strong><a href="https://github.com/OpenMOSS/MOSS-VL">Star OpenMOSS/MOSS-VL，关注实时视频理解模型、推理代码与后续 Cookbook 更新。</a></strong></p>
+  </d-article>
+
+  <d-appendix>
+    <h3>说明</h3>
+    <p class="resource-list">本文的 MOSS-VL 能力、模型规模、入口和性能表述以 OpenMOSS 官方仓库、模型页面、技术博客和论文为准。与 GPT-4o、Gemini 2.5 Pro、Qwen2.5-VL、InternVL3、LLaVA-OneVision 的对比是产品定位与工程选型对比，不构成同一基准上的统一排名。</p>
+    <h3>引用</h3>
+    <p class="resource-list">OpenMOSS Team. “MOSS-VL：面向实时视频流的开源视觉语言模型.” OpenMOSS Blog, 2026. <a href="https://openmoss.ai/blog/cn/moss-vl/">openmoss.ai/blog/cn/moss-vl/</a></p>
+  </d-appendix>
+</body>
+</html>

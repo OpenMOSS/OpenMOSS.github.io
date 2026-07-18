@@ -14,6 +14,18 @@
 - 顺序：从上到下就是页面显示顺序（新的放最上面）。
 -->
 
+date: 2026.7
+标题: MOSS-VL：面向实时视频流的开源视觉语言模型
+title: MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams
+描述: OpenMOSS 发布的视觉语言模型系列，覆盖持续视频流实时交互、离线长视频理解与领域微调；本文进一步对比 GPT-4o、Gemini、Qwen2.5-VL、InternVL3 和 LLaVA-OneVision 的选型边界。
+desc: OpenMOSS's vision-language model family for continuous video-stream interaction, offline long-video understanding, and domain fine-tuning, with a practical positioning guide against GPT-4o, Gemini, Qwen2.5-VL, InternVL3, and LLaVA-OneVision.
+标签: 多模态, 视频, 开源模型
+tags: Multimodal, Video, Open Models
+图: assets/img/highlights/moss-vl.svg
+链接: /blog/cn/moss-vl/
+
+---
+
 date: 2026.6
 标题: 组织智能：在组织层面治理 Agentic AI
 title: Organizational Intelligence: Governing Agentic AI at the Level of the Organization
