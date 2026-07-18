@@ -21,7 +21,7 @@ title: MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams
 desc: OpenMOSS's vision-language model family for continuous video-stream interaction, offline long-video understanding, and domain fine-tuning, with a practical positioning guide against GPT-4o, Gemini, Qwen2.5-VL, InternVL3, and LLaVA-OneVision.
 标签: 多模态, 视频, 开源模型
 tags: Multimodal, Video, Open Models
-图: assets/img/highlights/moss-vl.svg
+图: assets/img/highlights/moss-vl-hero.png
 链接: /blog/cn/moss-vl/
 
 ---
