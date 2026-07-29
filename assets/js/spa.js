@@ -469,9 +469,10 @@
       { id: 'postdocs', titleKey: 'people.subtitle.postdocs', key: 'postdocs' },
       { id: 'phd', titleKey: 'people.subtitle.phd', key: 'phdStudents' },
       { id: 'master', titleKey: 'people.subtitle.master', key: 'masterStudents' },
+      { id: 'part-time', titleKey: 'people.subtitle.partTime', key: 'partTimeStudents' },
       { id: 'undergrad', titleKey: 'people.subtitle.undergrad', key: 'undergraduates' },
       { id: 'visiting', titleKey: 'people.subtitle.visiting', key: 'visitingStudents' }
-    ];
+    ].filter(sec => (teamData[sec.key] || []).length > 0);
 
     const tocLinks = sections.map(sec =>
       `<button type="button" class="toc-link" onclick="scrollToId('${sec.id}')">${t(sec.titleKey)}</button>`

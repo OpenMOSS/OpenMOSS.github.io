@@ -19,6 +19,17 @@
   /* restrict to CJK so Latin/punctuation always render from Roboto */
   unicode-range: U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
 }
+/* Three member-name glyphs not present in the 2026-06-23 main subset:
+   宬 U+5BAC, 歆 U+6B46, 湛 U+6E5B. Keep this tiny local supplement until the
+   full Noto Sans SC subset is next regenerated. */
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/assets/fonts/noto-sans-sc-extra-members.woff2") format("woff2");
+  unicode-range: U+5BAC, U+6B46, U+6E5B;
+}
 
 /* Fudan blue palette (100%, 90%, 80%) */
 :root {
