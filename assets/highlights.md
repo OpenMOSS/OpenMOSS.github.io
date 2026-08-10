@@ -14,6 +14,18 @@
 - 顺序：从上到下就是页面显示顺序（新的放最上面）。
 -->
 
+date: 2026.8
+标题: VLA、WAM 之外：OpenETA 如何把智能体闭环带入物理世界
+title: OpenETA: Bringing the Agentic Loop into the Physical World
+描述: OpenETA 将数字智能体的“理解任务—调用工具—接收反馈—继续决策”闭环带入仿真器和机器人，以可信回执、新观测义务和可回放轨迹连接感知、行动与验证。
+desc: OpenETA brings the digital-agent loop of understanding, tool use, feedback, and continued decision-making into simulators and robots through trusted receipts, fresh-observation obligations, and replayable trajectories.
+标签: 具身智能, 智能体, 机器人
+tags: Embodied AI, Agents, Robotics
+图: assets/img/highlights/openeta.jpg
+链接: /blog/cn/openeta/
+
+---
+
 date: 2026.7
 标题: MOSS-VL：面向实时视频流的开源视觉语言模型
 title: MOSS-VL: Open-Weight Vision-Language Models for Real-Time Video Streams
