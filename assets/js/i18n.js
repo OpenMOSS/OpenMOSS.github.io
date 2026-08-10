@@ -55,6 +55,7 @@
             'people.subtitle.postdocs': '博士后',
             'people.subtitle.phd': '博士研究生',
             'people.subtitle.master': '硕士研究生',
+            'people.subtitle.partTime': '非全日制硕博',
             'people.subtitle.undergrad': '本科生',
             'people.subtitle.visiting': '访问学生',
             'people.desc': '研究生通过复旦大学、上海创智学院进行招生，欢迎世界各地的本科生和访问学生加入。',
@@ -215,6 +216,7 @@
             'people.subtitle.postdocs': 'Postdoctoral Researchers',
             'people.subtitle.phd': 'PhD Students',
             'people.subtitle.master': 'Master Students',
+            'people.subtitle.partTime': 'Part-time Master’s and PhD Students',
             'people.subtitle.undergrad': 'Undergraduates',
             'people.subtitle.visiting': 'Visiting Students',
             'people.desc': 'Graduate students are recruited through Fudan University and Shanghai Innovation Institution. We welcome undergraduates and visiting students from diverse backgrounds.',
@@ -332,4 +334,3 @@
     // 导出翻译对象供其他模块使用
     window.translations = translations;
 })();
-
