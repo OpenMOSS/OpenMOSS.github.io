@@ -67,7 +67,7 @@
       {
         name: 'MOSS', url: 'https://github.com/OpenMOSS', org: 'OpenMOSS',
         feature: true,
-        featured: ['MOSS', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-VL'],
+        featured: ['MOSS', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-VL', 'MOSS-Image'],
         badgeKey: 'series.moss.badge', descKey: 'series.moss.desc'
       },
       {
