@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://openmoss.ai/blog/cn/moss-image/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OpenMOSS">
+  <meta property="og:url" content="https://openmoss.ai/blog/cn/moss-image/">
+  <meta property="og:title" content="MOSS-Image：让开放模型真正理解文字与版式">
+  <meta property="og:description" content="MOSS-Image 是一个 5B 参数的开放权重图像生成系统，专注于长文本渲染、复杂版式和可控布局。">
+  <meta property="og:image" content="https://openmoss.ai/assets/img/highlights/moss-image.webp">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="article:published_time" content="2026-10-29">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Open_MOSS">
+  <meta name="twitter:title" content="MOSS-Image：让开放模型真正理解文字与版式">
+  <meta name="twitter:description" content="5B 开放权重图像生成模型，支持长文本渲染、JSON Layout 控制和高效微调。">
+  <meta name="twitter:image" content="https://openmoss.ai/assets/img/highlights/moss-image.webp">
+  <meta name="keywords" content="MOSS-Image,文生图,文字渲染,Layout Control,开放权重,图像生成模型,DiT">
+  <title>MOSS-Image：让开放模型真正理解文字与版式</title>
+  <meta name="description" content="MOSS-Image 是一个 5B 参数的开放权重图像生成系统，专注于长文本渲染、复杂版式和可控布局。">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"TechArticle","headline":"MOSS-Image：让开放模型真正理解文字与版式","description":"MOSS-Image 是一个 5B 参数的开放权重图像生成系统，专注于长文本渲染、复杂版式和可控布局。","datePublished":"2026-10-29","dateModified":"2026-10-29","inLanguage":"zh-CN","author":{"@type":"Organization","name":"OpenMOSS Team","url":"https://github.com/OpenMOSS"},"publisher":{"@type":"Organization","name":"OpenMOSS","url":"https://openmoss.ai/"},"mainEntityOfPage":"https://openmoss.ai/blog/cn/moss-image/","image":"https://openmoss.ai/assets/img/highlights/moss-image.webp"}
+  </script>
+  <script src="/blog/template.v2.js?v=4"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=8">
+  <script defer src="/blog/blog-chrome.js?v=4"></script>
+  <style>
+    d-article { color: rgba(0,0,0,.84); }
+    d-article h2 { margin-top: 2.2em; }
+    d-article h3 { margin-top: 1.6em; }
+    .article-hero, .figure-wide { grid-column: page; margin: 1.5rem 0 2rem; }
+    .article-hero img, .figure-wide img { width:100%; display:block; border-radius:12px; border:1px solid rgba(0,0,0,.1); }
+    .figure-wide figcaption { margin-top:.65rem; color:#657187; font-size:.9rem; line-height:1.5; }
+    .summary-grid, .metric-strip, .compare-table { grid-column: page; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:1.6rem 0 2rem; }
+    .summary-card { border:1px solid rgba(14,65,156,.18); border-radius:10px; padding:16px 18px; background:#f8fbff; }
+    .summary-card h3 { color:#0e419c; margin:0 0 8px; font-size:1rem; }
+    .summary-card p { margin:0; font-size:.95rem; line-height:1.58; }
+    .metric-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:1.5rem 0 2rem; }
+    .metric { border-top:2px solid #1d4f91; padding-top:10px; font-size:.95rem; }
+    .metric strong { display:block; font-size:1.25rem; margin-bottom:4px; color:#0e419c; }
+    .compare-table { width:100%; border-collapse:separate; border-spacing:0; margin:1.5rem 0 2rem; font-size:.9rem; border:1px solid #dbe3f2; border-radius:10px; overflow:hidden; }
+    .compare-table th, .compare-table td { padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid #e7edf6; line-height:1.5; }
+    .compare-table th { background:#eef3fb; color:#08306f; font-weight:700; }
+    .compare-table tr:last-child td { border-bottom:0; }
+    .compare-table td:first-child { font-weight:650; white-space:nowrap; color:#0e419c; }
+    .note { padding:14px 16px; border-left:3px solid #0e419c; background:#f4f7fc; color:#51607a; font-size:.94rem; line-height:1.65; }
+    .resource-list a { word-break:break-word; }
+    pre { overflow-x:auto; }
+    @media (max-width:760px) { .summary-grid, .metric-strip { grid-template-columns:1fr; } .compare-table { display:block; overflow-x:auto; white-space:normal; } }
+  </style>
+</head>
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {"title":"MOSS-Image：让开放模型真正理解文字与版式","description":"MOSS-Image 是一个 5B 参数的开放权重图像生成系统，专注于长文本渲染、复杂版式和可控布局。","authors":[{"author":"OpenMOSS Team","authorURL":"https://github.com/OpenMOSS","affiliation":"SII and Fudan","affiliationURL":"https://github.com/OpenMOSS"}],"doi":"","publishedDate":"2026-10-29"}
+    </script>
+  </d-front-matter>
+  <d-title>
+    <h1>MOSS-Image：让开放模型真正理解文字与版式</h1>
+    <p>一个 5B 开放权重图像生成系统：把长文本、结构化布局和可微调部署放到同一条生成路径里。</p>
+  </d-title>
+  <d-article>
+    <figure class="article-hero"><img src="/assets/img/highlights/moss-image.webp" alt="MOSS-Image 的文本与版式控制示例"></figure>
+    <p><strong>一句话结论：</strong> MOSS-Image 面向的是图像生成中最难交付的一类任务：海报、信息图、漫画、UI 草图和教学材料里同时出现大量文字与多个有明确位置关系的元素。它以 5B 参数的单流 DiT 为基座，从零开始训练，支持最长约 4K token 的提示词、中文和英文长文本渲染，以及可以直接编辑的 JSON Layout。论文报告显示，它在开放权重模型的长文本评测上达到最高水平；在统一增强提示词后，基座生成器的布局偏好得分也超过了被比较的生成器。</p>
+    <div class="summary-grid">
+      <div class="summary-card"><h3>5B 单流 DiT</h3><p>从零预训练的图像生成基座，采用 Muon–AdamW 训练配方，并以统一的文本条件通道处理自然语言和结构化 Layout。</p></div>
+      <div class="summary-card"><h3>长文本渲染</h3><p>保留换行和段落结构，支持中英文长文本；适合标题、说明、对白、表格和信息密集的视觉材料。</p></div>
+      <div class="summary-card"><h3>可编辑布局</h3><p>用 JSON 描述画布、文本、对象和边界框，控制位置、大小与空间关系，也便于在生成前反复修改版式。</p></div>
+      <div class="summary-card"><h3>开放生态</h3><p>Base 与 SFT 权重采用 Apache-2.0，提供 Diffusers、Gradio 和 ComfyUI 路径，并支持 LoRA 与全量微调。</p></div>
+    </div>
+    <h2>为什么“会画图”还不够？</h2>
+    <p>普通的文生图任务只需要让模型大致理解“画面里有什么”。但一张可交付的海报还要求标题拼写准确、文字顺序稳定、段落不被截断；一张信息图还要求元素落在指定区域，标题、图标和说明之间保持层次关系。文字越长、版式越复杂，这些要求越容易互相干扰。</p>
+    <p>MOSS-Image 把问题拆成两个互补的入口。直接的自然语言提示词适合快速创作；结构化 Layout 适合需要复现和编辑的画面。两者都走同一条文本条件路径，因此可以从“描述一个想法”逐步过渡到“指定每个元素应该在哪里”，而不必切换到另一套模型。</p>
+    <figure class="figure-wide"><img src="images/layout-control.webp" alt="MOSS-Image 从文本意图到布局草图再到图像的三步流程"><figcaption>从文本意图、布局草图到最终图像：Layout 输入显式表达对象位置、相对大小和空间关系。</figcaption></figure>
+    <figure class="figure-wide"><img src="images/layout-bboxes.webp" alt="MOSS-Image 将标题、卡片和图像元素转换为可编辑的边界框布局"><figcaption>结构化版式可把标题、卡片和视觉元素标成边界框，再交给生成器完成最终画面。</figcaption></figure>
+    <h2>技术路线：5B DiT 加上意图感知的提示增强</h2>
+    <p>技术报告中的 backbone 是一个 5B 参数的单流 Diffusion Transformer。模型从零预训练，文本编码器使用 Qwen3.5-9B，图像解码使用 FLUX.2 VAE；训练数据约 3B 张图像，并加入多粒度 caption、文字监督和结构化边界框监督。分辨率和上下文长度逐步提升到 1024² 与 4096 tokens，使模型在扩大画面细节的同时保留长提示词中的版式约束。</p>
+    <p>在基座之上，MOSS-Image 提供了意图感知的 agentic Prompt Enhancement（PE）。它可以把“做一张咖啡店开业海报”这类短请求扩展成可执行的内容与布局规范，包括文字、字体层级、色板、元素描述、bbox、锚点和 <code>must_not</code> 约束，还能根据任务路由到海报、信息图或 UI 等不同结构。PE 是可选的外部规划模块；只使用本地 backbone 时，仍然可以直接传入普通提示词或 JSON Layout。</p>
+    <figure class="figure-wide"><img src="images/text-rendering.webp" alt="MOSS-Image 生成中文英文长文本和多种视觉风格的示例"><figcaption>长文本渲染与多种视觉风格示例。文字准确性、换行和版式密度是 MOSS-Image 的主要优化目标。</figcaption></figure>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>96.3</strong>LLTB Mean-6，开放权重模型最高</div>
+      <div class="metric"><strong>0.8786</strong>7Bench mIoU<sub>det</sub></div>
+      <div class="metric"><strong>1698.70</strong>RLA 端到端 Elo</div>
+      <div class="metric"><strong>4K</strong>最长提示词 token 上限</div>
+    </div>
+
+    <h2>评测结果：强项集中在文字与布局</h2>
+    <h3>长文本：LLTB</h3>
+    <p>LongLongTextBench（LLTB）包含中英文各 120 个任务，平均目标文本约 1339.8 个字符。MOSS-Image 的 Mean-6 为 <strong>96.3</strong>，是该评测中的开放权重模型最高成绩；最长英文和中文任务分别达到 97.1 和 92.4。LLTB 衡量的是文字覆盖与渲染质量，不能直接等同于 OCR 编辑距离或语义事实准确率。</p>
+
+    <h3>布局：7Bench</h3>
+    <p>在统一 JSON/Layout 任务上，MOSS-Image 的检测框 mIoU 为 <strong>0.8786</strong>，Layout AUC 为 <strong>0.7031</strong>，整体布局 mIoU 为 <strong>0.6788</strong>。下表列出论文报告的两个主要布局指标：</p>
+    <table class="compare-table">
+      <thead><tr><th>模型</th><th>mIoU<sub>det</sub> ↑</th><th>Layout AUC ↑</th><th>评测角色</th></tr></thead>
+      <tbody>
+        <tr><td>MOSS-Image</td><td><strong>0.8786</strong></td><td><strong>0.7031</strong></td><td>开放权重生成器</td></tr>
+        <tr><td>Ideogram 4</td><td>0.4449</td><td>0.2046</td><td>闭源生成系统</td></tr>
+        <tr><td>GPT Image 2</td><td>0.3042</td><td>0.1554</td><td>闭源生成系统</td></tr>
+        <tr><td>Nano Banana Pro</td><td>0.3296</td><td>0.1628</td><td>闭源生成系统</td></tr>
+        <tr><td>Qwen Image 3 Pro</td><td>0.3148</td><td>0.1758</td><td>生成系统</td></tr>
+        <tr><td>Seedream 5 Pro</td><td>0.3273</td><td>0.1794</td><td>闭源生成系统</td></tr>
+      </tbody>
+    </table>
+
+    <h3>端到端偏好：RealLayoutArena</h3>
+    <p>RealLayoutArena（RLA）让不同系统使用各自的提示增强和生成流程，再通过盲测汇总成 Elo。MOSS-Image 的端到端 Elo 为 <strong>1698.70</strong>（95% 置信区间 1655.96–1741.43），排名第二；GPT Image 2 为 1844.35，Seedream 5 Pro 为 1661.16，Qwen Image 3 Pro + PE 为 1614.84，Nano Banana Pro 为 1590.19。</p>
+    <p>为了单独观察生成器本身，论文还在同一套增强提示词下比较 backbone：MOSS-Image 得分为 <strong>1807.34</strong>，高于 ERNIE Image 的 1748.51 和 SenseNova-U1 的 1689.23。这个结果与端到端排名并不矛盾：前者主要看生成器，后者同时包含每个系统自己的提示规划、服务配置和产品流程。</p>
+
+    <h2>与同类模型怎么选？</h2>
+    <p>下面的对比把“能力表现”和“交付方式”放在同一张表里。闭源系统在端到端审美和产品整合上可能更强；MOSS-Image 的优势集中在文字密度、可解释布局和开放部署。分数来自不同评测协议，不能拼成一个跨任务的总榜。</p>
+    <table class="compare-table">
+      <thead><tr><th>模型/系列</th><th>文字与布局侧重点</th><th>开放性与改造</th><th>更适合的选择理由</th></tr></thead>
+      <tbody>
+        <tr><td>MOSS-Image</td><td>长文本、中文/英文渲染、JSON Layout、bbox 和空间关系；LLTB 96.3、7Bench 领先</td><td>开放权重；Base/SFT、LoRA/全量微调、Diffusers/ComfyUI</td><td>需要本地部署、可复现版式，或要用自有数据继续训练</td></tr>
+        <tr><td>GPT Image 2</td><td>RLA 端到端 Elo 1844.35，在该系统评测中排名第一</td><td>闭源托管服务，无法下载权重做本地微调</td><td>优先使用托管 API 和端到端产品体验</td></tr>
+        <tr><td>Ideogram 4</td><td>文字生成和设计类任务的常见闭源参考点；7Bench 布局指标低于 MOSS-Image</td><td>闭源服务</td><td>需要成熟的在线设计工作流，不需要掌握模型权重</td></tr>
+        <tr><td>Seedream 5 Pro</td><td>RLA Elo 1661.16；适合通用视觉创作和产品化流程</td><td>闭源服务</td><td>需要直接调用商业生成服务</td></tr>
+        <tr><td>Qwen Image 3 Pro</td><td>RLA Elo 1614.84（含 PE）；同类图像生成系统参考点</td><td>按产品/API 方式使用，开放边界取决于具体版本</td><td>希望在现有 Qwen 生态中使用图像生成能力</td></tr>
+        <tr><td>Qwen Image 2512</td><td>论文中 LLTB Mean-6 为 64.9，适合作为开放模型文字渲染基线</td><td>开放研究生态</td><td>需要对比开源模型或在既有 Qwen 流程中实验</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note"><strong>边界也很清楚：</strong> 当前 MOSS-Image backbone 是 text-to-image 模型，不能直接接收参考图，也不提供原生图像编辑；Prompt Enhancement 依赖外部语言模型，规划质量会影响最终规格。它的优势是开放、可检查、可微调，并且把“文字和元素应该放在哪里”变成了明确的输入，而不是隐含在一句自然语言里。</p>
+
+    <h2>从 Base 到可用系统</h2>
+    <p>仓库同时提供 <strong>MOSS-Image-Base</strong> 和基于精选数据微调的 <strong>MOSS-Image-SFT</strong>。Base 更适合作为继续预训练、领域 SFT 或 LoRA 的起点；SFT 适合直接体验更稳定的文字分组和白板类版式。项目已接入 Diffusers、Gradio 和 ComfyUI，社区也提供 SGLang、vLLM-Omni 和 KohakuMossTrainer 等推理或训练入口。</p>
+    <pre><code>from diffusers import DiffusionPipeline
+import torch
+
+pipe = DiffusionPipeline.from_pretrained(
+    "OpenMOSS-Team/MOSS-Image-Base",
+    custom_pipeline="pipeline_moss_image",
+    trust_remote_code=True,
+    torch_dtype={"default": torch.bfloat16, "vae": torch.float32},
+).to("cuda")
+
+image = pipe(
+    "一张极简旅行海报，顶部写着 EXPLORE，米白背景，蓝色山脉插画",
+    height=1024, width=1024, num_inference_steps=50, guidance_scale=3.0,
+).images[0]
+image.save("poster.png")</code></pre>
+    <p>需要精确排版时，可以把包含 <code>summary</code>、<code>items</code> 和 <code>bbox</code> 的 JSON 直接作为 prompt；需要适配特定品牌、字体或领域数据时，再选择 SFT 或 LoRA 训练路径。</p>
+
+    <h2>资源</h2>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2610.23374">技术报告：MOSS-Image Technical Report</a></li>
+      <li><a href="https://github.com/OpenMOSS/MOSS-Image">GitHub：OpenMOSS/MOSS-Image</a> · <a href="https://github.com/OpenMOSS/MOSS-Image/blob/main/README_ZH.md">中文 README</a></li>
+      <li><a href="https://huggingface.co/OpenMOSS-Team/MOSS-Image-Base">Hugging Face：MOSS-Image-Base</a> · <a href="https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT">MOSS-Image-SFT</a></li>
+      <li><a href="https://github.com/OpenMOSS/MOSS-Image/tree/main/comfyui">ComfyUI 工作流</a> · <a href="https://platform.mosi.cn/">MOSI API Playground</a></li>
+    </ul>
+  </d-article>
+  <d-appendix>
+    <h3>说明</h3>
+    <p class="resource-list">本文数据均来自 MOSS-Image 技术报告与官方仓库（访问日期：2026 年 10 月）。LLTB 关注长文本覆盖，7Bench 关注统一 Layout 约束，RLA 是包含各自提示流程的端到端人类偏好评测；三者的数值不能直接互换。与 GPT Image 2、Ideogram 4、Seedream 5 Pro、Nano Banana Pro、Qwen Image 3 Pro 的比较用于说明能力和部署边界，不构成所有任务上的统一排名。</p>
+    <h3>引用</h3>
+    <p class="resource-list">MOSI.AI. “MOSS-Image Technical Report.” arXiv:2610.23374, 2026. <a href="https://arxiv.org/abs/2610.23374">arXiv:2610.23374</a></p>
+  </d-appendix>
+</body>
+</html>

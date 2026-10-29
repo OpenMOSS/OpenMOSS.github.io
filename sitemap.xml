@@ -55,6 +55,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://openmoss.ai/blog/en/moss-image/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://openmoss.ai/blog/en/moss-tts/</loc>
     <lastmod>2026-06-08</lastmod>
     <priority>0.6</priority>
@@ -118,6 +123,11 @@
     <loc>https://openmoss.ai/blog/cn/knowledge-boundary/</loc>
     <lastmod>2026-06-06</lastmod>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://openmoss.ai/blog/cn/moss-image/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://openmoss.ai/blog/cn/moss-tts/</loc>

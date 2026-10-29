@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://openmoss.ai/blog/en/moss-image/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OpenMOSS">
+  <meta property="og:url" content="https://openmoss.ai/blog/en/moss-image/">
+  <meta property="og:title" content="MOSS-Image: An Open Model for Text and Layout">
+  <meta property="og:description" content="MOSS-Image is a 5B open-weight image-generation system built for long-form text rendering, structured layouts, and efficient fine-tuning.">
+  <meta property="og:image" content="https://openmoss.ai/assets/img/highlights/moss-image.webp">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-10-29">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Open_MOSS">
+  <meta name="twitter:title" content="MOSS-Image: An Open Model for Text and Layout">
+  <meta name="twitter:description" content="A 5B open-weight image generator with long-text rendering, JSON Layout control, and fine-tuning support.">
+  <meta name="twitter:image" content="https://openmoss.ai/assets/img/highlights/moss-image.webp">
+  <title>MOSS-Image: An Open Model for Text and Layout</title>
+  <meta name="description" content="MOSS-Image is a 5B open-weight image-generation system built for long-form text rendering, structured layouts, and efficient fine-tuning.">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"TechArticle","headline":"MOSS-Image: An Open Model for Text and Layout","description":"MOSS-Image is a 5B open-weight image-generation system built for long-form text rendering, structured layouts, and efficient fine-tuning.","datePublished":"2026-10-29","dateModified":"2026-10-29","inLanguage":"en","author":{"@type":"Organization","name":"OpenMOSS Team","url":"https://github.com/OpenMOSS"},"publisher":{"@type":"Organization","name":"OpenMOSS","url":"https://openmoss.ai/"},"mainEntityOfPage":"https://openmoss.ai/blog/en/moss-image/","image":"https://openmoss.ai/assets/img/highlights/moss-image.webp"}
+  </script>
+  <script src="/blog/template.v2.js?v=4"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=8">
+  <script defer src="/blog/blog-chrome.js?v=4"></script>
+  <style>
+    d-article { color: rgba(0,0,0,.84); }
+    d-article h2 { margin-top: 2.2em; }
+    d-article h3 { margin-top: 1.6em; }
+    .article-hero, .figure-wide { grid-column: page; margin: 1.5rem 0 2rem; }
+    .article-hero img, .figure-wide img { width:100%; display:block; border-radius:12px; border:1px solid rgba(0,0,0,.1); }
+    .figure-wide figcaption { margin-top:.65rem; color:#657187; font-size:.9rem; line-height:1.5; }
+    .summary-grid, .metric-strip, .compare-table { grid-column: page; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:1.6rem 0 2rem; }
+    .summary-card { border:1px solid rgba(14,65,156,.18); border-radius:10px; padding:16px 18px; background:#f8fbff; }
+    .summary-card h3 { color:#0e419c; margin:0 0 8px; font-size:1rem; }
+    .summary-card p { margin:0; font-size:.95rem; line-height:1.58; }
+    .metric-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:1.5rem 0 2rem; }
+    .metric { border-top:2px solid #1d4f91; padding-top:10px; font-size:.95rem; }
+    .metric strong { display:block; font-size:1.25rem; margin-bottom:4px; color:#0e419c; }
+    .compare-table { width:100%; border-collapse:separate; border-spacing:0; margin:1.5rem 0 2rem; font-size:.9rem; border:1px solid #dbe3f2; border-radius:10px; overflow:hidden; }
+    .compare-table th, .compare-table td { padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid #e7edf6; line-height:1.5; }
+    .compare-table th { background:#eef3fb; color:#08306f; font-weight:700; }
+    .compare-table tr:last-child td { border-bottom:0; }
+    .compare-table td:first-child { font-weight:650; white-space:nowrap; color:#0e419c; }
+    .note { padding:14px 16px; border-left:3px solid #0e419c; background:#f4f7fc; color:#51607a; font-size:.94rem; line-height:1.65; }
+    pre { overflow-x:auto; }
+    @media (max-width:760px) { .summary-grid, .metric-strip { grid-template-columns:1fr; } .compare-table { display:block; overflow-x:auto; white-space:normal; } }
+  </style>
+</head>
+<body>
+  <d-front-matter>
+    <script type="text/json">
+      {"title":"MOSS-Image: An Open Model for Text and Layout","description":"MOSS-Image is a 5B open-weight image-generation system built for long-form text rendering, structured layouts, and efficient fine-tuning.","authors":[{"author":"OpenMOSS Team","authorURL":"https://github.com/OpenMOSS","affiliation":"SII and Fudan","affiliationURL":"https://github.com/OpenMOSS"}],"doi":"","publishedDate":"2026-10-29"}
+    </script>
+  </d-front-matter>
+  <d-title>
+    <h1>MOSS-Image: An Open Model for Text and Layout</h1>
+    <p>A 5B open-weight image-generation system that puts long text, structured layout, and fine-tuning on one generation path.</p>
+  </d-title>
+  <d-article>
+    <figure class="article-hero"><img src="/assets/img/highlights/moss-image.webp" alt="MOSS-Image text and layout control examples"></figure>
+    <p><strong>The short version:</strong> MOSS-Image targets the image-generation jobs that are hardest to deliver reliably: posters, infographics, comics, UI mockups, and teaching materials that combine dense text with objects that must appear in specific places. Its 5B single-stream DiT is trained from scratch, supports prompts up to about 4K tokens, renders long Chinese and English text, and accepts editable JSON Layout specifications. The technical report shows state-of-the-art performance among open-weight models on long-form text rendering and a strong layout preference score under shared enhanced prompts.</p>
+    <div class="summary-grid">
+      <div class="summary-card"><h3>5B single-stream DiT</h3><p>A from-scratch image-generation backbone trained with a Muon–AdamW recipe and a shared conditioning path for natural language and structured Layout.</p></div>
+      <div class="summary-card"><h3>Long-form text</h3><p>Preserves line breaks and paragraph structure across Chinese and English, making dense captions and information graphics more usable.</p></div>
+      <div class="summary-card"><h3>Editable composition</h3><p>JSON describes the canvas, text, objects, and bounding boxes so position, size, and spatial relations can be edited before generation.</p></div>
+      <div class="summary-card"><h3>Open ecosystem</h3><p>Base and SFT checkpoints are released under Apache-2.0 with Diffusers, Gradio, ComfyUI, LoRA, and full fine-tuning paths.</p></div>
+    </div>
+    <h2>Why “can draw” is not enough</h2>
+    <p>A normal text-to-image prompt only needs a rough understanding of what belongs in a scene. A deliverable poster also needs spelling, reading order, line breaks, and hierarchy to remain stable. An infographic needs objects to stay inside the requested regions. These requirements become harder as text gets longer and the composition becomes denser.</p>
+    <p>MOSS-Image offers two complementary inputs. Natural-language prompts are convenient for exploration; structured Layout inputs are designed for reproducible, editable compositions. Both use the same text-conditioning route, so a creator can move from a high-level idea to explicit placement without switching models.</p>
+    <figure class="figure-wide"><img src="images/layout-control.webp" alt="MOSS-Image turns text intent into a layout sketch and a layout-guided image"><figcaption>From text intent to a layout sketch and a layout-guided image: Layout makes object position, relative size, and spatial relations explicit.</figcaption></figure>
+    <figure class="figure-wide"><img src="images/layout-bboxes.webp" alt="MOSS-Image converts titles, cards, and image elements into editable bounding boxes"><figcaption>Structured composition can mark titles, cards, and visual elements as bounding boxes before generation.</figcaption></figure>
+    <h2>Technical route: a 5B DiT with intent-aware prompt enhancement</h2>
+    <p>The technical report describes a 5B single-stream Diffusion Transformer trained from scratch. It uses a Qwen3.5-9B text encoder and a FLUX.2 VAE, with about 3B training images and supervision for captions, rendered text, and structured bounding boxes. Training progressively reaches 1024² resolution and 4096-token context, so longer layout constraints can survive as image detail grows.</p>
+    <p>On top of the backbone, the optional agentic Prompt Enhancement (PE) module expands a short request such as “make an opening poster for a coffee shop” into an executable content and layout specification. It can plan text, hierarchy, color palette, element descriptions, bboxes, anchors, and <code>must_not</code> constraints, and route the request to poster, infographic, or UI-like structures. PE is an external planning module; the local backbone can still consume ordinary prompts or JSON Layout directly.</p>
+    <figure class="figure-wide"><img src="images/text-rendering.webp" alt="MOSS-Image long text rendering and visual style examples"><figcaption>Long-form text rendering across Chinese, English, and varied visual styles is a central design target.</figcaption></figure>
+
+    <div class="metric-strip">
+      <div class="metric"><strong>96.3</strong>LLTB Mean-6, highest among open-weight models</div>
+      <div class="metric"><strong>0.8786</strong>7Bench mIoU<sub>det</sub></div>
+      <div class="metric"><strong>1698.70</strong>RLA end-to-end Elo</div>
+      <div class="metric"><strong>4K</strong>maximum prompt context</div>
+    </div>
+
+    <h2>Evaluation: the advantage is concentrated in text and layout</h2>
+    <h3>Long text: LLTB</h3>
+    <p>LongLongTextBench (LLTB) contains 120 Chinese and 120 English tasks, with an average target length of about 1,339.8 characters. MOSS-Image reaches a Mean-6 score of <strong>96.3</strong>, the highest reported result among open-weight models; its longest English and Chinese scores are 97.1 and 92.4. LLTB measures text coverage and rendering quality, not OCR edit distance or factual accuracy.</p>
+    <h3>Layout: 7Bench</h3>
+    <p>On the shared JSON/Layout tasks, MOSS-Image obtains detection mIoU of <strong>0.8786</strong>, Layout AUC of <strong>0.7031</strong>, and overall layout mIoU of <strong>0.6788</strong>. The table reports the two primary layout metrics:</p>
+    <table class="compare-table">
+      <thead><tr><th>Model</th><th>mIoU<sub>det</sub> ↑</th><th>Layout AUC ↑</th><th>Evaluation role</th></tr></thead>
+      <tbody>
+        <tr><td>MOSS-Image</td><td><strong>0.8786</strong></td><td><strong>0.7031</strong></td><td>Open-weight generator</td></tr>
+        <tr><td>Ideogram 4</td><td>0.4449</td><td>0.2046</td><td>Closed generation system</td></tr>
+        <tr><td>GPT Image 2</td><td>0.3042</td><td>0.1554</td><td>Closed generation system</td></tr>
+        <tr><td>Nano Banana Pro</td><td>0.3296</td><td>0.1628</td><td>Closed generation system</td></tr>
+        <tr><td>Qwen Image 3 Pro</td><td>0.3148</td><td>0.1758</td><td>Generation system</td></tr>
+        <tr><td>Seedream 5 Pro</td><td>0.3273</td><td>0.1794</td><td>Closed generation system</td></tr>
+      </tbody>
+    </table>
+    <h3>End-to-end preference: RealLayoutArena</h3>
+    <p>RealLayoutArena (RLA) lets each system use its own prompt enhancement and generation pipeline before aggregating blind human preferences into Elo. MOSS-Image scores <strong>1698.70</strong> (95% CI 1655.96–1741.43), ranking second. GPT Image 2 scores 1844.35, Seedream 5 Pro 1661.16, Qwen Image 3 Pro + PE 1614.84, and Nano Banana Pro 1590.19.</p>
+    <p>Under a shared enhanced natural-language prompt, the MOSS-Image backbone scores <strong>1807.34</strong>, ahead of ERNIE Image at 1748.51 and SenseNova-U1 at 1689.23. These results answer different questions: the shared-prompt experiment isolates the generator, while the end-to-end ranking includes each system’s planning and product pipeline.</p>
+
+    <h2>How does it compare with similar models?</h2>
+    <p>The comparison below combines capability and delivery model. Closed systems may still provide stronger end-to-end aesthetics or product integration; MOSS-Image is differentiated by dense text, explicit layout control, and open deployment. Scores come from different protocols and should not be combined into one universal ranking.</p>
+    <table class="compare-table">
+      <thead><tr><th>Model / family</th><th>Text and layout focus</th><th>Openness and adaptation</th><th>When it is the better choice</th></tr></thead>
+      <tbody>
+        <tr><td>MOSS-Image</td><td>Long Chinese/English text, JSON Layout, bboxes, and spatial relations; LLTB 96.3 and leading 7Bench results</td><td>Open weights; Base/SFT, LoRA/full fine-tuning, Diffusers/ComfyUI</td><td>Local deployment, reproducible compositions, or training on private data</td></tr>
+        <tr><td>GPT Image 2</td><td>RLA end-to-end Elo 1844.35, first in that system comparison</td><td>Closed hosted service; no downloadable weights for local fine-tuning</td><td>Hosted API access and a polished end-to-end product experience</td></tr>
+        <tr><td>Ideogram 4</td><td>A common closed reference for design and text generation; lower 7Bench layout scores in the report</td><td>Closed service</td><td>A mature online design workflow without managing weights</td></tr>
+        <tr><td>Seedream 5 Pro</td><td>RLA Elo 1661.16; general visual creation and product workflows</td><td>Closed service</td><td>Direct access to a commercial image-generation service</td></tr>
+        <tr><td>Qwen Image 3 Pro</td><td>RLA Elo 1614.84 with PE; a reference generation system in the same study</td><td>Used through a product/API; openness depends on the version</td><td>Image generation inside an existing Qwen workflow</td></tr>
+        <tr><td>Qwen Image 2512</td><td>LLTB Mean-6 of 64.9 in the report; useful open-model text-rendering baseline</td><td>Open research ecosystem</td><td>Open-model comparison or an existing Qwen-based experiment</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><strong>There are clear limits:</strong> the current MOSS-Image backbone is text-to-image. It does not directly accept reference images or provide native image editing, and Prompt Enhancement relies on an external language model whose planning quality affects the final specification. Its strength is an open, inspectable, fine-tunable path where text and placement become explicit inputs.</p>
+
+    <h2>From Base to a usable system</h2>
+    <p>The repository releases <strong>MOSS-Image-Base</strong> and <strong>MOSS-Image-SFT</strong>, which is fine-tuned on curated data. Base is the starting point for continued pretraining, domain SFT, or LoRA; SFT is the easier entry for more stable text grouping and whiteboard-like layouts. Diffusers, Gradio, and ComfyUI are supported, with community integrations for SGLang, vLLM-Omni, and KohakuMossTrainer.</p>
+    <pre><code>from diffusers import DiffusionPipeline
+import torch
+
+pipe = DiffusionPipeline.from_pretrained(
+    "OpenMOSS-Team/MOSS-Image-Base",
+    custom_pipeline="pipeline_moss_image",
+    trust_remote_code=True,
+    torch_dtype={"default": torch.bfloat16, "vae": torch.float32},
+).to("cuda")
+
+image = pipe(
+    "A minimalist travel poster with EXPLORE at the top, cream background, blue mountains",
+    height=1024, width=1024, num_inference_steps=50, guidance_scale=3.0,
+).images[0]
+image.save("poster.png")</code></pre>
+    <p>For precise composition, pass a JSON object containing <code>summary</code>, <code>items</code>, and <code>bbox</code> as the prompt. For a custom brand or domain, choose SFT or LoRA training after the first local generation works.</p>
+
+    <h2>Resources</h2>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2610.23374">Technical report: MOSS-Image Technical Report</a></li>
+      <li><a href="https://github.com/OpenMOSS/MOSS-Image">GitHub: OpenMOSS/MOSS-Image</a> · <a href="https://github.com/OpenMOSS/MOSS-Image/blob/main/README.md">README</a></li>
+      <li><a href="https://huggingface.co/OpenMOSS-Team/MOSS-Image-Base">Hugging Face: MOSS-Image-Base</a> · <a href="https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT">MOSS-Image-SFT</a></li>
+      <li><a href="https://github.com/OpenMOSS/MOSS-Image/tree/main/comfyui">ComfyUI workflows</a> · <a href="https://platform.mosi.cn/">MOSI API Playground</a></li>
+    </ul>
+  </d-article>
+  <d-appendix>
+    <h3>Note</h3>
+    <p class="resource-list">All model capabilities and numbers are from the MOSS-Image technical report and official repository, accessed in October 2026. LLTB measures long-text coverage, 7Bench evaluates shared Layout constraints, and RLA is an end-to-end human-preference evaluation that includes each system’s own prompt pipeline. The comparison with GPT Image 2, Ideogram 4, Seedream 5 Pro, Nano Banana Pro, and Qwen Image 3 Pro describes capability and deployment boundaries rather than a universal ranking.</p>
+    <h3>Citation</h3>
+    <p class="resource-list">MOSI.AI. “MOSS-Image Technical Report.” arXiv:2610.23374, 2026. <a href="https://arxiv.org/abs/2610.23374">arXiv:2610.23374</a></p>
+  </d-appendix>
+</body>
+</html>

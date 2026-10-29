@@ -14,6 +14,18 @@
 - 顺序：从上到下就是页面显示顺序（新的放最上面）。
 -->
 
+date: 2026.10
+标题: MOSS-Image：让开放模型真正理解文字与版式
+title: MOSS-Image: An Open Model for Text and Layout
+描述: 5B 开放权重图像生成系统，专注于中文与英文长文本渲染、JSON Layout 控制和可微调部署；本文报告 LLTB、7Bench、RealLayoutArena 结果，并与 GPT Image 2、Ideogram 4、Seedream 5 Pro 等模型比较。
+desc: A 5B open-weight image-generation system for long Chinese and English text, JSON Layout control, and fine-tunable deployment, with LLTB, 7Bench, and RealLayoutArena results compared with GPT Image 2, Ideogram 4, and Seedream 5 Pro.
+标签: 多模态, 图像生成, 开源模型
+tags: Multimodal, Image Generation, Open Models
+图: assets/img/highlights/moss-image.webp
+链接: /blog/cn/moss-image/
+
+---
+
 date: 2026.8
 标题: VLA、WAM 之外：OpenETA 如何把智能体闭环带入物理世界
 title: OpenETA: Bringing the Agentic Loop into the Physical World
