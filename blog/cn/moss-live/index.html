@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比</title>
+  <meta name="description" content="MOSS-Live 在官方公布的六项全双工指标上均领先参评模型。本文对比 GPT-Live-1、豆包 SeedDuplex 的交互、工具调用与多轮任务表现，并介绍前后台协同架构。">
+  <link rel="canonical" href="https://openmoss.ai/blog/cn/moss-live/">
+  <link rel="alternate" hreflang="zh-CN" href="https://openmoss.ai/blog/cn/moss-live/">
+  <link rel="alternate" hreflang="en" href="https://openmoss.ai/blog/en/moss-live/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="OpenMOSS">
+  <meta property="og:url" content="https://openmoss.ai/blog/cn/moss-live/">
+  <meta property="og:title" content="MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比">
+  <meta property="og:description" content="MOSS-Live 在官方公布的六项全双工指标上均领先参评模型。本文对比 GPT-Live-1、豆包 SeedDuplex 的交互、工具调用与多轮任务表现，并介绍前后台协同架构。">
+  <meta property="og:image" content="https://openmoss.ai/assets/img/highlights/moss-live.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="article:published_time" content="2026-11-13">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Open_MOSS">
+  <meta name="twitter:title" content="MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比">
+  <meta name="twitter:description" content="MOSS-Live 在官方公布的六项全双工指标上均领先参评模型。本文对比 GPT-Live-1、豆包 SeedDuplex 的交互、工具调用与多轮任务表现，并介绍前后台协同架构。">
+  <meta name="twitter:image" content="https://openmoss.ai/assets/img/highlights/moss-live.png">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比", "description": "MOSS-Live 在官方公布的六项全双工指标上均领先参评模型。本文对比 GPT-Live-1、豆包 SeedDuplex 的交互、工具调用与多轮任务表现，并介绍前后台协同架构。", "datePublished": "2026-11-13", "dateModified": "2026-11-13", "inLanguage": "zh-CN", "author": {"@type": "Organization", "name": "OpenMOSS Team", "url": "https://github.com/OpenMOSS"}, "publisher": {"@type": "Organization", "name": "OpenMOSS", "url": "https://openmoss.ai/"}, "mainEntityOfPage": "https://openmoss.ai/blog/cn/moss-live/", "image": "https://openmoss.ai/assets/img/highlights/moss-live.png", "citation": "https://www.moss.cn/models/moss-live"}</script>
+  <script src="/blog/template.v2.js?v=4"></script>
+  <link rel="stylesheet" href="/blog/blog-fonts.css?v=5">
+  <link rel="stylesheet" href="/blog/blog-chrome.css?v=8">
+  <script defer src="/blog/blog-chrome.js?v=4"></script>
+  <link rel="stylesheet" href="/blog/en/moss-live/styles.css?v=1">
+</head>
+<body>
+  <d-front-matter><script type="text/json">{"title": "MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比", "description": "MOSS-Live 在官方公布的六项全双工指标上均领先参评模型。本文对比 GPT-Live-1、豆包 SeedDuplex 的交互、工具调用与多轮任务表现，并介绍前后台协同架构。", "authors": [{"author": "OpenMOSS Team", "authorURL": "https://github.com/OpenMOSS"}], "publishedDate": "2026-11-13"}</script></d-front-matter>
+  <d-title><h1><span class="model-name">MOSS-Live</span>：全双工实时交互，与 <span class="model-name">GPT-Live</span>、豆包的对比</h1><p>从停顿、附和到后台任务：用十二项评测观察实时语音交互的优势与差距。</p></d-title>
+  <d-article>
+    <figure class="hero wide"><img src="/assets/img/highlights/moss-live.svg" width="1200" height="630" alt="MOSS-Live、GPT-Live-1 与豆包的无关语音误接话率对比" fetchpriority="high"></figure>
+
+<p>与语音助手交谈时，我们会停下来想一想，会说“嗯”“对”，也会临时改主意。身边的人、车载导航或会议里的其他声音，还可能同时进入麦克风。一个能够持续参与交流的系统，需要判断这些声音与当前对话的关系：什么时候继续说，什么时候等待，什么时候把话语权交还给用户。</p>
+<p><strong>MOSS-Live 将这种交互判断作为核心能力。</strong>根据 <a href="https://www.moss.cn/models/moss-live">MOSS 官网公布的评测</a>，它在六项全双工指标上均位居图中参评模型首位。与 <strong>GPT-Live-1</strong> 和<strong>豆包（Doubao SeedDuplex）</strong>相比，最显著的差距出现在无关语音处理和打断判断上。工具调用与多轮任务则呈现出不同的优势分布。</p>
+<div class="takeaways wide">
+ <div class="takeaway"><strong>6 / 6</strong><p>官方图表所列全双工指标，MOSS-Live 均居参评模型首位。</p></div>
+ <div class="takeaway"><strong>2.00%</strong><p>无关语音误接话率；GPT-Live-1 为 68%，豆包为 75%。</p></div>
+ <div class="takeaway"><strong>1.44%</strong><p>停顿抢话率；GPT-Live-1 为 10.37%，豆包为 14.29%。</p></div>
+</div>
+<div class="actions"><a href="https://platform.moss.cn/app/playground/">在线体验</a><a href="https://www.moss.cn/models/moss-live">产品与完整评测</a><a href="#demos">观看演示</a></div>
+<h2 id="comparison">与 GPT-Live、豆包相比，优势在哪里？</h2>
+<p>下面按原图中的具体名称列出 <strong>GPT-Live-1、Doubao SeedDuplex、GPT Realtime 2.1</strong>，避免把不同模型版本混为一谈。箭头表示优化方向：↓ 越低越好，↑ 越高越好；粗体表示表中该项最佳结果，包含并列。</p>
+<h3>全双工：减少抢话、误接话和无效打断</h3>
+<div class="table-scroll wide" role="region" aria-label="六项全双工指标：MOSS-Live 与三款语音模型对比" tabindex="0"><table class="compare"><caption>六项全双工指标：MOSS-Live 与三款语音模型对比</caption><thead><tr><th scope="col">基准 / 指标</th><th scope="col">MOSS-Live</th><th scope="col">GPT-Live-1</th><th scope="col">Doubao<br>SeedDuplex</th><th scope="col">GPT Realtime<br>2.1</th></tr></thead><tbody><tr><th scope="row">FDB v1<br>停顿抢话率（不含附和） ↓</th><td><strong>1.44%</strong></td><td>10.37%</td><td>14.29%</td><td>3.83%</td></tr><tr><th scope="row">FDB v1.5<br>无关语音误接话率 ↓</th><td><strong>2.00%</strong></td><td>68.00%</td><td>75.00%</td><td>72.00%</td></tr><tr><th scope="row">FDB v1.5<br>无关打断拒识率 ↑</th><td><strong>68.00%</strong></td><td>21.00%</td><td>13.00%</td><td>5.00%</td></tr><tr><th scope="row">τ-Voice<br>附和抗干扰率 ↑</th><td><strong>98.17%</strong></td><td>91.57%</td><td>93.52%</td><td>56.26%</td></tr><tr><th scope="row">τ-Voice<br>口头语抗干扰率 ↑</th><td><strong>82.16%</strong></td><td>48.48%</td><td>69.66%</td><td>57.75%</td></tr><tr><th scope="row">τ-Voice<br>无关语音抗干扰率 ↑</th><td><strong>78.90%</strong></td><td>66.99%</td><td>60.42%</td><td>27.10%</td></tr></tbody></table></div>
+<p class="table-note">来源：MOSS-Live 官网全双工能力评测图。原图还包含 Qwen Audio 3.0 Plus 和 Flash；MOSS-Live 在上述六项中也均领先这两款模型。</p>
+<p><strong>无关语音误接话率的差距最为突出：</strong>MOSS-Live 为 2%，比 GPT-Live-1 和豆包分别低 <strong>66 和 73 个百分点</strong>。停顿抢话率则分别低 8.93 和 12.85 个百分点。这两类指标对应常见的交互问题：用户尚在思考时，系统是否过早接话；声音并非对系统说时，系统是否仍然作答。</p>
+<p>另一组结果考察说话过程中受到干扰后的表现。MOSS-Live 的无关打断拒识率为 68%，GPT-Live-1 和豆包分别为 21% 和 13%；附和抗干扰率达到 98.17%。这些结果支持的判断是：<strong>在本次评测中，MOSS-Live 更能维持对话节奏，并区分附和、无关声音与需要响应的输入。</strong></p>
+<figure class="source-figure wide"><a href="/blog/en/moss-live/images/full_duplex_capabilities_dark.webp" aria-label="MOSS-Live 六项全双工评测原图，包含全部六款参评模型"><img loading="lazy" decoding="async" src="/blog/en/moss-live/images/full_duplex_capabilities_dark.webp" alt="MOSS-Live 六项全双工评测原图，包含全部六款参评模型"></a><figcaption>官网原图：六项全双工指标及全部参评模型。点击图片可查看大图。</figcaption></figure>
+<h3>工具与任务：工具调用并列第一，多轮任务仍有差距</h3>
+<div class="table-scroll wide" role="region" aria-label="工具调用与多轮任务成功率" tabindex="0"><table class="compare"><caption>工具调用与多轮任务成功率</caption><thead><tr><th scope="col">基准 / 指标</th><th scope="col">MOSS-Live</th><th scope="col">GPT-Live-1</th><th scope="col">Doubao<br>SeedDuplex</th><th scope="col">GPT Realtime<br>2.1</th></tr></thead><tbody><tr><th scope="row">FDB v3<br>工具调用成功率 ↑</th><td><strong>51.00%</strong></td><td>45.00%</td><td><strong>51.00%</strong></td><td>39.00%</td></tr><tr><th scope="row">τ-Voice<br>多轮任务成功率 ↑</th><td>57.93%</td><td><strong>67.68%</strong></td><td>17.38%</td><td>49.39%</td></tr></tbody></table></div>
+<p>FDB v3 工具调用成功率上，MOSS-Live 达到 <strong>51%</strong>，高于 GPT-Live-1 的 45%，与豆包并列最高。τ-Voice 多轮任务成功率为 <strong>57.93%</strong>，较豆包的 17.38% 高出 <strong>40.55 个百分点</strong>，在原图六款模型中排名第二；GPT-Live-1 以 67.68% 领先，MOSS-Live 与它相差 9.75 个百分点。</p>
+<p>这一区别很关键：能否自然地交流，与能否完成多轮任务，需要分别检验。MOSS-Live 的全双工优势十分明确，而涉及持续规划和任务完成时，GPT-Live-1 在这项评测中仍然更强。</p>
+<figure class="source-figure wide"><a href="/blog/en/moss-live/images/tool_calling_multiturn_dark.webp" aria-label="MOSS-Live 工具调用与多轮任务评测原图"><img loading="lazy" decoding="async" src="/blog/en/moss-live/images/tool_calling_multiturn_dark.webp" alt="MOSS-Live 工具调用与多轮任务评测原图"></a><figcaption>官网原图：FDB v3 工具调用与 τ-Voice 多轮任务。</figcaption></figure>
+<h3>理解与对话：打断后接续突出，部分指标仍需提升</h3>
+<div class="table-scroll wide" role="region" aria-label="语音理解与多轮对话：百分比与 5 分制分别列示" tabindex="0"><table class="compare"><caption>语音理解与多轮对话：百分比与 5 分制分别列示</caption><thead><tr><th scope="col">基准 / 指标</th><th scope="col">MOSS-Live</th><th scope="col">GPT-Live-1</th><th scope="col">Doubao<br>SeedDuplex</th><th scope="col">GPT Realtime<br>2.1</th></tr></thead><tbody><tr><th scope="row">Big-Bench Audio<br>总体准确率 ↑</th><td>88.40%</td><td>80.80%</td><td><strong>90.50%</strong></td><td>90.10%</td></tr><tr><th scope="row">FDB v2<br>多轮指令遵循 ↑ · /5</th><td>3.35</td><td><strong>3.72</strong></td><td>3.44</td><td>3.36</td></tr><tr><th scope="row">FDB v2<br>实体跟踪、纠错与安全 ↑ · /5</th><td><strong>3.63</strong></td><td>3.50</td><td>3.15</td><td>2.97</td></tr><tr><th scope="row">FDB v1<br>打断后回答质量 ↑ · /5</th><td><strong>4.88</strong></td><td>4.67</td><td>4.51</td><td>4.57</td></tr></tbody></table></div>
+<p>MOSS-Live 的打断后回答质量为 <strong>4.88/5</strong>，实体跟踪、纠错与安全为 <strong>3.63/5</strong>，均为原图参评模型最高。与前面的抗干扰结果结合看，它的强项在于维持交流的连贯性：对话被插入、修正之后，仍能跟踪信息并继续回答。</p>
+<p>同时，Big-Bench Audio 准确率为 88.40%，低于豆包的 90.50%；多轮指令遵循为 3.35/5，低于 GPT-Live-1 的 3.72/5 和豆包的 3.44/5。因此，本文的结论聚焦于<strong>全双工交互及对话接续的优势</strong>，不将这些结果扩展为所有语音能力的统一排名。</p>
+<figure class="source-figure wide"><a href="/blog/en/moss-live/images/audio_understanding_multiturn_dark.webp" aria-label="MOSS-Live 语音理解与多轮对话评测原图"><img loading="lazy" decoding="async" src="/blog/en/moss-live/images/audio_understanding_multiturn_dark.webp" alt="MOSS-Live 语音理解与多轮对话评测原图"></a><figcaption>官网原图：Big-Bench Audio、FDB v2 和 FDB v1 的理解与对话评测。后三项采用 5 分制。</figcaption></figure>
+<h2>边交流、边执行：前后台如何协同？</h2>
+<p>MOSS-Live 支持全双工语音、语义打断、实时视频和屏幕共享，以及流式同声传译。它将实时交互与耗时任务分工处理：前台负责持续感知和交流，后台承担复杂推理、工具调用与任务执行，协同层在两者之间共享记忆、上下文及任务状态。</p>
+<p>例如，用户正在讨论旅行计划时，可以同时交办酒店查询，随后继续补充行程偏好。查询在后台推进，前台继续对话，结果就绪后再带回交流。这种设计让等待工具结果的时间能够被用于继续沟通，也让新需求有机会进入正在推进的任务。</p>
+<figure class="source-figure wide"><a href="/blog/en/moss-live/images/frontend_backend_architecture_dark.webp" aria-label="MOSS-Live 前台实时交互、后台异步任务及共享上下文架构"><img loading="lazy" decoding="async" src="/blog/en/moss-live/images/frontend_backend_architecture_dark.webp" alt="MOSS-Live 前台实时交互、后台异步任务及共享上下文架构"></a><figcaption>MOSS-Live 前后台协同架构。图示来自官方产品页；这里介绍的是 MOSS-Live 的系统设计，不据此推断其他模型的内部实现。</figcaption></figure>
+<h2 id="demos">在连续对话里观察这些能力</h2>
+<p>评测给出可对照的数值，演示则帮助观察具体的交互过程。以下为官网提供的三个场景；观看时可以重点留意附和是否造成中断、新需求如何被接收，以及话题切换后如何返回原任务。</p>
+<h3>多人会议：讨论和查询同时推进</h3>
+<figure class="demo wide"><video controls playsinline preload="none" width="1920" height="1080" poster="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/meeting_room.mp4?x-oss-process=video/snapshot,t_1000,f_jpg,w_960,m_fast" aria-label="多人会议演示：在持续讨论中查询信息、处理插话，并整理结论。"><source src="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/meeting_room.mp4" type="video/mp4"><a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/meeting_room.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></video><figcaption>多人会议演示：在持续讨论中查询信息、处理插话，并整理结论。 <a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/meeting_room.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></figcaption></figure>
+<h3>自驾游规划：临时改需求，再接回原话题</h3>
+<figure class="demo wide"><video controls playsinline preload="none" width="1920" height="1080" poster="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/driving.mp4?x-oss-process=video/snapshot,t_1000,f_jpg,w_960,m_fast" aria-label="自驾游演示：行程偏好更新、后台查询，以及对导航语音的处理。"><source src="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/driving.mp4" type="video/mp4"><a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/driving.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></video><figcaption>自驾游演示：行程偏好更新、后台查询，以及对导航语音的处理。 <a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/driving.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></figcaption></figure>
+<h3>上海旅行：结合实时画面继续交流</h3>
+<figure class="demo wide"><video controls playsinline preload="none" width="1920" height="1080" poster="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/city_guide.mp4?x-oss-process=video/snapshot,t_1000,f_jpg,w_960,m_fast" aria-label="城市导览演示：英语对话、实时视觉信息、查询与话题接续。"><source src="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/city_guide.mp4" type="video/mp4"><a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/city_guide.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></video><figcaption>城市导览演示：英语对话、实时视觉信息、查询与话题接续。 <a href="https://mosi-www-prod-new.oss-cn-shanghai.aliyuncs.com/website/products/moss-live/video/city_guide.mp4" target="_blank" rel="noopener noreferrer">在新窗口观看演示</a></figcaption></figure>
+<h2>如何理解这组结果</h2>
+<p>如果应用最关心的是多人环境里的误接话、说话中的干扰和打断后的接续，MOSS-Live 的评测结果值得重点考察。如果更关心复杂多轮任务完成率，GPT-Live-1 在 τ-Voice 上的领先同样应该纳入判断；如果侧重语音理解准确率，豆包在 Big-Bench Audio 上的优势也应保留。</p>
+<p class="note">本文数据和模型名称均按 MOSS 官网在 2026 年 11 月 13 日展示的图表整理，属于产品方公布的评测。页面未展开样本量、误差范围、API 快照及完整评测配置。不同基准的指标不应混合计算总分；尤其 FDB v1.5 与 τ-Voice 的无关语音指标并非互补比例。本文不据此比较延迟、价格或所有场景下的产品体验。</p>
+<h2>体验与来源</h2>
+<ul class="resources"><li><a href="https://platform.moss.cn/app/playground/">MOSS 在线体验</a> · <a href="https://platform.moss.cn/">MOSS API 平台</a></li><li><a href="https://www.moss.cn/models/moss-live">MOSS-Live 官方产品页：能力介绍、架构、演示和评测图表</a></li></ul>
+
+  </d-article>
+</body>
+</html>

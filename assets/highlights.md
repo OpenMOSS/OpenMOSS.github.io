@@ -14,6 +14,18 @@
 - 顺序：从上到下就是页面显示顺序（新的放最上面）。
 -->
 
+date: 2026.11
+标题: MOSS-Live：全双工实时交互，与 GPT-Live、豆包的对比
+title: MOSS-Live: Full-Duplex Interaction Compared with GPT-Live and Doubao
+描述: MOSS-Live 支持边听边说、语义打断与后台异步工具调用；本文结合官网评测，对比 GPT-Live-1 与豆包 SeedDuplex 在全双工交互、语音理解及多轮任务上的表现。
+desc: MOSS-Live combines simultaneous listening and speaking, semantic interruption, and asynchronous tool use. We examine the published evaluations against GPT-Live-1 and Doubao SeedDuplex across full-duplex interaction, audio understanding, and multi-turn tasks.
+标签: 语音, 多模态, 实时交互
+tags: Speech, Multimodal, Real-Time Interaction
+图: assets/img/highlights/moss-live.svg
+链接: /blog/cn/moss-live/
+
+---
+
 date: 2026.10
 标题: MOSS-Image：让开放模型真正理解文字与版式
 title: MOSS-Image: An Open Model for Text and Layout

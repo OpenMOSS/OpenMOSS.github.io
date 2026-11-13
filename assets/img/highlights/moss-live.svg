@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">MOSS-Live: full-duplex interaction</title>
+<desc id="desc">Reported FDB v1.5 irrelevant-speech false response rates, lower is better: MOSS-Live 2%, GPT-Live-1 68%, Doubao SeedDuplex 75%.</desc>
+<rect width="1200" height="630" fill="#0c172b"/>
+<circle cx="1110" cy="45" r="245" fill="#122a4b"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="66" y="62" fill="#93b9ef" font-size="19" letter-spacing="3">OPENMOSS / REAL-TIME INTERACTION</text>
+<text x="62" y="154" fill="#ffffff" font-size="72" font-weight="700">MOSS-Live</text>
+<text x="67" y="204" fill="#c6d5e9" font-size="27">Full-duplex conversation, with fewer false responses.</text>
+<line x1="66" y1="245" x2="1134" y2="245" stroke="#31445e"/>
+<text x="66" y="291" fill="#dbe6f5" font-size="23">FDB v1.5 · Irrelevant-speech false response rate ↓</text>
+<text x="66" y="358" fill="#a2c8ff" font-size="23" font-weight="700">MOSS-Live</text>
+<text x="66" y="424" fill="#dbe6f5" font-size="23">GPT-Live-1</text>
+<text x="66" y="490" fill="#dbe6f5" font-size="23">Doubao SeedDuplex</text>
+<rect x="325" y="332" width="18" height="34" rx="4" fill="#83b5ff"/>
+<rect x="325" y="398" width="612" height="34" rx="4" fill="#657a96"/>
+<rect x="325" y="464" width="675" height="34" rx="4" fill="#657a96"/>
+<text x="1118" y="359" fill="#a2c8ff" text-anchor="end" font-size="30" font-weight="700">2.00%</text>
+<text x="1118" y="425" fill="#dbe6f5" text-anchor="end" font-size="30">68.00%</text>
+<text x="1118" y="491" fill="#dbe6f5" text-anchor="end" font-size="30">75.00%</text>
+<text x="66" y="577" fill="#94a9c4" font-size="18">Source: MOSS-Live product-page evaluation charts · 13 Nov 2026</text>
+</g>
+</svg>
