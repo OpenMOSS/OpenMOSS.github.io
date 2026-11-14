@@ -1,13 +1,19 @@
-d-title h1 { font-size:clamp(2rem,4.3vw,3.4rem); line-height:1.18; letter-spacing:-.025em; text-wrap:balance; }
-d-byline .byline { grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
-d-title .model-name { white-space:nowrap; }
-d-byline .authors-affiliations { display:block; grid-column:auto; }
+d-title.moss-live-title { padding:2.75rem 0 1.5rem; }
+d-title.moss-live-title h1 { grid-column:page; margin:0; font-size:clamp(1.75rem,3.1vw,2.75rem); line-height:1.25; letter-spacing:-.025em; }
+d-title.moss-live-title h1 .title-main { display:block; }
+d-title.moss-live-title h1 .title-compare { display:block; margin-top:.45rem; color:#345477; font-size:.7em; line-height:1.4; font-weight:500; letter-spacing:0; }
+/* Distill makes every h1 span a block on desktop; model names stay inline. */
+d-title.moss-live-title h1 .model-name { display:inline; white-space:nowrap; }
+d-title.moss-live-title p { grid-column:page; margin:.9rem 0 0; max-width:58rem; color:#51607a; font-size:1.05rem; line-height:1.7; }
+d-byline { padding:1rem 0; }
+d-byline .byline { grid-column:page; grid-template-columns:max-content max-content; gap:3rem; }
+d-byline .authors-affiliations { display:block; grid-column:auto; margin-bottom:0; }
 d-byline .authors-affiliations h3:nth-of-type(2), d-byline .affiliation, d-byline .byline > div:last-child { display:none; }
-d-article { color:#1a2233; }
+d-article { color:#1a2233; padding-top:1.5rem; }
 d-article h2 { margin-top:2.4em; }
 d-article h3 { margin-top:1.7em; }
 .wide { grid-column:page; min-width:0; }
-.hero { margin:1.5rem 0 2rem; }
+.hero { margin:0 0 2rem; }
 .hero img, .source-figure img { display:block; width:100%; height:auto; border-radius:12px; }
 .source-figure { margin:1.6rem 0; }
 .source-figure figcaption, .table-note { color:#51607a; font-size:.86rem; line-height:1.6; }
@@ -35,4 +41,4 @@ d-article h3 { margin-top:1.7em; }
 .demo video { width:100%; display:block; aspect-ratio:16/9; border-radius:10px; background:#101724; }
 .demo figcaption { margin-top:.6rem; font-size:.86rem; line-height:1.65; color:#51607a; }
 .resources a { overflow-wrap:anywhere; }
-@media(max-width:760px) { .takeaways { grid-template-columns:1fr; gap:10px; } .takeaway { display:grid; grid-template-columns:90px 1fr; gap:10px; align-items:center; } .takeaway p { margin:0; } .compare { font-size:.8rem; } .compare th, .compare td { padding:10px; } }
+@media(max-width:760px) { d-title.moss-live-title { padding:1.75rem 0 1.25rem; } d-title.moss-live-title h1 .title-compare { font-size:.72em; } d-title.moss-live-title p { font-size:.95rem; } d-byline .byline { gap:2rem; } .takeaways { grid-template-columns:1fr; gap:10px; } .takeaway { display:grid; grid-template-columns:90px 1fr; gap:10px; align-items:center; } .takeaway p { margin:0; } .compare { font-size:.8rem; } .compare th, .compare td { padding:10px; } }
