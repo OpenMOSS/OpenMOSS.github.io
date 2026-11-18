@@ -81,7 +81,7 @@
         badgeKey: 'series.fudannlp.badge', descKey: 'series.fudannlp.desc'
       },
       {
-        name: 'NEX', url: 'https://github.com/nex-agi', org: 'nex-agi',
+        name: 'NEX', url: 'https://github.com/sii-nex', org: 'nex-agi',
         featured: ['Nex-N2', 'NexAU', 'Nex-N1', 'NexRL'],
         badgeKey: 'series.nex.badge', descKey: 'series.nex.desc'
       }
