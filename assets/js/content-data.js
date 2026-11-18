@@ -67,7 +67,7 @@
       {
         name: 'MOSS', url: 'https://github.com/OpenMOSS', org: 'OpenMOSS',
         feature: true,
-        featured: ['MOSS', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-VL', 'MOSS-Image'],
+        featured: ['MOSS', 'MOSS-Live', 'MOSS-TTS-Nano', 'MOSS-TTS', 'MOSS-TTSD', 'MOVA', 'MOSS-Audio', 'MOSS-Transcribe-Diarize', 'MOSS-VL', 'MOSS-Image'],
         badgeKey: 'series.moss.badge', descKey: 'series.moss.desc'
       },
       {
@@ -81,8 +81,8 @@
         badgeKey: 'series.fudannlp.badge', descKey: 'series.fudannlp.desc'
       },
       {
-        name: 'NEX', url: 'https://github.com/sii-nex', org: 'nex-agi',
-        featured: ['Nex-N2', 'NexAU', 'Nex-N1', 'NexRL'],
+        name: 'NEX', url: 'https://github.com/sii-nex', org: 'sii-nex',
+        featured: ['Nex-N2', 'Nex-N2.6', 'Nex-N1'],
         badgeKey: 'series.nex.badge', descKey: 'series.nex.desc'
       }
     ],

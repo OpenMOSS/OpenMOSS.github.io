@@ -40,7 +40,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # GitHub orgs backing each project series shown on the Resources page.
 # Keep in sync with SPA_DATA.projectSeries[*].org in assets/js/content-data.js.
-ORGS = ["OpenMOSS", "nndl", "FudanNLP", "nex-agi"]
+ORGS = ["OpenMOSS", "nndl", "FudanNLP", "sii-nex"]
 
 
 def gh(path: str):
